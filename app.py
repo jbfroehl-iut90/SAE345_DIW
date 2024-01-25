@@ -21,6 +21,9 @@ from controllers.admin_type_article import *
 from controllers.admin_dataviz import *
 from controllers.admin_commentaire import *
 from controllers.client_liste_envies import *
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = 'mtdepassesecrethehe'
