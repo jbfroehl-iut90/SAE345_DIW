@@ -28,8 +28,8 @@ def fct_fixtures_load():
     '''
     mycursor.execute(sql)
     sql=''' 
-    INSERT INTO utilisateur(id_utilisateur,login,email,password,role,nom,est_actif) VALUES
-(1,'admin','admin@admin.fr',
+    INSERT INTO UTILISATEUR(id_utilisateur,login,email,password,role,nom,est_actif) VALUES
+(NULL,'admin','admin@admin.fr',
     'sha256$dPL3oH9ug1wjJqva$2b341da75a4257607c841eb0dbbacb76e780f4015f0499bb1a164de2a893fdbf',
     'ROLE_admin','admin','1'),
 (2,'client','client@client.fr',
