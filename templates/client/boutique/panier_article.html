@@ -16,73 +16,73 @@
         </div>
 
         <div class="bg-light p-3">
-            <h1>Les articles</h1>
+            <h1>Nos produits</h1>
         </div>
 
         <div class="row">
-                {% for article in articles  %}
+                {% for item in articles  %}
                         <div class="card col-4 mt-4 p-1">
                             <div class="card-body border-dark rounded p-1">
-                                <a href="/client/article/details?id_article={{ article.id_article }}" >
+                                <a href="/client/article/details?id_article={{ item.id_article }}" >
                                 <h3 class="card-title">
-                                    <span style="color: #0b2e13">{{ article.nom }}</span><br>
-                                    {{ article.prix }}
+                                    <span style="color: #0b2e13">{{ item.libelle_equipement }}</span><br>
+                                    {{ item.prix_equipement }}
                                     €
                                 </h3>
-                                     {%  if article.image is not none %}
-                                        <img class="card-img-top rounded mx-auto d-block"  style="width:100px;height:100px"  src="{{ url_for('static', filename = 'images/')}}{{ article.image }}"  alt="image  de {{ article.nom }}" >
-                                    {% else %} <img class="card-img-top rounded mx-auto d-block"   style="width:100px;height:100px"   src="{{ url_for('static', filename='images/no_photo.jpeg')}}"  alt="image  de {{ article.nom }}" >
+                                     {%  if item.image_equipement is not none %}
+                                        <img class="card-img-top rounded mx-auto d-block"  style="width:100px;height:100px"  src="{{ url_for('static', filename = 'images/')}}{{ item.image_equipement }}"  alt="image  de {{ item.libelle_equipement }}" >
+                                    {% else %} <img class="card-img-top rounded mx-auto d-block"   style="width:100px;height:100px"   src="{{ url_for('static', filename='images/no_photo.jpeg')}}"  alt="image  de {{ item.libelle_equipement }}" >
                                     {% endif %}
                                     <hr>
                                 </a>
                                 <div class="row">
-{# #}                                {% if  article.stock is defined and article.stock != None %}
-{# #}                                    {% if article.stock > 0 %}
+{# #}                                {% if  item.stock is defined and item.stock != None %}
+{# #}                                    {% if item.stock > 0 %}
                                         <form  action="/client/panier/add"  method="post" class="col-5">
-                                            <input type="hidden" name="id_article" value="{{ article.id_article }}">
+                                            <input type="hidden" name="id_article" value="{{ item.id_equipement }}">
                                             <div class="input-group">
                                             <button class="btn  btn-success"  id="button-addon1">
                                                 <i class="fas fa-shopping-cart">Ajouter</i>
                                             </button>
-                                            <input type="number" id="input-{{ article.id_article }}" step="1" min="0" max="{{ article.stock }}" class="form-control" value="1" name="quantite"  aria-describedby="button-addon1">
+                                            <input type="number" id="input-{{ item.id_equipement }}" step="1" min="0" max="{{ item.stock }}" class="form-control" value="1" name="quantite"  aria-describedby="button-addon1">
                                             </div>
                                         </form>
 {# #}                                    {% endif %}
 {# #}                                {% endif %}
                                      <div class="col-2 align-content-end">
-                                    {% if article.liste_envie is defined %}
-                                         {%if  article.liste_envie== 1%}
-                                             <a href="/client/envie/add?id_article={{ article.id_article }}" style="text-decoration: none">💛</a>
+                                    {% if item.liste_envie is defined %}
+                                         {%if  item.liste_envie== 1%}
+                                             <a href="/client/envie/add?id_article={{ item.id_equipement }}" style="text-decoration: none">💛</a>
                                          {% else %}
-                                             <a href="/client/envie/add?id_article={{ article.id_article }}" style="text-decoration: none">🤍</a>
+                                             <a href="/client/envie/add?id_article={{ item.id_equipement }}" style="text-decoration: none">🤍</a>
                                          {% endif %}
                                     {% endif %}
                                      </div>
                                 </div>
                             </div>
                             <div class="card-footer">
-                            {% if article.stock is defined and article.stock != None %}
-                                 {% if article.stock > 0 %}
-                                    <small class="text-muted">Stock restant : {{ article.stock }}</small>
+                            {% if item.stock is defined and item.stock != None %}
+                                 {% if item.stock > 0 %}
+                                    <small class="text-muted">Stock restant : {{ item.stock }}</small>
                                  {% else %}
                                     <small class="text-muted">article  momentanément indisponible</small>
                                  {% endif %}
-                                {% if article.nb_declinaison is defined and article.nb_declinaison != None %}
-                                    ({{ article.nb_declinaison }} d.)
+                                {% if item.nb_declinaison is defined and item.nb_declinaison != None %}
+                                    ({{ item.nb_declinaison }} d.)
                                 {% endif %}
                                 <br>
                             {% endif %}
-                            {% if article.nb_notes is defined %}
-                                {% if article.nb_notes > 0 %}
-                                 <a  href="/client/article/details?id_article={{ article.id_article }}" >
-                                    <span style="color: #3A7734"> note : {{  "{:,.1f}".format(article.moy_notes) }}({{ article.nb_notes }})</span>
+                            {% if item.nb_notes is defined %}
+                                {% if item.nb_notes > 0 %}
+                                 <a  href="/client/article/details?id_article={{ item.id_equipement }}" >
+                                    <span style="color: #3A7734"> note : {{  "{:,.1f}".format(item.moy_notes) }}({{ item.nb_notes }})</span>
                                  </a>
                                 {% endif %}
                             {% endif %}
-                            {% if article.nb_avis is defined %}
-                                {% if article.nb_avis > 0 %}
-                                 <a href="/client/article/details?id_article={{ article.id_article }}" >
-                                    <span style="color: #3A7734">({{ article.nb_avis }} avis)</span>
+                            {% if item.nb_avis is defined %}
+                                {% if item.nb_avis > 0 %}
+                                 <a href="/client/article/details?id_article={{ item.id_equipement }}" >
+                                    <span style="color: #3A7734">({{ item.nb_avis }} avis)</span>
                                  </a>
                                 {% endif %}
                             {% endif %}
@@ -92,4 +92,22 @@
         </div>
     </div>
 {#    {{ articles | pprint }}#}
+
+<hr>
+
+<h2>Ces produits et d'autres seront rangés dans ces différentes catégories et sports : </h2>
+
+<h3> - Sports</h3>
+{% for sport in sports %}
+    <p>
+        <a href="#">{{ sport.libelle_sport }}</a>
+    </p>
+{% endfor %}
+
+<h3>Sports eux mêmes rangés dans :</h3>
+{% for categorie in categories %}
+    <p>
+        <a href="#">{{ categorie.libelle_categorie_sport }}</a>
+    </p>
+{% endfor %}
 {% endblock %}
