@@ -40,10 +40,10 @@ CREATE TABLE TAILLE(
 
 CREATE TABLE EQUIPEMENT(
     id_equipement INT AUTO_INCREMENT,
-    libelle_equipement VARCHAR(255),
-    prix_equipement DECIMAL(63, 2),
-    description_equipement VARCHAR(1023),
-    image_equipement VARCHAR(255),
+    libelle_equipement VARCHAR(10000),
+    prix_equipement INT,
+    description_equipement VARCHAR(1000),
+    image_equipement VARCHAR(1000),
     taille_equipement INT,
     marque_equipement INT,
     sport_equipement INT,
@@ -57,38 +57,18 @@ CREATE TABLE EQUIPEMENT(
     CONSTRAINT fk_equipement_morphologie FOREIGN KEY (morphologie_equipement) REFERENCES MORPHOLOGIE(id_morphologie)
 );
 
-INSERT INTO COULEUR (libelle_couleur) VALUES(
-    ("Rouge")
-);
+LOAD DATA LOCAL INFILE 'COULEUR.csv' INTO TABLE COULEUR FIELDS TERMINATED BY ',';
 
-INSERT INTO TAILLE (libelle_taille) VALUES(
-    ("XS")
-);
+LOAD DATA LOCAL INFILE 'TAILLE.csv' INTO TABLE TAILLE FIELDS TERMINATED BY ',';
 
-INSERT INTO MORPHOLOGIE(libelle_morphologie) VALUES(
-    ("Unisexe")
-);
+LOAD DATA LOCAL INFILE 'MORPHOLOGIE.csv' INTO TABLE MORPHOLOGIE FIELDS TERMINATED BY ',';
 
-INSERT INTO CATEGORIE_SPORT(libelle_categorie_sport) VALUES(
-    ("Sport de combat")
-);
+LOAD DATA LOCAL INFILE 'CATEGORIE.csv' INTO TABLE CATEGORIE_SPORT FIELDS TERMINATED BY ',';
 
-INSERT INTO MARQUE(libelle_marque) VALUES("Metal");
+LOAD DATA LOCAL INFILE 'MARQUE.csv' INTO TABLE MARQUE FIELDS TERMINATED BY ',';
 
+LOAD DATA LOCAL INFILE 'SPORT.csv' INTO TABLE SPORT FIELDS TERMINATED BY ',';
 
-INSERT INTO SPORT(libelle_sport) VALUES(
-    ("Boxe")
-);
+LOAD DATA LOCAL INFILE 'EQUIPEMENT.csv' INTO TABLE EQUIPEMENT FIELDS TERMINATED BY ',';
 
-INSERT INTO EQUIPEMENT(id_equipement, libelle_equipement, prix_equipement, description_equipement, image_equipement, taille_equipement, marque_equipement, sport_equipement, couleur_equipement, morphologie_equipement) VALUES (
-    1, 
-    "Gant de boxe", 
-    30.3, 
-    "Gant pour la boxe", 
-    "gant.jpg", 
-    1,   -- This is the value for taille_equipement
-    1,   -- This is the value for marque_equipement
-    1,   -- This is the value for sport_equipement
-    1,   -- This is the value for couleur_equipement
-    1    -- This is the value for morphologie_equipement
-);
+SELECT libelle_equipement FROM EQUIPEMENT;
