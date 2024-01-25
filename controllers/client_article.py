@@ -14,11 +14,11 @@ def client_article_show():                                 # remplace client_ind
     mycursor = get_db().cursor()
     id_client = session['id_user']
 
-    sql = '''   selection des articles   '''
+    sql = ''' select * from equipement '''
     list_param = []
     condition_and = ""
     # utilisation du filtre
-    sql3=''' prise en compte des commentaires et des notes dans le SQL    '''
+    sql3=''' select * from marque '''
     articles =[]
 
 
@@ -29,7 +29,7 @@ def client_article_show():                                 # remplace client_ind
     articles_panier = []
 
     if len(articles_panier) >= 1:
-        sql = ''' calcul du prix total du panier '''
+        sql = '''  select * from equipement '''
         prix_total = None
     else:
         prix_total = None
