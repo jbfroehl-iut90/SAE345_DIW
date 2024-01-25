@@ -16,11 +16,10 @@ def client_article_show():                                 # remplace client_ind
 
     sql = ''' select * from equipement '''
     list_param = []
-    condition_and = ""
+    condition_and = " where "
     # utilisation du filtre
-    sql3=''' select * from marque '''
+    sql3=''' select * from categorie_sport '''
     articles =[]
-
 
     # pour le filtre
     types_article = []
