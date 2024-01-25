@@ -50,9 +50,7 @@ def fct_fixtures_load():
     '''
     mycursor.execute(sql)
     sql=''' 
-     INSERT INTO CATEGORIE_SPORT(libelle_categorie_sport) VALUES(
-     ("Sport de combat")
-     );
+    LOAD DATA LOCAL INFILE '../CATEGORIE.csv' INTO TABLE CATEGORIE_SPORT FIELDS TERMINATED BY ',';
     '''
     mycursor.execute(sql)
 
@@ -68,9 +66,7 @@ def fct_fixtures_load():
     '''
     mycursor.execute(sql)
     sql = ''' 
-INSERT INTO SPORT(libelle_sport) VALUES(
-    ("Boxe")
-);
+    LOAD DATA LOCAL INFILE '../SPORT.csv' INTO TABLE SPORT FIELDS TERMINATED BY ',';
      '''
     mycursor.execute(sql)
 
@@ -83,9 +79,7 @@ INSERT INTO SPORT(libelle_sport) VALUES(
      '''
     mycursor.execute(sql)
     sql = ''' 
-INSERT INTO COULEUR (libelle_couleur) VALUES(
-    ("Rouge")
-);
+    LOAD DATA LOCAL INFILE '../COULEUR.csv' INTO TABLE COULEUR FIELDS TERMINATED BY ',';
          '''
     mycursor.execute(sql)
 
@@ -98,9 +92,7 @@ INSERT INTO COULEUR (libelle_couleur) VALUES(
      '''
     mycursor.execute(sql)
     sql = ''' 
-    INSERT INTO MORPHOLOGIE(libelle_morphologie) VALUES(
-    ("Unisexe")
-);
+    LOAD DATA LOCAL INFILE '../MORPHOLOGIE.csv' INTO TABLE MORPHOLOGIE FIELDS TERMINATED BY ',';
                  '''
     mycursor.execute(sql)
 
@@ -113,7 +105,7 @@ INSERT INTO COULEUR (libelle_couleur) VALUES(
          '''
     mycursor.execute(sql)
     sql = ''' 
-    INSERT INTO MARQUE(libelle_marque) VALUES("Metal");
+    LOAD DATA LOCAL INFILE '../MARQUE.csv' INTO TABLE MARQUE FIELDS TERMINATED BY ',';
          '''
     mycursor.execute(sql)
 
@@ -127,19 +119,17 @@ INSERT INTO COULEUR (libelle_couleur) VALUES(
          '''
     mycursor.execute(sql)
     sql = '''
-    INSERT INTO TAILLE (libelle_taille) VALUES(
-    ("XS")
-);
+    LOAD DATA LOCAL INFILE '../TAILLE.csv' INTO TABLE TAILLE FIELDS TERMINATED BY ',';
           '''
     mycursor.execute(sql)
      
     sql = '''
     CREATE TABLE EQUIPEMENT(
     id_equipement INT AUTO_INCREMENT,
-    libelle_equipement VARCHAR(255),
-    prix_equipement DECIMAL(63, 2),
-    description_equipement VARCHAR(1023),
-    image_equipement VARCHAR(255),
+    libelle_equipement VARCHAR(10000),
+    prix_equipement INT,
+    description_equipement VARCHAR(1000),
+    image_equipement VARCHAR(1000),
     taille_equipement INT,
     marque_equipement INT,
     sport_equipement INT,
@@ -151,23 +141,12 @@ INSERT INTO COULEUR (libelle_couleur) VALUES(
     CONSTRAINT fk_equipement_sport FOREIGN KEY (sport_equipement) REFERENCES SPORT(id_sport),
     CONSTRAINT fk_equipement_couleur FOREIGN KEY (couleur_equipement) REFERENCES COULEUR(id_couleur),
     CONSTRAINT fk_equipement_morphologie FOREIGN KEY (morphologie_equipement) REFERENCES MORPHOLOGIE(id_morphologie)
-); 
+);
           '''
     mycursor.execute(sql)
     
     sql = '''
-     INSERT INTO EQUIPEMENT(id_equipement, libelle_equipement, prix_equipement, description_equipement, image_equipement, taille_equipement, marque_equipement, sport_equipement, couleur_equipement, morphologie_equipement) VALUES (
-    1, 
-    "Gant de boxe", 
-    30.3, 
-    "Gant pour la boxe", 
-    "gant.jpg", 
-    1,
-    1,
-    1,
-    1,
-    1
-);
+    LOAD DATA LOCAL INFILE '../EQUIPEMENT.csv' INTO TABLE EQUIPEMENT FIELDS TERMINATED BY ',';
      '''
     
     mycursor.execute(sql)
