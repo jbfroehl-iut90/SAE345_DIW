@@ -92,15 +92,5 @@
         </div>
     </div>
 {#    {{ articles | pprint }}#}
-
-<hr>
-
-<h2>Ces produits et d'autres seront rangés dans ces différentes catégories et sports : </h2>
-
-<h3>Sports eux mêmes rangés dans :</h3>
-{% for categorie in categories %}
-    <p>
-        <a href="#">{{ categorie.libelle_categorie_sport }}</a>
-    </p>
 {% endfor %}
 {% endblock %}
