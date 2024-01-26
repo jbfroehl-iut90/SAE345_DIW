@@ -22,26 +22,18 @@ def client_article_show():                                 # remplace client_ind
 
     # utilisation du filtre
     sql3=''' select * from CATEGORIE_SPORT '''
-    # articles =[]
     mycursor.execute(sql3)
     categories = mycursor.fetchall()
 
+
     # pour le filtre
-    types_article = []
+    sql2 =  ''' select * from SPORT'''
+    mycursor.execute(sql2)
+    sports = mycursor.fetchall()
+
 
 
     articles_panier = []
-
-    # Nos types de sport
-
-    sqleu =  ''' select * from SPORT '''
-    mycursor.execute(sqleu)
-    sports = mycursor.fetchall()
-
-    sqleu2 = ''' select * from CATEGORIE_SPORT '''
-    mycursor.execute(sqleu2)
-    categories_sport = mycursor.fetchall()
-    print(categories_sport)
 
     if len(articles_panier) >= 1:
         sql = '''  select * from EQUIPEMENT'''
@@ -52,5 +44,5 @@ def client_article_show():                                 # remplace client_ind
                            , articles=articles
                            , articles_panier=articles_panier
                            #, prix_total=prix_total
-                           , items_filtre=types_article, sports=sports, categories=categories_sport
+                           , items_filtre=sports, categories=categories
                            )
