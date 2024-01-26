@@ -6,25 +6,16 @@
    {% if items_filtre is defined %}
     <div class="form-group">
         <h4>Types articles</h4>
-        <!-- Même prncipe mais avec une liste déroulante -->
-        <ul>
-            <li class="deroulant">Nos disciplines
-                <button class="dropbtn"></button>
-                <label for="check1" class="menuDeroulant"></label>
-                <ul class="sous">
-                    {% for item_filtre in items_filtre %}
-                    <li>
-                        <input type="checkbox" name="filter_types" value="{{ item_filtre.id_type_article }}"
-                               {% set id_item = item_filtre.id_type_article | string %}
-                               {% if session['filter_types'] %}
-                               {{ ' checked ' if (id_item in session['filter_types']) else '' }}
-                               {% endif %}
-                        >  {{ item_filtre.libelle_sport }}
-                    </li>
-                    {% endfor %}
-                </ul>
-            </li>
-        </ul>
+        {% for item_filtre in items_filtre %}
+                        <input type="checkbox" name="filter_types" value="{{ item_filtre.id_categorie_sport }}"
+                           {% set id_item = item_filtre.id_categorie_sport | string %}
+                           {% if session['filter_types'] %}
+                           {{ ' checked ' if (id_item in session['filter_types']) else '' }}
+               {% endif %}
+{#                https://stackoverflow.com/questions/58433775/how-to-access-the-value-of-each-checkbox-in-a-table-with-flask#}
+            >  {{ item_filtre.libelle_categorie_sport }}
+            <br/>
+        {% endfor %}
     </div>
     {% endif %}
 

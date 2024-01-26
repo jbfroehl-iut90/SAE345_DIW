@@ -27,9 +27,6 @@ def client_article_show():                                 # remplace client_ind
 
 
     # pour le filtre
-    sql2 =  ''' select * from SPORT'''
-    mycursor.execute(sql2)
-    sports = mycursor.fetchall()
 
 
 
@@ -44,5 +41,5 @@ def client_article_show():                                 # remplace client_ind
                            , articles=articles
                            , articles_panier=articles_panier
                            #, prix_total=prix_total
-                           , items_filtre=sports, categories=categories
+                           , items_filtre=categories
                            )
