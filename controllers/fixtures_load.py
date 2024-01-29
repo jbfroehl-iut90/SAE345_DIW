@@ -11,7 +11,7 @@ fixtures_load = Blueprint('fixtures_load', __name__,
 @fixtures_load.route('/base/init')
 def fct_fixtures_load():
     mycursor = get_db().cursor()
-    sql=''' DROP TABLE IF EXISTS EQUIPEMENT, COULEUR, MORPHOLOGIE, TAILLE, MARQUE, CATEGORIE_SPORT, UTILISATEUR; '''
+    sql=''' DROP TABLE IF EXISTS EQUIPEMENT, CATEGORIE_SPORT, COULEUR, MORPHOLOGIE, MARQUE, TAILLE, UTILISATEUR; '''
     mycursor.execute(sql)
 
     sql='''
@@ -85,7 +85,7 @@ def fct_fixtures_load():
     ('Jaune'),
     ('Gris'),
     ('Marron'),
-    ('Orange')
+    ('Orange'),
     ('Kaki');
          '''
     mycursor.execute(sql)
