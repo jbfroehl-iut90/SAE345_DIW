@@ -13,7 +13,7 @@
          </h2>
         <div class="card-body">
         {%  if article.image is not none %}
-            <img class="card-img-top rounded mx-auto d-block"  style="width:100px;height:100px"  src="{{ url_for('static', filename = 'images/')}}{{ article.image }}"  alt="image  de {{ article.nom }}" >
+            <img class="card-img-top rounded mx-auto d-block"  style="width:100px;height:100px"  src="{{ url_for('static', filename = 'images/')}}{{ article.image_equipement }}"  alt="image  de {{ article.nom }}" >
         {% else %} <img class="card-img-top rounded mx-auto d-block"   style="width:100px;height:100px"   src="{{ url_for('static', filename='images/no_photo.jpeg')}}"  alt="image  de {{ article.nom }}" >
         {% endif %}
 
@@ -23,7 +23,7 @@
         {% endif %}
 
         </div>
-        <div class="card-footer text-left"><h6>Description : {{ article.description }}</h6></div>
+        <div class="card-footer text-left"><h6>Description : {{ article.description_equipement }}</h6></div>
     </div>
 
     <hr>  <!-- les notes -->
