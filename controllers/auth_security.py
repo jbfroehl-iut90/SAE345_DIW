@@ -4,6 +4,8 @@
 from flask import Blueprint
 from flask import Flask, request, render_template, redirect, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
+import hashlib
+
 
 from connexion_db import get_db
 
@@ -25,7 +27,7 @@ def auth_login_post():
     retour = mycursor.execute(sql, (login))
     user = mycursor.fetchone()
     if user:
-        mdp_ok = check_password_hash(user['password'], password)
+        mdp_ok = hashlib.sha256(password.encode()).hexdigest()
         if not mdp_ok:
             flash(u'Vérifier votre mot de passe et essayer encore.', 'alert-warning')
             return redirect('/login')
