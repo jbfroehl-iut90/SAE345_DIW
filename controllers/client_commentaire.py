@@ -14,22 +14,32 @@ client_commentaire = Blueprint('client_commentaire', __name__,
 @client_commentaire.route('/client/article/details', methods=['GET'])
 def client_article_details():
     mycursor = get_db().cursor()
-    id_article =  request.args.get('id_equipement', None)
+    try:
+        id_article = int(request.args.get('id_article'))
+    except (TypeError, ValueError):
+        abort(400, "Invalid or missing id_equipement parameter")
+
     id_client = session['id_user']
 
     ## partie 4
     # client_historique_add(id_article, id_client)
 
-    sql = ''' SELECT * FROM EQUIPEMENT;
-    '''
-    #mycursor.execute(sql, id_article)
-    mycursor.execute(sql)
+    sql = ''' SELECT * FROM EQUIPEMENT WHERE id_equipement=%s;''' 
+    
+    mycursor.execute(sql, id_article)
     article = mycursor.fetchone()
+
     commandes_articles=[]
     nb_commentaires=[]
     if article is None:
         abort(404, "pb id article")
-    # sql = '''
+        
+    sql = ''' SELECT SUM(note)/(COUNT(id_note)) as moy_note, COUNT(id_note) as nb_note FROM NOTE WHERE id_equipement=%s;'''
+    mycursor.execute(sql, id_article)
+    note = mycursor.fetchone()
+    print('note',note)
+        
+        # sql = '''
     #
     # '''
     # mycursor.execute(sql, ( id_article))
@@ -53,7 +63,7 @@ def client_article_details():
                            , article=article
                            # , commentaires=commentaires
                            , commandes_articles=commandes_articles
-                           # , note=note
+                           , note=note
                             , nb_commentaires=nb_commentaires
                            )
 

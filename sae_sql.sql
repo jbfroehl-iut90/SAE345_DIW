@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS EQUIPEMENT, COULEUR, MORPHOLOGIE, TAILLE, MARQUE, CATEGORIE_SPORT;
+DROP TABLE IF EXISTS NOTE, EQUIPEMENT, CATEGORIE_SPORT, COULEUR, MORPHOLOGIE, MARQUE, TAILLE, UTILISATEUR; 
 
 CREATE TABLE CATEGORIE_SPORT(
     id_categorie_sport INT AUTO_INCREMENT,
@@ -159,5 +159,20 @@ INSERT INTO EQUIPEMENT (libelle_equipement, prix_equipement, description_equipem
     ( 'X  Crazyfast  Elite  LL  FG' , 270,  'chaussure  de  foot  equipé  de  crampon  silouhette  aérodynamique' , 'chaussureFoot1.avif', 26, 2, 2, 8, 4),
     ( 'Protège-dents  Venum  Predator' , 22,  'Ce  protège-dents    est  le  parfait  mix  en  confort    souplesse  et  absorption  des  chocs    afin  de  prévenir  et  réduire  les  besssures  au  niveau  de  vos  dents    lèvres  et  gencives.  Cadre  extérieur  en  caoutchouc  asborbant  les  chocs    et  intérieur  en  gel  thermo-formable  afin  de  mouler  parfaitement  votre  dentition  et  permettre  une  meilleure  respiration', 'protegeDents.webp', 5, 1, 1, 11, 4),
     ( 'Protège-dents  Venum  Predator' , 22,  'Ce  protège-dents    est  le  parfait  mix  en  confort    souplesse  et  absorption  des  chocs    afin  de  prévenir  et  réduire  les  besssures  au  niveau  de  vos  dents    lèvres  et  gencives.  Cadre  extérieur  en  caoutchouc  asborbant  les  chocs    et  intérieur  en  gel  thermo-formable  afin  de  mouler  parfaitement  votre  dentition  et  permettre  une  meilleure  respiration', 'ProtegeDentKaki.webp', 5, 1, 1, 12, 4);
+
+CREATE TABLE NOTE(
+    id_note INT AUTO_INCREMENT,
+    note INT,
+    id_equipement INT,
+    PRIMARY KEY(id_note),
+    CONSTRAINT fk_note_equipement FOREIGN KEY(id_equipement) REFERENCES EQUIPEMENT(id_equipement)
+    );
+
+    INSERT INTO NOTE (note, id_equipement) VALUES
+    (4, 1),
+    (2, 1),
+    (5, 1),
+    (3, 1),
+    (4, 1);
 
 SELECT libelle_equipement FROM EQUIPEMENT;
