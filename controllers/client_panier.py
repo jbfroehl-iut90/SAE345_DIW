@@ -13,7 +13,7 @@ client_panier = Blueprint('client_panier', __name__,
 def client_panier_add():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    id_article = request.form.get('id_article')
+    id_article = request.form.get('id_equipement')
     quantite = request.form.get('quantite')
     # ---------
     #id_declinaison_article=request.form.get('id_declinaison_article',None)
@@ -51,9 +51,10 @@ def client_panier_delete():
     # ---------
     # partie 2 : on supprime une déclinaison de l'article
     # id_declinaison_article = request.form.get('id_declinaison_article', None)
-
-    sql = ''' selection de la ligne du panier pour l'article et l'utilisateur connecté'''
     article_panier=[]
+    sql = ''' SELECT libelle_equipement, prix_equipement FROM equipement WHERE id_equipement = %s '''
+    mycursor.execute(sql, id_article)
+    article_panier = mycursor.fetchone()
 
     if not(article_panier is None) and article_panier['quantite'] > 1:
         sql = ''' mise à jour de la quantité dans le panier => -1 article '''

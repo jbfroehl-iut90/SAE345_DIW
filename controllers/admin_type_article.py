@@ -61,11 +61,3 @@ def valid_edit_type_article():
     get_db().commit()
     flash(u'type article modifié, id: ' + id_type_article + " libelle : " + libelle, 'alert-success')
     return redirect('/admin/type-article/show')
-
-
-
-
-
-
-
-
