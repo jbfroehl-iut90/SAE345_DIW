@@ -11,7 +11,7 @@ fixtures_load = Blueprint('fixtures_load', __name__,
 @fixtures_load.route('/base/init')
 def fct_fixtures_load():
     mycursor = get_db().cursor()
-    sql=''' DROP TABLE IF EXISTS ligne_commande, commande, etat, ligne_panier, note, equipement, categorie_sport, couleur, morphologie, marque, taille, utilisateur;  '''
+    sql=''' DROP TABLE IF EXISTS declinaison, ligne_commande, commande, etat, ligne_panier, note, equipement, categorie_sport, couleur, morphologie, marque, taille, utilisateur;  '''
     mycursor.execute(sql)
 
     sql='''
@@ -329,7 +329,7 @@ CREATE TABLE note(
     CREATE TABLE ligne_commande(
     commande_id INT,
     equipement_id INT,
-    prix_unitaire DECIMAL(10,2),
+    prix DECIMAL(10,2),
     quantite INT,
     PRIMARY KEY(commande_id, equipement_id),
     CONSTRAINT fk_ligne_commande_commande FOREIGN KEY (commande_id) REFERENCES commande(id_commande),
@@ -337,6 +337,45 @@ CREATE TABLE note(
 );
             '''
     mycursor.execute(sql)
+
+    sql = '''
+    CREATE TABLE declinaison(
+    id_declinaison INT AUTO_INCREMENT,
+    couleur_declinaison INT,
+    taille_declinaison INT,
+    stock INT,
+    id_equipement INT,
+    PRIMARY KEY(id_declinaison),
+    CONSTRAINT fk_declinaison_equipement FOREIGN KEY (id_equipement) REFERENCES equipement(id_equipement),
+    CONSTRAINT fk_declinaison_taille FOREIGN KEY (taille_declinaison) REFERENCES taille(id_taille),
+    CONSTRAINT fk_declinaison_couleur FOREIGN KEY (couleur_declinaison) REFERENCES couleur(id_couleur)
+);
+            '''
+    mycursor.execute(sql)
+
+    sql = '''
+    INSERT INTO declinaison (couleur_declinaison, taille_declinaison, stock, id_equipement) VALUES
+    (1, 1, 10, 1),
+    (1, 2, 10, 1),
+    (1, 3, 10, 1),
+    (1, 4, 10, 1),
+    (1, 5, 10, 1),
+    (1, 6, 10, 1),
+    (1, 7, 10, 1),
+    (1, 8, 10, 1),
+    (1, 9, 10, 1),
+    (1, 10, 10, 1),
+    (1, 11, 10, 1),
+    (1, 12, 10, 1),
+    (1, 13, 10, 1),
+    (1, 14, 10, 1),
+    (1, 15, 10, 1),
+    (1, 16, 10, 1),
+    (1, 17, 10, 1),
+    (1, 18, 10, 1);
+    '''
+    mycursor.execute(sql)
+
 
 
     get_db().commit()
