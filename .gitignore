@@ -1,2 +1,2 @@
 *.env 
-*connexion_db.py
+connexion_db.py
