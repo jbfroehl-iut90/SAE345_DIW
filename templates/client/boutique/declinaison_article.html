@@ -6,6 +6,7 @@
         <div class="row align-self-right">
         <div class="card col-4 mt-4 p-1">
                             <div class="card-body border-dark rounded p-1">
+                                <p>{{ article }}</p>
                                 <a href="/client/article/details?id_article={{ article.id_article }}" >
                                 <h2 class="card-title">
                                     <span style="color: #0b2e13">{{ article.nom }}</span><br>
@@ -22,25 +23,26 @@
         </div>
 
             <ul>
+                <p>[={{ declinaisons }}</p>
                 {% for item_declinaison in declinaisons  %}
                     <li>
-                    {% if item_declinaison.id_couleur is defined and  item_declinaison.id_couleur > 1 %}
-                        couleur : <stong style="color:{{ item_declinaison.code_couleur }}">{{ item_declinaison.libelle_couleur }}</stong>
+                    {% if item_declinaison.couleur_declinaison is defined and item_declinaison.couleur_declinaison > 1 %}
+                        couleur : <stong style="color:green">{{ item_declinaison.couleur_declinaison }}</stong>
                     {% endif %}
-                    {% if item_declinaison.id_taille is defined and  item_declinaison.id_taille > 1 %}
-                      - taille : <span> {{ item_declinaison.libelle_taille }}</span>
+                    {% if item_declinaison.taille_declinaison is defined %}
+                      - taille : <span> {{ item_declinaison.taille_declinaison }}</span>
                     {% endif %}
                     {% if item_declinaison.stock is defined and item_declinaison.stock != None %}
                         {% if item_declinaison.stock > 0 %}
                             <form  action="/client/panier/add"  method="post" class="col-2">
-                                 <input type="radio" name="id_declinaison_article" value="{{ item_declinaison.id_declinaison_article }}" required>
+                                 <input type="radio" name="id_declinaison_article" value="{{ item_declinaison.id_declinaison }}" required>
                                     <small class="text-muted">Stock restant : {{ item_declinaison.stock }}</small>
                                  <div class="input-group">
                                     <button class="btn  btn-success"  id="button-addon1">
                                             <i class="bi bi-cart"></i>
                                         <i class="fas fa-shopping-cart"></i>Ajouter
                                     </button>
-                                        <input type="number" id="input-{{ item_declinaison.id_declinaison_article }}" step="1" min="0" max="{{ item_declinaison.stock }}" class="form-control col-2" value="1" name="quantite"  aria-describedby="button-addon1">
+                                        <input type="number" id="input-{{ item_declinaison.id_declinaison }}" step="1" min="0" max="{{ item_declinaison.stock }}" class="form-control col-2" value="1" name="quantite"  aria-describedby="button-addon1">
                                  </div>
                             </form>
                        {% else %}
