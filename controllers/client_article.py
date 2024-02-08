@@ -31,7 +31,7 @@ def client_article_show():                                 # remplace client_ind
 
     if filter_word:
         conditions.append("libelle_equipement LIKE %s")
-        params.append(f'"%{filter_word}%"')
+        params.append(("%" + filter_word + "%"))
         
     if filter_prix_min:
         conditions.append("prix_equipement >= %s")
