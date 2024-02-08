@@ -1,69 +1,143 @@
-DROP TABLE IF EXISTS note, equipement, categorie_sport, couleur, morphologie, marque, taille, utilisateur; 
 
+DROP TABLE IF EXISTS declinaison, ligne_commande, commande, etat, ligne_panier, note, equipement, categorie_sport, couleur, morphologie, marque, taille, utilisateur;  
+    
+
+    
+CREATE TABLE UTILISATEUR (
+  id_utilisateur INT AUTO_INCREMENT,
+  login varchar(255),
+  email varchar(255),
+  password varchar(255),
+  role varchar(255),
+  nom varchar(255),
+  est_actif tinyint(1),
+  PRIMARY KEY (id_utilisateur)
+);  
+    
+    
+     
+INSERT INTO UTILISATEUR(id_utilisateur,login,email,password,role,nom,est_actif) VALUES
+    (NULL,'admin','admin@admin.fr',
+    'sha256$dPL3oH9ug1wjJqva$2b341da75a4257607c841eb0dbbacb76e780f4015f0499bb1a164de2a893fdbf',
+    'ROLE_admin','admin','1'),
+    (2,'client','client@client.fr',
+    'sha256$1GAmexw1DkXqlTKK$31d359e9adeea1154f24491edaa55000ee248f290b49b7420ced542c1bf4cf7d',
+    'ROLE_client','client','1'),
+    (3,'client2','client2@client2.fr',
+    'sha256$MjhdGuDELhI82lKY$2161be4a68a9f236a27781a7f981a531d11fdc50e4112d912a7754de2dfa0422',
+    'ROLE_client','client2','1');
+    
+    
+
+     
 CREATE TABLE categorie_sport(
     id_categorie_sport INT AUTO_INCREMENT,
     libelle_categorie_sport VARCHAR(255),
     PRIMARY KEY(id_categorie_sport)
-);
+    );
+    
+    
+    
+     
+INSERT INTO categorie_sport (libelle_categorie_sport) VALUES
+        ('Sport de combat'),
+        ('Sport collectif'),
+        ('Sport de raquettes'),
+        ('Sport d endurance'),
+        ('Sport aquatique'),
+        ('Cyclisme'),
+        ('Renforcement Musculaire');
+    
+    
+    
+
 
 CREATE TABLE couleur(
     id_couleur INT AUTO_INCREMENT,
     libelle_couleur VARCHAR(255),
+    couleur_anglais VARCHAR(255),
     PRIMARY KEY(id_couleur)
 );
+     
+    
+INSERT INTO couleur(libelle_couleur, couleur_anglais) VALUES
+    ('Rouge', 'red'),
+    ('Bleu', 'blue'),
+    ('Vert', 'green'),
+    ('Violet', 'violet'),
+    ('Noir', 'black'),
+    ('Blanc', 'white'),
+    ('Rose', 'pink'),
+    ('Jaune', 'yellow'),
+    ('Gris', 'grey'),
+    ('Marron', 'brown'),
+    ('Orange', 'orange'),
+    ('Kaki', 'khaki');
+         
+    
 
+      
 CREATE TABLE morphologie(
     id_morphologie INT AUTO_INCREMENT,
     libelle_morphologie VARCHAR(255),
     PRIMARY KEY(id_morphologie)
 );
+     
+    
+      
+INSERT INTO morphologie (libelle_morphologie) VALUES
+    ('Homme'),
+    ('Femme'),
+    ('Enfant'),
+    ('Unisexe');
+                 
+    
 
+      
 CREATE TABLE marque(
     id_marque INT AUTO_INCREMENT,
     libelle_marque VARCHAR(255),
     PRIMARY KEY(id_marque)
 );
+         
+    
+      
+INSERT INTO marque (libelle_marque) VALUES
+    ('Venum'),
+    ('Adidas'),
+    ('Nike'),
+    ('Kipsta'),
+    ('Puma'),
+    ('Asics'),
+    ('Le coq sportif'),
+    ('The North Face'),
+    ('Metal'),
+    ('Jordan'),
+    ('Kempa'),
+    ('Power Shot'),
+    ('Nabaiji'),
+    ('cressi_sub'),
+    ('salomon'),
+    ('Kemi'),
+    ('Domyos'),
+    ('Fit & Rack'),
+    ('Decathlon'),
+    ('canyon'),
+    ('Bmc'),
+    ('electra');
+         
+    
 
-CREATE TABLE taille(
+
+      
+    CREATE TABLE taille(
     id_taille INT AUTO_INCREMENT,
     libelle_taille VARCHAR(255),
     PRIMARY KEY(id_taille)
 );
-
-CREATE TABLE equipement(
-    id_equipement INT AUTO_INCREMENT,
-    libelle_equipement VARCHAR(10000),
-    prix_equipement INT,
-    description_equipement VARCHAR(1000),
-    image_equipement VARCHAR(1000),
-    taille_equipement_id INT,
-    marque_equipement_id INT,
-    sport_equipement_id INT,
-    couleur_equipement_id INT,
-    morphologie_equipement_id INT,
-    stock INT,
-    PRIMARY KEY(id_equipement),
-    CONSTRAINT fk_equipement_taille FOREIGN KEY (taille_equipement_id) REFERENCES taille(id_taille),
-    CONSTRAINT fk_equipement_marque FOREIGN KEY (marque_equipement_id) REFERENCES marque(id_marque),
-    CONSTRAINT fk_equipement_sport FOREIGN KEY (sport_equipement_id) REFERENCES categorie_sport(id_categorie_sport),
-    CONSTRAINT fk_equipement_couleur FOREIGN KEY (couleur_equipement_id) REFERENCES couleur(id_couleur),
-    CONSTRAINT fk_equipement_morphologie FOREIGN KEY (morphologie_equipement_id) REFERENCES morphologie(id_morphologie)
-);
-
-INSERT INTO couleur(libelle_couleur) VALUES
-    ('Rouge'),
-    ('Bleu'),
-    ('Vert'),
-    ('Violet'),
-    ('Noir'),
-    ('Blanc'),
-    ('Rose'),
-    ('Jaune'),
-    ('Gris'),
-    ('Marron'),
-    ('Orange'),
-    ('Kaki');
-
+         
+    
+     
     INSERT INTO taille (libelle_taille) VALUES
     ('XS'),
     ('S'),
@@ -97,48 +171,35 @@ INSERT INTO couleur(libelle_couleur) VALUES
     ('10(m)'),
     ('55(kg)'),
     ('20(kg)');
+          
+    
+     
+     
+    CREATE TABLE equipement(
+    id_equipement INT AUTO_INCREMENT,
+    libelle_equipement VARCHAR(10000),
+    prix_equipement INT,
+    description_equipement VARCHAR(1000),
+    image_equipement VARCHAR(1000),
+    taille_equipement_id INT,
+    marque_equipement_id INT,
+    sport_equipement_id INT,
+    couleur_equipement_id INT,
+    morphologie_equipement_id INT,
+    stock INT,
+    PRIMARY KEY(id_equipement),
+    CONSTRAINT fk_equipement_taille FOREIGN KEY (taille_equipement_id) REFERENCES taille(id_taille),
+    CONSTRAINT fk_equipement_marque FOREIGN KEY (marque_equipement_id) REFERENCES marque(id_marque),
+    CONSTRAINT fk_equipement_sport FOREIGN KEY (sport_equipement_id) REFERENCES categorie_sport(id_categorie_sport),
+    CONSTRAINT fk_equipement_couleur FOREIGN KEY (couleur_equipement_id) REFERENCES couleur(id_couleur),
+    CONSTRAINT fk_equipement_morphologie FOREIGN KEY (morphologie_equipement_id) REFERENCES morphologie(id_morphologie)
+);
+          
+    
 
-INSERT INTO morphologie (libelle_morphologie) VALUES
-    ('Homme'),
-    ('Femme'),
-    ('Enfant'),
-    ('Unisexe');
-
-INSERT INTO categorie_sport (libelle_categorie_sport) VALUES
-        ('Sport de combat'),
-        ('Sport collectif'),
-        ('Sport de raquettes'),
-        ('Sport d endurance'),
-        ('Sport aquatique'),
-        ('Cyclisme'),
-        ('Renforcement Musculaire')
-    ;
-
-INSERT INTO marque (libelle_marque) VALUES
-    ('Venum'),
-    ('Adidas'),
-    ('Nike'),
-    ('Kipsta'),
-    ('Puma'),
-    ('Asics'),
-    ('Le coq sportif'),
-    ('The North Face'),
-    ('Metal'),
-    ('Jordan'),
-    ('Kempa'),
-    ('Power Shot'),
-    ('Nabaiji'),
-    ('cressi_sub'),
-    ('salomon'),
-    ('Kemi'),
-    ('Domyos'),
-    ('Fit & Rack'),
-    ('Decathlon'),
-    ('canyon'),
-    ('Bmc'),
-    ('electra');
-
-INSERT INTO equipement (libelle_equipement, prix_equipement, description_equipement, image_equipement, taille_equipement_id, marque_equipement_id, sport_equipement_id, couleur_equipement_id, morphologie_equipement_id, stock) VALUES
+    
+     
+    INSERT INTO equipement (libelle_equipement, prix_equipement, description_equipement, image_equipement, taille_equipement_id, marque_equipement_id, sport_equipement_id, couleur_equipement_id, morphologie_equipement_id, stock) VALUES
     ( 'Gants  de  MMA  Venum  Impact  2.0' , 80,  'Ces  gants  en  cuir  Skintex  sont  ergonomiques    confortables  et  de  haute  qualité.  La  mousse  triple  densite  permet  de  garder  votre  main  à  l  abris  des  chocs.  Forme  incurvée  permettant  au  gant  de  parfaitement  épouser  la  forme  de  votre  main.  Le  système  de  fermeture  fournit  un  meilleur  serrage  et  la  possibilité  de  fermer  avec  une  seule  main.' , 'gantsMMA.webp', 4, 1, 1, 5, 4, 10),
     ( 'Gants  de  boxe  Venum  Elite' , 90,  'Gants  pour  Boxe  Anglaise    Kick  Boxing  et  Muay  Thai.  Doté  d  une  mousse  à  quadruple  densité    ces  gants  sont  designés  pour  absorber  au  mieux  les  impacts  lors  des  frappes.  Les  coutures  renforcées  et  les  panneaux  en  maille  combinés  à  leur  forme  ergonomique  vous  apporteront  un  ajustement  confortable  et  vous  aurez  l  impression  de  ne  faire  qu  un  avec  le  gant.' , 'gantsBoxe.webp', 4, 1, 1, 1, 4, 8),
     ( 'Kimono  JJB  Venum  Elite  4.0' , 200,  'Ce  Kimono  est  fabriqué  en  coton  Pearl  Wave  450  g/m²  et  est  renforcé  sur  tous  les  points  de  tension  pour  une  plus  grande  durabilité.  Le  col  en  mousse  EVA  rigide  résistera  aux  prises  de  vos  adversaires  et  à  vos  ruptures  de  prise  les  plus  puissantes.  Confortable  et  robuste    il  est  conçu  pour  résister  à  l  usure  des  séances  d  entraînement  intenses.  Le  pantalon  est  fabriqué  en  tissu  Ripstop  285  g/m²  et  est  renforcé  aux  chevilles    aux  genoux  et  à  l  entrejambe.  Les  coutures  renforcées  aux  poignets  assurent  une  plus  grande  longévité' , 'kimonoJJB.webp', 3, 1, 3, 2, 1, 8),
@@ -161,19 +222,186 @@ INSERT INTO equipement (libelle_equipement, prix_equipement, description_equipem
     ( 'Protège-dents  Venum  Predator' , 22,  'Ce  protège-dents    est  le  parfait  mix  en  confort    souplesse  et  absorption  des  chocs    afin  de  prévenir  et  réduire  les  besssures  au  niveau  de  vos  dents    lèvres  et  gencives.  Cadre  extérieur  en  caoutchouc  asborbant  les  chocs    et  intérieur  en  gel  thermo-formable  afin  de  mouler  parfaitement  votre  dentition  et  permettre  une  meilleure  respiration', 'protegeDents.webp', 5, 1, 1, 11, 4, 2),
     ( 'Protège-dents  Venum  Predator' , 22,  'Ce  protège-dents    est  le  parfait  mix  en  confort    souplesse  et  absorption  des  chocs    afin  de  prévenir  et  réduire  les  besssures  au  niveau  de  vos  dents    lèvres  et  gencives.  Cadre  extérieur  en  caoutchouc  asborbant  les  chocs    et  intérieur  en  gel  thermo-formable  afin  de  mouler  parfaitement  votre  dentition  et  permettre  une  meilleure  respiration', 'ProtegeDentKaki.webp', 5, 1, 1, 12, 4, 14);
     
+     
+    
+    
+    
+    
 CREATE TABLE note(
     id_note INT AUTO_INCREMENT,
     note INT,
     id_equipement INT,
     PRIMARY KEY(id_note),
-    CONSTRAINT fk_note_equipement FOREIGN KEY(id_equipement) REFERENCES EQUIPEMENT(id_equipement)
-    );
+    CONSTRAINT fk_note_equipement FOREIGN KEY(id_equipement) REFERENCES EQUIPEMENT(id_equipement));
+    
+    
+    
+    
+    INSERT INTO note (note, id_equipement) VALUES 
+    (4, 1),
+    (2, 1),
+    (5, 1),
+    (3, 1),
+    (4, 1),
+    (5, 1),
+    (4, 2),
+    (2, 2),
+    (5, 2),
+    (3, 2),
+    (4, 3),
+    (5, 3),
+    (4, 3),
+    (4, 3),
+    (1, 4),
+    (2, 4),
+    (3, 4),
+    (1, 4),
+    (4, 5),
+    (5, 5),
+    (2, 5),
+    (1, 5),
+    (4, 6),
+    (5, 6),
+    (2, 6),
+    (1, 6);
+    
+    
+    
+     
+    CREATE TABLE ligne_panier(
+    id_ligne_panier INT AUTO_INCREMENT,
+    quantite INT,
+    prix_unitaire DECIMAL(10,2),
+    id_equipement INT,
+    id_utilisateur INT,
+    PRIMARY KEY(id_ligne_panier),
+    CONSTRAINT fk_ligne_panier_equipement FOREIGN KEY (id_equipement) REFERENCES equipement(id_equipement),
+    CONSTRAINT fk_ligne_panier_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur)
+); 
+            
+    
 
-INSERT INTO note (note, id_equipement) VALUES
-(4, 1),
-(2, 1),
-(5, 1),
-(3, 1),
-(4, 1);
+     
+    CREATE TABLE etat(
+    id_etat INT AUTO_INCREMENT,
+    libelle_etat VARCHAR(255),
+    PRIMARY KEY(id_etat)
+);
+            
+    
 
-SELECT libelle_equipement FROM equipement;
+     
+    INSERT INTO etat (libelle_etat) VALUES
+    ('En cours de traitement'),
+    ('Expédié'),
+    ('Validé');
+    
+    
+
+     
+    CREATE TABLE commande(
+    id_commande INT AUTO_INCREMENT,
+    date_achat DATE,
+    etat_id INT NOT NULL,
+    id_utilisateur INT,
+    PRIMARY KEY(id_commande),
+    CONSTRAINT fk_commande_etat FOREIGN KEY (etat_id) REFERENCES etat(id_etat),
+    CONSTRAINT fk_commande_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur)
+);
+            
+    
+
+     
+    CREATE TABLE ligne_commande(
+    commande_id INT,
+    equipement_id INT,
+    prix DECIMAL(10,2),
+    quantite INT,
+    PRIMARY KEY(commande_id, equipement_id),
+    CONSTRAINT fk_ligne_commande_commande FOREIGN KEY (commande_id) REFERENCES commande(id_commande),
+    CONSTRAINT fk_ligne_commande_equipement FOREIGN KEY (equipement_id) REFERENCES equipement(id_equipement)
+);
+            
+    
+
+     
+    CREATE TABLE declinaison(
+    id_declinaison INT AUTO_INCREMENT,
+    couleur_declinaison INT,
+    taille_declinaison INT,
+    stock INT,
+    id_equipement INT,
+    PRIMARY KEY(id_declinaison),
+    CONSTRAINT fk_declinaison_equipement FOREIGN KEY (id_equipement) REFERENCES equipement(id_equipement),
+    CONSTRAINT fk_declinaison_taille FOREIGN KEY (taille_declinaison) REFERENCES taille(id_taille),
+    CONSTRAINT fk_declinaison_couleur FOREIGN KEY (couleur_declinaison) REFERENCES couleur(id_couleur)
+);
+            
+    
+
+     
+    INSERT INTO declinaison (couleur_declinaison, taille_declinaison, stock, id_equipement) VALUES
+    (1, 1, 10, 1),
+    (1, 2, 10, 1),
+    (1, 3, 10, 1),
+    (1, 4, 10, 2),
+    (1, 5, 10, 2),
+    (1, 6, 10, 2),
+    (1, 7, 10, 3),
+    (1, 8, 10, 3),
+    (1, 9, 10, 3),
+    (1, 10, 10, 4),
+    (1, 11, 10, 4),
+    (1, 12, 10, 4),
+    (1, 13, 10, 5),
+    (1, 14, 10, 5),
+    (1, 15, 10, 5),
+    (1, 16, 10, 6),
+    (1, 17, 10, 6),
+    (1, 18, 10, 6),
+    (3, 1, 10, 7),
+    (2, 1, 10, 7),
+    (1, 1, 10, 7),
+    (3, 2, 10, 8),
+    (2, 2, 10, 8),
+    (1, 2, 10, 8),
+    (3, 3, 10, 9),
+    (2, 3, 10, 9),
+    (1, 3, 10, 9),
+    (3, 4, 10, 10),
+    (2, 4, 10, 10),
+    (1, 4, 10, 10),
+    (3, 5, 10, 11),
+    (2, 5, 10, 11),
+    (1, 5, 10, 11),
+    (3, 6, 10, 12),
+    (2, 6, 10, 12),
+    (1, 6, 10, 12),
+    (3, 7, 10, 13),
+    (2, 7, 10, 13),
+    (1, 7, 10, 13),
+    (3, 8, 10, 14),
+    (2, 8, 10, 14),
+    (1, 8, 10, 14),
+    (3, 9, 10, 15),
+    (2, 9, 10, 15),
+    (1, 9, 10, 15),
+    (3, 10, 10, 16),
+    (2, 10, 10, 16),
+    (1, 10, 10, 16),
+    (3, 11, 10, 17),
+    (2, 11, 10, 17),
+    (1, 11, 10, 17),
+    (3, 12, 10, 18),
+    (2, 12, 10, 18),
+    (1, 12, 10, 18),
+    (3, 13, 10, 19),
+    (2, 13, 10, 19),
+    (1, 13, 10, 19),
+    (3, 14, 10, 20),
+    (2, 14, 10, 20),
+    (1, 14, 10, 20),
+    (3, 15, 10, 21),
+    (2, 15, 10, 21),
+    (1, 15, 10, 21);
+    

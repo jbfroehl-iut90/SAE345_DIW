@@ -17,12 +17,11 @@ def client_panier_add():
     quantite = request.form.get('quantite')
     # ---------
     id_declinaison_article=request.form.get('id_declinaison',None)
-    id_declinaison_article = 1
 
 # ajout dans le panier d'une déclinaison d'un article (si 1 declinaison : immédiat sinon => vu pour faire un choix
     sql = ''' SELECT * FROM declinaison 
     LEFT JOIN couleur ON couleur.id_couleur = declinaison.couleur_declinaison 
-    LEFT JOIN taille ON taille.id_taille = declinaison.taille_declinaison WHERE id_equipement = %s '''
+    LEFT JOIN taille ON taille.id_taille = declinaison.taille_declinaison WHERE id_equipement = %s;'''
     print("id_article",id_article)
     mycursor.execute(sql, id_article)
     declinaisons = mycursor.fetchall()
