@@ -8,18 +8,50 @@ from connexion_db import get_db
 client_article = Blueprint('client_article', __name__,
                         template_folder='templates')
 
+@client_article.route('/client/article/filtre/del', methods=['POST'])
+def client_article_filtre_del():
+    session.pop('filtre', None)
+    return redirect('/client/article/show')
+
 @client_article.route('/client/index')
-@client_article.route('/client/article/show')              # remplace /client
+@client_article.route('/client/article/show', methods=['GET', 'POST'])              # remplace /client
 def client_article_show():                                 # remplace client_index
     mycursor = get_db().cursor()
     id_client = session['id_user']
 
     sql = ''' select * from equipement '''
-    list_param = []
-    condition_and = " where "
-    mycursor.execute(sql)
-    articles = mycursor.fetchall()
+    
+    filter_word = request.form.get('filter_word', None)
+    filter_prix_min = request.form.get('filter_prix_min', None)
+    filter_prix_max = request.form.get('filter_prix_max', None)
+    filter_types = request.form.getlist('filter_types', None)
+    
+    conditions = []
+    params = []
 
+    if filter_word:
+        conditions.append("libelle_equipement LIKE %s")
+        params.append(f'%{filter_word}%')
+        
+    if filter_prix_min is not None:
+        conditions.append("prix_equipement >= %s")
+        params.append(filter_prix_min)
+        
+    if filter_prix_max is not None:
+        conditions.append("prix_equipement <= %s")
+        params.append(filter_prix_max)
+        
+    if filter_types:
+        placeholders = ','.join(['%s'] * len(filter_types))
+        conditions.append(f"sport_equipement_id IN ({placeholders})")
+        params.extend(filter_types)
+        
+    if conditions:
+        sql += " WHERE " + " AND ".join(conditions)
+
+    mycursor.execute(sql, tuple(params))
+    articles = mycursor.fetchall()
+        
     # utilisation du filtre
     sql3=''' select * from categorie_sport '''
     mycursor.execute(sql3)
