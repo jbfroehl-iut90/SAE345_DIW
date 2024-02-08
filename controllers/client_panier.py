@@ -26,21 +26,40 @@ def client_panier_add():
     mycursor.execute(sql, id_article)
     declinaisons = mycursor.fetchall()
 
+
+
+    # Regroupement par couleur (ex pour la couleur rouge : 3 tailles différentes)
+    declinaisons2 = {}
+    for declinaison in declinaisons:
+        if declinaison['libelle_couleur'] in declinaisons2:
+            declinaisons2[declinaison['libelle_couleur']].append(declinaison)
+        else:
+            declinaisons2[declinaison['libelle_couleur']] = [declinaison]
+
     if len(declinaisons) == 1:
         id_declinaison_article = declinaisons[0]['id_declinaison']
     elif len(declinaisons) == 0:
         abort("pb nb de declinaison")
     else:
-        sql = ''' SELECT * FROM equipement WHERE id_equipement = %s '''
+        sql = ''' SELECT * FROM equipement WHERE id_equipement = %s'''
         mycursor.execute(sql, (id_article))
         article = mycursor.fetchone()
         return render_template('client/boutique/declinaison_article.html'
                                    , declinaisons=declinaisons
                                    , quantite=quantite
-                                   , article=article)
+                                   , article=article, declinaisons2=declinaisons2)
 
 # ajout dans le panier d'un article
+    sql = ''' SELECT * FROM ligne_panier WHERE id_equipement = %s AND id_utilisateur = %s '''
+    mycursor.execute(sql, (id_article, id_client))
+    ligne_panier = mycursor.fetchone()
+    print(id_article, id_client, quantite, id_declinaison_article)
 
+    if ligne_panier is None:
+        sql = ''' INSERT INTO ligne_panier (id_equipement, id_utilisateur, quantite, id_declinaison) VALUES (%s, %s, %s, %s) '''
+    else:
+        sql = ''' UPDATE ligne_panier SET quantite = quantite + %s WHERE id_equipement = %s AND id_utilisateur = %s '''
+    get_db().commit()
 
     return redirect('/client/article/show')
 
