@@ -1,56 +1,56 @@
-DROP TABLE IF EXISTS NOTE, EQUIPEMENT, CATEGORIE_SPORT, COULEUR, MORPHOLOGIE, MARQUE, TAILLE, UTILISATEUR; 
+DROP TABLE IF EXISTS note, equipement, categorie_sport, couleur, morphologie, marque, taille, utilisateur; 
 
-CREATE TABLE CATEGORIE_SPORT(
+CREATE TABLE categorie_sport(
     id_categorie_sport INT AUTO_INCREMENT,
     libelle_categorie_sport VARCHAR(255),
     PRIMARY KEY(id_categorie_sport)
 );
 
-CREATE TABLE COULEUR(
+CREATE TABLE couleur(
     id_couleur INT AUTO_INCREMENT,
     libelle_couleur VARCHAR(255),
     PRIMARY KEY(id_couleur)
 );
 
-CREATE TABLE MORPHOLOGIE(
+CREATE TABLE morphologie(
     id_morphologie INT AUTO_INCREMENT,
     libelle_morphologie VARCHAR(255),
     PRIMARY KEY(id_morphologie)
 );
 
-CREATE TABLE MARQUE(
+CREATE TABLE marque(
     id_marque INT AUTO_INCREMENT,
     libelle_marque VARCHAR(255),
     PRIMARY KEY(id_marque)
 );
 
-CREATE TABLE TAILLE(
+CREATE TABLE taille(
     id_taille INT AUTO_INCREMENT,
     libelle_taille VARCHAR(255),
     PRIMARY KEY(id_taille)
 );
 
-CREATE TABLE EQUIPEMENT(
+CREATE TABLE equipement(
     id_equipement INT AUTO_INCREMENT,
     libelle_equipement VARCHAR(10000),
     prix_equipement INT,
     description_equipement VARCHAR(1000),
     image_equipement VARCHAR(1000),
-    taille_equipement INT,
-    marque_equipement INT,
-    sport_equipement INT,
-    couleur_equipement INT,
-    morphologie_equipement INT,
+    taille_equipement_id INT,
+    marque_equipement_id INT,
+    sport_equipement_id INT,
+    couleur_equipement_id INT,
+    morphologie_equipement_id INT,
     stock INT,
     PRIMARY KEY(id_equipement),
-    CONSTRAINT fk_equipement_taille FOREIGN KEY (taille_equipement) REFERENCES TAILLE(id_taille),
-    CONSTRAINT fk_equipement_marque FOREIGN KEY (marque_equipement) REFERENCES MARQUE(id_marque),
-    CONSTRAINT fk_equipement_sport FOREIGN KEY (sport_equipement) REFERENCES CATEGORIE_SPORT(id_categorie_sport),
-    CONSTRAINT fk_equipement_couleur FOREIGN KEY (couleur_equipement) REFERENCES COULEUR(id_couleur),
-    CONSTRAINT fk_equipement_morphologie FOREIGN KEY (morphologie_equipement) REFERENCES MORPHOLOGIE(id_morphologie)
+    CONSTRAINT fk_equipement_taille FOREIGN KEY (taille_equipement_id) REFERENCES taille(id_taille),
+    CONSTRAINT fk_equipement_marque FOREIGN KEY (marque_equipement_id) REFERENCES marque(id_marque),
+    CONSTRAINT fk_equipement_sport FOREIGN KEY (sport_equipement_id) REFERENCES categorie_sport(id_categorie_sport),
+    CONSTRAINT fk_equipement_couleur FOREIGN KEY (couleur_equipement_id) REFERENCES couleur(id_couleur),
+    CONSTRAINT fk_equipement_morphologie FOREIGN KEY (morphologie_equipement_id) REFERENCES morphologie(id_morphologie)
 );
 
-INSERT INTO COULEUR(libelle_couleur) VALUES
+INSERT INTO couleur(libelle_couleur) VALUES
     ('Rouge'),
     ('Bleu'),
     ('Vert'),
@@ -64,7 +64,7 @@ INSERT INTO COULEUR(libelle_couleur) VALUES
     ('Orange'),
     ('Kaki');
 
-    INSERT INTO TAILLE (libelle_taille) VALUES
+    INSERT INTO taille (libelle_taille) VALUES
     ('XS'),
     ('S'),
     ('M'),
@@ -98,13 +98,13 @@ INSERT INTO COULEUR(libelle_couleur) VALUES
     ('55(kg)'),
     ('20(kg)');
 
-INSERT INTO MORPHOLOGIE (libelle_morphologie) VALUES
+INSERT INTO morphologie (libelle_morphologie) VALUES
     ('Homme'),
     ('Femme'),
     ('Enfant'),
     ('Unisexe');
 
-INSERT INTO CATEGORIE_SPORT (libelle_categorie_sport) VALUES
+INSERT INTO categorie_sport (libelle_categorie_sport) VALUES
         ('Sport de combat'),
         ('Sport collectif'),
         ('Sport de raquettes'),
@@ -114,7 +114,7 @@ INSERT INTO CATEGORIE_SPORT (libelle_categorie_sport) VALUES
         ('Renforcement Musculaire')
     ;
 
-INSERT INTO MARQUE (libelle_marque) VALUES
+INSERT INTO marque (libelle_marque) VALUES
     ('Venum'),
     ('Adidas'),
     ('Nike'),
@@ -138,7 +138,7 @@ INSERT INTO MARQUE (libelle_marque) VALUES
     ('Bmc'),
     ('electra');
 
-INSERT INTO EQUIPEMENT (libelle_equipement, prix_equipement, description_equipement, image_equipement, taille_equipement, marque_equipement, sport_equipement, couleur_equipement, morphologie_equipement, stock) VALUES
+INSERT INTO equipement (libelle_equipement, prix_equipement, description_equipement, image_equipement, taille_equipement_id, marque_equipement_id, sport_equipement_id, couleur_equipement_id, morphologie_equipement_id, stock) VALUES
     ( 'Gants  de  MMA  Venum  Impact  2.0' , 80,  'Ces  gants  en  cuir  Skintex  sont  ergonomiques    confortables  et  de  haute  qualité.  La  mousse  triple  densite  permet  de  garder  votre  main  à  l  abris  des  chocs.  Forme  incurvée  permettant  au  gant  de  parfaitement  épouser  la  forme  de  votre  main.  Le  système  de  fermeture  fournit  un  meilleur  serrage  et  la  possibilité  de  fermer  avec  une  seule  main.' , 'gantsMMA.webp', 4, 1, 1, 5, 4, 10),
     ( 'Gants  de  boxe  Venum  Elite' , 90,  'Gants  pour  Boxe  Anglaise    Kick  Boxing  et  Muay  Thai.  Doté  d  une  mousse  à  quadruple  densité    ces  gants  sont  designés  pour  absorber  au  mieux  les  impacts  lors  des  frappes.  Les  coutures  renforcées  et  les  panneaux  en  maille  combinés  à  leur  forme  ergonomique  vous  apporteront  un  ajustement  confortable  et  vous  aurez  l  impression  de  ne  faire  qu  un  avec  le  gant.' , 'gantsBoxe.webp', 4, 1, 1, 1, 4, 8),
     ( 'Kimono  JJB  Venum  Elite  4.0' , 200,  'Ce  Kimono  est  fabriqué  en  coton  Pearl  Wave  450  g/m²  et  est  renforcé  sur  tous  les  points  de  tension  pour  une  plus  grande  durabilité.  Le  col  en  mousse  EVA  rigide  résistera  aux  prises  de  vos  adversaires  et  à  vos  ruptures  de  prise  les  plus  puissantes.  Confortable  et  robuste    il  est  conçu  pour  résister  à  l  usure  des  séances  d  entraînement  intenses.  Le  pantalon  est  fabriqué  en  tissu  Ripstop  285  g/m²  et  est  renforcé  aux  chevilles    aux  genoux  et  à  l  entrejambe.  Les  coutures  renforcées  aux  poignets  assurent  une  plus  grande  longévité' , 'kimonoJJB.webp', 3, 1, 3, 2, 1, 8),
@@ -161,7 +161,7 @@ INSERT INTO EQUIPEMENT (libelle_equipement, prix_equipement, description_equipem
     ( 'Protège-dents  Venum  Predator' , 22,  'Ce  protège-dents    est  le  parfait  mix  en  confort    souplesse  et  absorption  des  chocs    afin  de  prévenir  et  réduire  les  besssures  au  niveau  de  vos  dents    lèvres  et  gencives.  Cadre  extérieur  en  caoutchouc  asborbant  les  chocs    et  intérieur  en  gel  thermo-formable  afin  de  mouler  parfaitement  votre  dentition  et  permettre  une  meilleure  respiration', 'protegeDents.webp', 5, 1, 1, 11, 4, 2),
     ( 'Protège-dents  Venum  Predator' , 22,  'Ce  protège-dents    est  le  parfait  mix  en  confort    souplesse  et  absorption  des  chocs    afin  de  prévenir  et  réduire  les  besssures  au  niveau  de  vos  dents    lèvres  et  gencives.  Cadre  extérieur  en  caoutchouc  asborbant  les  chocs    et  intérieur  en  gel  thermo-formable  afin  de  mouler  parfaitement  votre  dentition  et  permettre  une  meilleure  respiration', 'ProtegeDentKaki.webp', 5, 1, 1, 12, 4, 14);
     
-CREATE TABLE NOTE(
+CREATE TABLE note(
     id_note INT AUTO_INCREMENT,
     note INT,
     id_equipement INT,
@@ -169,11 +169,11 @@ CREATE TABLE NOTE(
     CONSTRAINT fk_note_equipement FOREIGN KEY(id_equipement) REFERENCES EQUIPEMENT(id_equipement)
     );
 
-INSERT INTO NOTE (note, id_equipement) VALUES
+INSERT INTO note (note, id_equipement) VALUES
 (4, 1),
 (2, 1),
 (5, 1),
 (3, 1),
 (4, 1);
 
-SELECT libelle_equipement FROM EQUIPEMENT;
+SELECT libelle_equipement FROM equipement;
