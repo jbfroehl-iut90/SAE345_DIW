@@ -60,7 +60,11 @@ def client_article_show():                                 # remplace client_ind
 
     # pour le filtre
 
-
+    session['filter_word'] = filter_word
+    session['filter_prix_min'] = filter_prix_min
+    session['filter_prix_max'] = filter_prix_max
+    session['filter_types'] = filter_types
+    session['filtre'] = True
 
     articles_panier = []
 
