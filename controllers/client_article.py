@@ -14,14 +14,14 @@ def client_article_show():                                 # remplace client_ind
     mycursor = get_db().cursor()
     id_client = session['id_user']
 
-    sql = ''' select * from EQUIPEMENT '''
+    sql = ''' select * from equipement '''
     list_param = []
     condition_and = " where "
     mycursor.execute(sql)
     articles = mycursor.fetchall()
 
     # utilisation du filtre
-    sql3=''' select * from CATEGORIE_SPORT '''
+    sql3=''' select * from categorie_sport '''
     mycursor.execute(sql3)
     categories = mycursor.fetchall()
 
@@ -33,7 +33,7 @@ def client_article_show():                                 # remplace client_ind
     articles_panier = []
 
     if len(articles_panier) >= 1:
-        sql = '''  select * from EQUIPEMENT'''
+        sql = '''  select * from equipement'''
         prix_total = None
     else:
         prix_total = None
