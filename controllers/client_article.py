@@ -21,23 +21,23 @@ def client_article_show():                                 # remplace client_ind
 
     sql = ''' select * from equipement '''
     
-    filter_word = request.form.get('filter_word', None)
-    filter_prix_min = request.form.get('filter_prix_min', None)
-    filter_prix_max = request.form.get('filter_prix_max', None)
-    filter_types = request.form.getlist('filter_types', None)
+    filter_word = request.form.get('filter_word')
+    filter_prix_min = request.form.get('filter_prix_min')
+    filter_prix_max = request.form.get('filter_prix_max')
+    filter_types = request.form.getlist('filter_types')
     
     conditions = []
     params = []
 
     if filter_word:
         conditions.append("libelle_equipement LIKE %s")
-        params.append(f'%{filter_word}%')
+        params.append(f'"%{filter_word}%"')
         
-    if filter_prix_min is not None:
+    if filter_prix_min:
         conditions.append("prix_equipement >= %s")
         params.append(filter_prix_min)
         
-    if filter_prix_max is not None:
+    if filter_prix_max:
         conditions.append("prix_equipement <= %s")
         params.append(filter_prix_max)
         
