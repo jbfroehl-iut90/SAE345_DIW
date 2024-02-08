@@ -24,7 +24,7 @@ def client_article_details():
     ## partie 4
     # client_historique_add(id_article, id_client)
 
-    sql = ''' SELECT * FROM EQUIPEMENT WHERE id_equipement=%s;''' 
+    sql = ''' SELECT * FROM equipement WHERE id_equipement=%s;''' 
     
     mycursor.execute(sql, id_article)
     article = mycursor.fetchone()
@@ -34,7 +34,7 @@ def client_article_details():
     if article is None:
         abort(404, "pb id article")
         
-    sql = ''' SELECT ROUND(SUM(note)/(COUNT(id_note)), 1) as moy_note, COUNT(id_note) as nb_note FROM NOTE WHERE id_equipement=%s;'''
+    sql = ''' SELECT ROUND(SUM(note)/(COUNT(id_note)), 1) as moy_note, COUNT(id_note) as nb_note FROM note WHERE id_equipement=%s;'''
     mycursor.execute(sql, id_article)
     note = mycursor.fetchone()
     print('note',note)
