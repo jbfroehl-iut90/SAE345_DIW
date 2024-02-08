@@ -1,4 +1,4 @@
-<form method="post"  action="/client/panier/filtre"  style="display: inline-block">
+<form method="post"  action="/client/article/show"  style="display: inline-block">
     <div class="form-group">
         <input name="filter_word"  type="text" placeholder="Recherche" size="10" class="form-control"
                value="{% if session['filter_word'] %}{{ session['filter_word'] }}{% endif %}"  >
@@ -30,7 +30,7 @@
     <button type="submit" class="btn btn-primary" style="display: inline-block;">Filtrer</button>
 </form>
 {% if session['filter_word'] or session['filter_prix_max'] or session['filter_prix_min'] or session['filter_types']%}
-<form  action="/client/panier/filtre/suppr"  style="display: inline-block; margin: 5px;"  method="post" >
+<form  action="/client/article/filtre/del"  style="display: inline-block; margin: 5px;"  method="post" >
 <button class="btn btn-primary" > Supprimer filtre </button>
 </form>
 {% endif %}
