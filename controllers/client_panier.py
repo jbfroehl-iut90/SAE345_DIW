@@ -20,7 +20,7 @@ def client_panier_add():
     id_declinaison_article = 1
 
 # ajout dans le panier d'une déclinaison d'un article (si 1 declinaison : immédiat sinon => vu pour faire un choix
-    sql = ''' SELECT * FROM declinaison_article WHERE id_article = %s '''
+    sql = ''' SELECT * FROM ligne_panier WHERE id_article = %s AND id_client = %s '''
     mycursor.execute(sql, (id_article))
     declinaisons = mycursor.fetchall()
     if len(declinaisons) == 1:

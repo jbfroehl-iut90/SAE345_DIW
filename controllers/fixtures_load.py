@@ -11,7 +11,7 @@ fixtures_load = Blueprint('fixtures_load', __name__,
 @fixtures_load.route('/base/init')
 def fct_fixtures_load():
     mycursor = get_db().cursor()
-    sql=''' DROP TABLE IF EXISTS note, equipement, categorie_sport, couleur, morphologie, marque, taille, utilisateur;  '''
+    sql=''' DROP TABLE IF EXISTS ligne_commande, commande, etat, ligne_panier, note, equipement, categorie_sport, couleur, morphologie, marque, taille, utilisateur;  '''
     mycursor.execute(sql)
 
     sql='''
@@ -210,6 +210,7 @@ def fct_fixtures_load():
 );
           '''
     mycursor.execute(sql)
+
     
     sql = '''
     INSERT INTO equipement (libelle_equipement, prix_equipement, description_equipement, image_equipement, taille_equipement_id, marque_equipement_id, sport_equipement_id, couleur_equipement_id, morphologie_equipement_id, stock) VALUES
@@ -280,5 +281,63 @@ CREATE TABLE note(
     '''
     mycursor.execute(sql)
     
+    sql = '''
+    CREATE TABLE ligne_panier(
+    id_ligne_panier INT AUTO_INCREMENT,
+    quantite INT,
+    prix_unitaire DECIMAL(10,2),
+    id_equipement INT,
+    id_utilisateur INT,
+    PRIMARY KEY(id_ligne_panier),
+    CONSTRAINT fk_ligne_panier_equipement FOREIGN KEY (id_equipement) REFERENCES equipement(id_equipement),
+    CONSTRAINT fk_ligne_panier_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur)
+); 
+            '''
+    mycursor.execute(sql)
+
+    sql = '''
+    CREATE TABLE etat(
+    id_etat INT AUTO_INCREMENT,
+    libelle_etat VARCHAR(255),
+    PRIMARY KEY(id_etat)
+);
+            '''
+    mycursor.execute(sql)
+
+    sql = '''
+    INSERT INTO etat (libelle_etat) VALUES
+    ('En cours de traitement'),
+    ('Expédié'),
+    ('Validé');
+    '''
+    mycursor.execute(sql)
+
+    sql = '''
+    CREATE TABLE commande(
+    id_commande INT AUTO_INCREMENT,
+    date_achat DATE,
+    etat_id INT NOT NULL,
+    id_utilisateur INT,
+    PRIMARY KEY(id_commande),
+    CONSTRAINT fk_commande_etat FOREIGN KEY (etat_id) REFERENCES etat(id_etat),
+    CONSTRAINT fk_commande_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur)
+);
+            '''
+    mycursor.execute(sql)
+
+    sql = '''
+    CREATE TABLE ligne_commande(
+    commande_id INT,
+    equipement_id INT,
+    prix_unitaire DECIMAL(10,2),
+    quantite INT,
+    PRIMARY KEY(commande_id, equipement_id),
+    CONSTRAINT fk_ligne_commande_commande FOREIGN KEY (commande_id) REFERENCES commande(id_commande),
+    CONSTRAINT fk_ligne_commande_equipement FOREIGN KEY (equipement_id) REFERENCES equipement(id_equipement)
+);
+            '''
+    mycursor.execute(sql)
+
+
     get_db().commit()
     return redirect('/')
