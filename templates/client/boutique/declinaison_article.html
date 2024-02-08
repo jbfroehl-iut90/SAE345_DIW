@@ -1,6 +1,12 @@
 {% extends "client/layout_client.html" %}
 {% block body %}
    <h5>choix "déclinaison" d'articles pour {{ article.libelle_equipement }}</h5>
+    
+    {% for item in declinaisons2 %}
+        {% for value in declinaisons2[item] %}
+            {{ value }}
+        {% endfor %}
+    {% endfor %}
 
     <div class="container">
         <div class="row align-self-right">
