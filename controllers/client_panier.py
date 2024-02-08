@@ -24,7 +24,7 @@ def client_panier_add():
     mycursor.execute(sql, (id_article))
     declinaisons = mycursor.fetchall()
     if len(declinaisons) == 1:
-        id_declinaison_article = declinaisons[0]['id_declinaison_article']
+        id_declinaison_article = declinaisons[0]['id_declinaison']
     elif len(declinaisons) == 0:
         abort("pb nb de declinaison")
     else:

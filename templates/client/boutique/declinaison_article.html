@@ -6,15 +6,14 @@
         <div class="row align-self-right">
         <div class="card col-4 mt-4 p-1">
                             <div class="card-body border-dark rounded p-1">
-                                <p>{{ article }}</p>
-                                <a href="/client/article/details?id_article={{ article.id_article }}" >
+                                <a href="/client/article/details?id_article={{ article.id_equipement }}" >
                                 <h2 class="card-title">
-                                    <span style="color: #0b2e13">{{ article.nom }}</span><br>
-                                    {{ article.prix }}
+                                    <span style="color: #0b2e13">{{ article.libelle_equipement }}</span><br>
+                                    {{ article.prix_equipement }}
                                     €
                                 </h2>
-                                     {%  if article.image is not none %}
-                                        <img class="card-img-top rounded mx-auto d-block"  style="width:100px;height:100px"  src="{{ url_for('static', filename = 'images/')}}{{ article.image }}"  alt="image  de {{ article.nom }}" >
+                                     {%  if article.image_equipement is not none %}
+                                        <img class="card-img-top rounded mx-auto d-block"  style="width:100px;height:100px"  src="{{ url_for('static', filename = 'images/')}}{{ article.image_equipement }}"  alt="image  de {{ article.libelle_equipement }}" >
                                     {% else %} <img class="card-img-top rounded mx-auto d-block"   style="width:100px;height:100px"   src="{{ url_for('static', filename='images/no_photo.jpeg')}}"  alt="image  de {{ article.nom }}" >
                                     {% endif %}
                                     <hr>
@@ -23,10 +22,10 @@
         </div>
 
             <ul>
-                <p>[={{ declinaisons }}</p>
+                <p>{{ declinaisons }}</p>
                 {% for item_declinaison in declinaisons  %}
                     <li>
-                    {% if item_declinaison.couleur_declinaison is defined and item_declinaison.couleur_declinaison > 1 %}
+                    {% if item_declinaison.couleur_declinaison is defined %}
                         couleur : <stong style="color:green">{{ item_declinaison.couleur_declinaison }}</stong>
                     {% endif %}
                     {% if item_declinaison.taille_declinaison is defined %}
@@ -35,7 +34,7 @@
                     {% if item_declinaison.stock is defined and item_declinaison.stock != None %}
                         {% if item_declinaison.stock > 0 %}
                             <form  action="/client/panier/add"  method="post" class="col-2">
-                                 <input type="radio" name="id_declinaison_article" value="{{ item_declinaison.id_declinaison }}" required>
+                                 <input type="radio" name="id_declinaison" value="{{ item_declinaison.id_declinaison }}" required>
                                     <small class="text-muted">Stock restant : {{ item_declinaison.stock }}</small>
                                  <div class="input-group">
                                     <button class="btn  btn-success"  id="button-addon1">
