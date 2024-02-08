@@ -1,6 +1,6 @@
 {% extends "client/layout_client.html" %}
 {% block body %}
-   <h5>choix "déclinaison" d'articles</h5> {# {{ declinaisons | pprint }}#}
+   <h5>choix "déclinaison" d'articles pour {{ article.libelle_equipement }}</h5>
 
     <div class="container">
         <div class="row align-self-right">
@@ -22,14 +22,13 @@
         </div>
 
             <ul>
-                <p>{{ declinaisons }}</p>
                 {% for item_declinaison in declinaisons  %}
                     <li>
                     {% if item_declinaison.couleur_declinaison is defined %}
-                        couleur : <stong style="color:green">{{ item_declinaison.couleur_declinaison }}</stong>
+                        couleur : <strong style="color:{{ item_declinaison.couleur_anglais }}">{{ item_declinaison.libelle_couleur }}</strong>
                     {% endif %}
                     {% if item_declinaison.taille_declinaison is defined %}
-                      - taille : <span> {{ item_declinaison.taille_declinaison }}</span>
+                      - taille : <span> {{ item_declinaison.libelle_taille }}</span>
                     {% endif %}
                     {% if item_declinaison.stock is defined and item_declinaison.stock != None %}
                         {% if item_declinaison.stock > 0 %}
