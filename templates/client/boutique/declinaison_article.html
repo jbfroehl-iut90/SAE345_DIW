@@ -46,7 +46,7 @@
                                             <i class="bi bi-cart"></i>
                                         <i class="fas fa-shopping-cart"></i>Ajouter
                                     </button>
-                                        <input type="number" id="input-{{ item_declinaison.id_declinaison }}" step="1" min="0" max="{{ item_declinaison.stock }}" class="form-control col-2" value="1" name="quantite"  aria-describedby="button-addon1">
+                                        <input type="number" id="{{ item_declinaison.id_declinaison }}" step="1" min="0" max="{{ item_declinaison.stock }}" class="form-control col-2" value="1" name="quantite"  aria-describedby="button-addon1">
                                  </div>
                             </form>
                        {% else %}

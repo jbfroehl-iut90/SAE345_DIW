@@ -69,13 +69,25 @@ def client_article_show():                                 # remplace client_ind
     articles_panier = []
 
     if len(articles_panier) >= 1:
-        sql = '''  select * from equipement'''
-        prix_total = None
+        sql = '''  select * from ligne_panier where id_utilisateur = %s left join equipement on ligne_panier.id_article = equipement.id_equipement'''
+        mycursor.execute(sql, id_client)
+        articles_panier = mycursor.fetchall()
+
+        sql = ''' select sum(prix_equipement) as prix_total from ligne_panier where id_utilisateur = %s left join equipement on ligne_panier.id_article = equipement.id_equipement'''
+        prix_total = mycursor.fetchone()
+
     else:
-        prix_total = None
+        sql = ''' select * from ligne_panier left join equipement on ligne_panier.id_equipement = equipement.id_equipement where id_utilisateur = %s'''
+        mycursor.execute(sql, id_client)
+        articles_panier = mycursor.fetchall()
+
+        sql = ''' select sum(prix_equipement) as prix_total from ligne_panier left join equipement on ligne_panier.id_equipement = equipement.id_equipement where id_utilisateur = %s'''
+        prix_total = mycursor.fetchone()
+
+    print(articles_panier)
     return render_template('client/boutique/panier_article.html'
                            , articles=articles
                            , articles_panier=articles_panier
-                           #, prix_total=prix_total
+                           , prix_total=prix_total
                            , items_filtre=categories
                            )

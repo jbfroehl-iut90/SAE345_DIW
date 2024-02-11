@@ -293,6 +293,16 @@ CREATE TABLE note(
     mycursor.execute(sql)
 
     sql = '''
+    INSERT INTO ligne_panier (quantite, prix_unitaire, id_equipement, id_utilisateur) VALUES
+    (2, 80, 1, 2),
+    (1, 90, 2, 2),
+    (1, 200, 3, 2), 
+    (1, 40, 4, 2),
+    (1, 70, 5, 2);
+    '''
+    mycursor.execute(sql)
+
+    sql = '''
     CREATE TABLE etat(
     id_etat INT AUTO_INCREMENT,
     libelle_etat VARCHAR(255),
@@ -323,6 +333,14 @@ CREATE TABLE note(
     mycursor.execute(sql)
 
     sql = '''
+    INSERT INTO commande (date_achat, etat_id, id_utilisateur) VALUES
+    ('2022-01-01', 1, 2),
+    ('2022-01-01', 2, 2),
+    ('2022-01-01', 3, 2);
+    '''
+    mycursor.execute(sql)
+
+    sql = '''
     CREATE TABLE ligne_commande(
     commande_id INT,
     equipement_id INT,
@@ -333,6 +351,16 @@ CREATE TABLE note(
     CONSTRAINT fk_ligne_commande_equipement FOREIGN KEY (equipement_id) REFERENCES equipement(id_equipement)
 );
             '''
+    mycursor.execute(sql)
+
+    sql = '''
+    INSERT INTO ligne_commande (commande_id, equipement_id, prix, quantite) VALUES
+    (1, 1, 80, 2),
+    (2, 2, 90, 1),
+    (3, 3, 200, 1),
+    (3, 4, 40, 1),
+    (3, 5, 70, 1);
+    '''
     mycursor.execute(sql)
 
     sql = '''
