@@ -18,16 +18,22 @@ def admin_index():
 def admin_commande_show():
     mycursor = get_db().cursor()
     admin_id = session['id_user']
-    sql = '''      '''
-
+    id_commande = request.args.get('id_commande', None)
+    sql = ''' SELECT * FROM commande LEFT JOIN utilisateur ON commande.id_utilisateur = utilisateur.id_utilisateur'''
     commandes=[]
+    mycursor.execute(sql)
+    commandes = mycursor.fetchall()
 
-    articles_commande = None
+    sql = ''' SELECT * FROM ligne_commande LEFT JOIN equipement ON ligne_commande.equipement_id = equipement.id_equipement WHERE commande_id = %s'''
+    articles_commande = []
+    mycursor.execute(sql, (id_commande))
+    articles_commande = mycursor.fetchall()
+
     commande_adresses = None
     id_commande = request.args.get('id_commande', None)
     print(id_commande)
     if id_commande != None:
-        sql = '''    '''
+        sql = ''' SELECT * FROM ligne_commande WHERE id_commande = %s '''
         commande_adresses = []
     return render_template('admin/commandes/show.html'
                            , commandes=commandes

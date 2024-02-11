@@ -10,7 +10,7 @@
                 <tbody>
                         {% for ligne in articles_commande %}
                              <tr>
-                                <td>{{ ligne.nom }}
+                                <td>{{ ligne.libelle_equipement }}
                                 {% if ligne.nb_declinaisons is defined and ligne.nb_declinaisons > 1 %}
                                     <span style="color:rgba(255,197,197,0.6);"> ( {{ ligne.nb_declinaisons }} declinaisons )</span>
                                     <span style="color:#6dcea2">
@@ -27,7 +27,7 @@
                                 </td>
                                 <td>{{ ligne.quantite }}</td>
                                 <td>{{ ligne.prix }} €</td>
-                                <td>{{ ligne.prix_ligne }} €  </td>
+                                <td>{{ ligne.prix*ligne.quantite }} €  </td>
                             </tr>
                         {% endfor %}
 

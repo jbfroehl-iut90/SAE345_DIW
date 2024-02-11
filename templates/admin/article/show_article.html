@@ -29,10 +29,10 @@ articles (tableau de dictionnaires)
     {% if articles | length >= 1 %}
         {% for ligne in articles %}
            <tr>
-                  <td>{{ ligne.nom }}</td>
+                  <td>{{ ligne.libelle_equipement }}</td>
                   <td>{{ ligne.id_article }}</td>
-                  <td><span style="color: red">{{ ligne.libelle }}</span> ({{ ligne.type_article_id }})</td>
-                  <td>{#{ ligne.prix }#}  {{  "{:,.2f} €".format(ligne.prix) }}</td>
+                  <td><span style="color: red">{{ ligne.libelle_categorie_sport }}</span> ({{ ligne.sport_equipement_id }})</td>
+                  <td>{{  "{:,.2f} €".format(ligne.prix_equipement) }}</td>
                   <td>
                   {% if ligne.stock is defined %}
                      {% if ligne.stock != None  %}
@@ -71,17 +71,17 @@ articles (tableau de dictionnaires)
                          decli ND
                       {% endif %}
                   </td>
-                  <td>{{ ligne.image }}
-                        {%  if ligne.image is not none %}
-                            <img style="width:40px;height:40px"  src="{{ url_for('static', filename = 'images/' + ligne['image']) }}"  alt="image  de {{ ligne.nom }}" >
+                  <td>{{ ligne.image_equipement }}
+                        {%  if ligne.image_equipement is not none %}
+                            <img style="width:40px;height:40px"  src="{{ url_for('static', filename = 'images/' + ligne['image_equipement']) }}"  alt="image  de {{ ligne.libelle_equipement }}" >
                         {% else %}
                             <img style="width:40px;height:40px"   src="{{ url_for('static', filename='images/no_photo.jpeg')}}"  alt="pas d image" >
                         {% endif %}
                   </td>
                   <td>
-                      <a  class="btn btn-outline-danger" href="/admin/article/delete?id_article={{ ligne.id_article }}" onclick="return confirm('Are you sure?')" >supprimer</a>
-                      <a  class="btn btn-outline-warning" href="/admin/article/edit?id_article={{ ligne.id_article }}">editer</a>
-                      <a  class="btn btn-outline-warning" href="/admin/article/commentaires?id_article={{ ligne.id_article }}">commentaires</a>
+                      <a  class="btn btn-outline-danger" href="/admin/article/delete?id_article={{ ligne.id_equipement }}" onclick="return confirm('Are you sure?')" >supprimer</a>
+                      <a  class="btn btn-outline-warning" href="/admin/article/edit?id_article={{ ligne.id_equipement }}">editer</a>
+                      <a  class="btn btn-outline-warning" href="/admin/article/commentaires?id_article={{ ligne.id_equipement }}">commentaires</a>
                   </td>
            </tr>
         {% endfor %}

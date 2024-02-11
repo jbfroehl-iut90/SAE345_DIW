@@ -17,19 +17,23 @@ admin_article = Blueprint('admin_article', __name__,
 @admin_article.route('/admin/article/show')
 def show_article():
     mycursor = get_db().cursor()
-    sql = '''  requête admin_article_1
-    '''
+    sql = '''  SELECT * FROM equipement LEFT JOIN categorie_sport on equipement.sport_equipement_id = categorie_sport.id_categorie_sport'''
     mycursor.execute(sql)
-    articles = mycursor.fetchall()
-    return render_template('admin/article/show_article.html', articles=articles)
+    equipement = mycursor.fetchall()
+    return render_template('admin/article/show_article.html', articles=equipement)
 
 
 @admin_article.route('/admin/article/add', methods=['GET'])
 def add_article():
     mycursor = get_db().cursor()
 
+    sql = ''' SELECT * FROM categorie_sport'''
+    mycursor.execute(sql)
+    type_article = mycursor.fetchall()
+
+
     return render_template('admin/article/add_article.html'
-                           #,types_article=type_article,
+                           ,types_article=type_article,
                            #,couleurs=colors
                            #,tailles=tailles
                             )
@@ -52,16 +56,17 @@ def valid_add_article():
         print("erreur")
         filename=None
 
-    sql = '''  requête admin_article_2 '''
+    # Ajoute l'article nouvellement crée dans equipement
+    sql = ''' INSERT INTO equipement (libelle_equipement, image_equipement, prix_equipement, sport_equipement_id, description_equipement) VALUES (%s, %s, %s, %s, %s)'''
 
     tuple_add = (nom, filename, prix, type_article_id, description)
     print(tuple_add)
     mycursor.execute(sql, tuple_add)
     get_db().commit()
 
-    print(u'article ajouté , nom: ', nom, ' - type_article:', type_article_id, ' - prix:', prix,
+    print(u'Nouvel equipement ajouté , nom: ', nom, ' - Catégorie :', type_article_id, ' - prix:', prix,
           ' - description:', description, ' - image:', image)
-    message = u'article ajouté , nom:' + nom + '- type_article:' + type_article_id + ' - prix:' + prix + ' - description:' + description + ' - image:' + str(
+    message = u'Nouvel equipement ajouté , nom:' + nom + '- Catégorie:' + type_article_id + ' - prix:' + prix + ' - description:' + description + ' - image:' + str(
         image)
     flash(message, 'alert-success')
     return redirect('/admin/article/show')
@@ -101,14 +106,13 @@ def delete_article():
 def edit_article():
     id_article=request.args.get('id_article')
     mycursor = get_db().cursor()
-    sql = '''
-    requête admin_article_6    
+    sql = ''' SELECT * FROM equipement WHERE id_equipement = %s    
     '''
     mycursor.execute(sql, id_article)
     article = mycursor.fetchone()
     print(article)
     sql = '''
-    requête admin_article_7
+    SELECT * FROM categorie_sport
     '''
     mycursor.execute(sql)
     types_article = mycursor.fetchall()
@@ -136,11 +140,11 @@ def valid_edit_article():
     prix = request.form.get('prix', '')
     description = request.form.get('description')
     sql = '''
-       requête admin_article_8
+    SELECT image FROM equipement WHERE id_equipement = %s
        '''
     mycursor.execute(sql, id_article)
     image_nom = mycursor.fetchone()
-    image_nom = image_nom['image']
+    image_nom = image_nom['image_equipement']
     if image:
         if image_nom != "" and image_nom is not None and os.path.exists(
                 os.path.join(os.getcwd() + "/static/images/", image_nom)):
@@ -151,20 +155,15 @@ def valid_edit_article():
             image.save(os.path.join('static/images/', filename))
             image_nom = filename
 
-    sql = '''  requête admin_article_9 '''
+    # UPdate de la table equipement avec les changements effectués
+    sql = ''' UPDATE TABLE equipement SET libelle_equipement = %s, image_equipement = %s, prix_equipement = %s, sport_equipement_id = %s, description = %s WHERE id_equipement = %s'''
     mycursor.execute(sql, (nom, image_nom, prix, type_article_id, description, id_article))
-
     get_db().commit()
     if image_nom is None:
         image_nom = ''
     message = u'article modifié , nom:' + nom + '- type_article :' + type_article_id + ' - prix:' + prix  + ' - image:' + image_nom + ' - description: ' + description
     flash(message, 'alert-success')
     return redirect('/admin/article/show')
-
-
-
-
-
 
 
 @admin_article.route('/admin/article/avis/<int:id>', methods=['GET'])
