@@ -31,11 +31,19 @@ def add_article():
     mycursor.execute(sql)
     type_article = mycursor.fetchall()
 
+    sql = ''' SELECT * FROM couleur'''
+    mycursor.execute(sql)
+    colors = mycursor.fetchall()
+
+    sql = ''' SELECT * FROM taille'''
+    mycursor.execute(sql)
+    tailles = mycursor.fetchall()
+
 
     return render_template('admin/article/add_article.html'
                            ,types_article=type_article,
-                           #,couleurs=colors
-                           #,tailles=tailles
+                           couleurs=colors
+                           ,tailles=tailles
                             )
 
 
@@ -48,6 +56,10 @@ def valid_add_article():
     prix = request.form.get('prix', '')
     description = request.form.get('description', '')
     image = request.files.get('image', '')
+    couleur = request.form.get('id_couleur', '')
+    taille = request.form.get('taille_id', '')
+    print(taille)
+    stock = request.form.get('nb_stock', '')
 
     if image:
         filename = 'img_upload'+ str(int(2147483647 * random())) + '.png'
@@ -57,9 +69,9 @@ def valid_add_article():
         filename=None
 
     # Ajoute l'article nouvellement crée dans equipement
-    sql = ''' INSERT INTO equipement (libelle_equipement, image_equipement, prix_equipement, sport_equipement_id, description_equipement) VALUES (%s, %s, %s, %s, %s)'''
+    sql = '''  INSERT INTO equipement (libelle_equipement, image_equipement, prix_equipement, sport_equipement_id, description_equipement, stock) VALUES (%s, %s, %s, %s, %s, %s)'''
 
-    tuple_add = (nom, filename, prix, type_article_id, description)
+    tuple_add = (nom, filename, prix, type_article_id, description, stock)
     print(tuple_add)
     mycursor.execute(sql, tuple_add)
     get_db().commit()
@@ -76,7 +88,7 @@ def valid_add_article():
 def delete_article():
     id_article=request.args.get('id_article')
     mycursor = get_db().cursor()
-    sql = ''' requête admin_article_3 '''
+    sql = ''' SELECT * FROM equipement WHERE id_equipement = %s '''
     mycursor.execute(sql, id_article)
     nb_declinaison = mycursor.fetchone()
     if nb_declinaison['nb_declinaison'] > 0:

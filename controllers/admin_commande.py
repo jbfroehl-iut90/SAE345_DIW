@@ -34,9 +34,12 @@ def admin_commande_show():
         mycursor.execute(sql)
         articles_commande = mycursor.fetchall()
 
-    sql = ''' SELECT * FROM commande 
+    sql = ''' SELECT * FROM commande
     LEFT JOIN utilisateur ON commande.id_utilisateur = utilisateur.id_utilisateur
-    LEFT JOIN etat ON commande.etat_id = etat.id_etat'''
+    LEFT JOIN etat ON commande.etat_id = etat.id_etat 
+    LEFT JOIN (SELECT commande_id, SUM(quantite) as nb_articles FROM ligne_commande GROUP BY commande_id) as nb_articles ON commande.id_commande = nb_articles.commande_id
+    LEFT JOIN (SELECT commande_id, SUM(prix_equipement * quantite) as total_commande FROM ligne_commande LEFT JOIN equipement ON ligne_commande.equipement_id = equipement.id_equipement GROUP BY commande_id) as total_commande ON commande.id_commande = total_commande.commande_id
+    '''
     commandes=[]
     mycursor.execute(sql)
     commandes = mycursor.fetchall()
@@ -60,7 +63,7 @@ def admin_commande_valider():
     commande_id = request.form.get('id_commande', None)
     if commande_id != None:
         print(commande_id)
-        sql = '''           '''
+        sql = ''' UPDATE commande SET etat_id = 2 WHERE id_commande = %s'''
         mycursor.execute(sql, commande_id)
         get_db().commit()
     return redirect('/admin/commande/show')

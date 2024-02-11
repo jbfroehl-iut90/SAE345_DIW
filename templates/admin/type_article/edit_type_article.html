@@ -12,10 +12,10 @@
     <fieldset>
         <legend> Modifier un type d'article</legend>
         <div class="mb-3">
-        <input type="hidden" name="id_type_article" size="18" value="{{ type_article.id_type_article }}" id="id">
+        <input type="hidden" name="id_type_article" size="18" value="{{ type_article.id_categorie_sport }}" id="id">
         <label for="libelle">libellé</label><br>
 
-        <input class="form-select" type="text" name="libelle" size="18" value="{{ type_article.libelle }}" id="libelle"><br>
+        <input class="form-select" type="text" name="libelle" size="18" value="{{ type_article.libelle_categorie_sport }}" id="libelle"><br>
         </div>
         <div class="col-12">
         <button class="btn btn-primary" type="submit">Valider</button>

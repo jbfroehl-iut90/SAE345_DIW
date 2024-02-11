@@ -1,7 +1,7 @@
 {% extends 'admin/layout_admin.html' %}
 
 {% block title %}
-    <title>afficher les types d'article</title>
+<title>afficher les types d'article</title>
 {% endblock %}
 
 {% block body %}
@@ -12,29 +12,38 @@
 <table class="table">
     <thead class="thead-dark">
         <tr>
-           <th>designation</th> <th>(id_type_article)</th><th>nombre d'articles</th><th>opération</th>
+            <th>designation</th>
+            <th>(id_categorie_sport)</th>
+            <th>nombre d'articles</th>
+            <th>opération</th>
         </tr>
     </thead>
     <tbody>
-    {% if types_article | length >= 1 %}
+        {% if types_article | length >= 1 %}
         {% for ligne in types_article %}
-           <tr>
-                  <td>{{ ligne.libelle }}</td>
-                  <td>{{ ligne.id_type_article }}</td>
-                   <td><span style="color: red">{{ ligne.nbr_articles }}</span></td>
-                  <td>
-                      <a class="btn btn-outline-danger" href="/admin/type-article/edit?id_type_article={{ ligne.id_type_article }}">editer</a>&nbsp;
-                      <a class="btn btn-outline-warning" href="/admin/type-article/delete?id_type_article={{ ligne.id_type_article }}">supprimer</a>
-                  </td>
-           </tr>
+        <tr>
+            <td>{{ ligne.libelle_categorie_sport }}</td>
+            <td>{{ ligne.id_categorie_sport }}</td>
+            {% if ligne.nb_equipement == None %}
+            <td><span style="color: red">Aucun équipement</span></td>
+            {% else %}
+            <td><span style="color: rgb(0, 156, 34)">{{ ligne.nb_equipement }}</span></td>
+            {% endif %}
+            <td>
+                <a class="btn btn-outline-danger"
+                    href="/admin/type-article/edit?id_type_article={{ ligne.id_categorie_sport }}">editer</a>&nbsp;
+                <a class="btn btn-outline-warning"
+                    href="/admin/type-article/delete?id_type_article={{ ligne.id_categorie_sport }}">supprimer</a>
+            </td>
+        </tr>
         {% endfor %}
-    {% else %}
-            <tr>
-                  <td>
-                      pas de type d'article
-                  </td>
-           </tr>
-    {% endif %}
+        {% else %}
+        <tr>
+            <td>
+                pas de type d'article
+            </td>
+        </tr>
+        {% endif %}
     </tbody>
 </table>
 {% endblock %}

@@ -76,9 +76,9 @@
                             <tr id="" {% if commande.etat_id == 1 %} class="table-warning" style="font-weight: bold;"{% endif %}>
                                 <td>{{ commande.login }}</td>
                                 <td>{{ commande.date_achat.strftime('%d-%m-%Y') }}</td>
-                                <td> {{ commande.nbr_articles }} </td>
+                                <td> {{ commande.nb_articles }} </td>
                                 <td>
-                                    {{ commande.prix_total }}
+                                    {{ commande.total_commande }}
                                 </td>
                                 <td> {{ commande.libelle_etat }}</td>
                                 <td style="text-align: center;">

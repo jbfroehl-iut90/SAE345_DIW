@@ -28,8 +28,27 @@
                         {% endfor %}
                     </select>
                 </label>
+                <label for="couleur_id">Choiur une couleur :
+                    <select name="couleur_id" class="form-select">
+                        <option value="">Sélectionner une couleur</option>
+                        {% for couleur in couleurs %}
+                             <option value="{{ couleur.id_couleur }}"> {{ couleur.libelle_couleur }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label for="taille_id">Choisir une taille :
+                    <select name="taille_id" class="form-select">
+                        <option value="">Sélectionner une taille</option>
+                        {% for taille in tailles %}
+                             <option value="{{ taille.id_taille }}" > {{ taille.libelle_taille }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
                 <label for="description">description :
                     <input name="description" type="text" class="form-control" >
+                </label>
+                <label for="nb_stock">Nombre d'articles en stock :
+                    <input name="nb_stock" type="number" min="0.0" step="1.0" max="2147483647" value="0"  class="form-control" required>
                 </label>
                 <label for="submit">
                     <input name="submit" type="submit" value="Ajouter" class="btn btn-primary mt-2">
