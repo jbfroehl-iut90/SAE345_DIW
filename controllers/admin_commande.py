@@ -18,16 +18,28 @@ def admin_index():
 def admin_commande_show():
     mycursor = get_db().cursor()
     admin_id = session['id_user']
-    id_commande = request.args.get('id_commande', None)
-    sql = ''' SELECT * FROM commande LEFT JOIN utilisateur ON commande.id_utilisateur = utilisateur.id_utilisateur'''
+    try :
+        id_commande = request.args.get('id_commande', None)
+    except:
+        id_commande = None
+    print(id_commande)
+    if id_commande != None:
+        sql = ''' SELECT * FROM ligne_commande LEFT JOIN equipement ON ligne_commande.equipement_id = equipement.id_equipement WHERE commande_id = %s'''
+        articles_commande = []
+        mycursor.execute(sql, (id_commande))
+        articles_commande = mycursor.fetchall()
+    else:
+        sql = ''' SELECT * FROM ligne_commande LEFT JOIN equipement ON ligne_commande.equipement_id = equipement.id_equipement'''
+        articles_commande = []
+        mycursor.execute(sql)
+        articles_commande = mycursor.fetchall()
+
+    sql = ''' SELECT * FROM commande 
+    LEFT JOIN utilisateur ON commande.id_utilisateur = utilisateur.id_utilisateur
+    LEFT JOIN etat ON commande.etat_id = etat.id_etat'''
     commandes=[]
     mycursor.execute(sql)
     commandes = mycursor.fetchall()
-
-    sql = ''' SELECT * FROM ligne_commande LEFT JOIN equipement ON ligne_commande.equipement_id = equipement.id_equipement WHERE commande_id = %s'''
-    articles_commande = []
-    mycursor.execute(sql, (id_commande))
-    articles_commande = mycursor.fetchall()
 
     commande_adresses = None
     id_commande = request.args.get('id_commande', None)

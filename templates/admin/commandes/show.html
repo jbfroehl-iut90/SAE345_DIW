@@ -80,7 +80,7 @@
                                 <td>
                                     {{ commande.prix_total }}
                                 </td>
-                                <td> {{ commande.libelle }}</td>
+                                <td> {{ commande.libelle_etat }}</td>
                                 <td style="text-align: center;">
                                     <form action="/admin/commande/valider" style="display: inline-block;"  method="post">
                                         <input type="hidden" name="id_commande" value="{{ commande.id_commande }}">
