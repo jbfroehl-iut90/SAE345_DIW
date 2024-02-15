@@ -129,13 +129,14 @@ def client_panier_delete_line():
     id_client = session['id_user']
     id_declinaison_article = request.form.get('id_declinaison')
     id_equipment = request.form.get('id_article')
+    id_ligne_panier = request.form.get('id_ligne_panier')
 
-    sql = ''' SELECT * FROM ligne_panier WHERE id_utilisateur = %s AND id_equipement = %s '''
-    mycursor.execute(sql, (id_client, id_equipment))
+    sql = ''' SELECT * FROM ligne_panier WHERE id_utilisateur = %s AND id_ligne_panier = %s '''
+    mycursor.execute(sql, (id_client, id_ligne_panier))
     ligne_panier = mycursor.fetchone()
 
-    sql = ''' DELETE FROM ligne_panier WHERE id_utilisateur = %s AND id_equipement = %s'''
-    mycursor.execute(sql, (id_client, id_declinaison_article))
+    sql = ''' DELETE FROM ligne_panier WHERE id_utilisateur = %s AND id_ligne_panier = %s'''
+    mycursor.execute(sql, (id_client, id_ligne_panier))
 
     sql2='''  UPDATE equipement SET stock = stock + %s WHERE id_equipement = %s'''  
     # mycursor.execute(sql2, (ligne_panier['quantite'], id_declinaison_article))
