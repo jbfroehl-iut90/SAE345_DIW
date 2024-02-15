@@ -9,7 +9,7 @@ client_panier = Blueprint('client_panier', __name__,
                         template_folder='templates')
 
 
-@client_panier.route('/client/panier/add', methods=['POST'])
+@client_panier.route('/client/panier/add', methods=['GET', 'POST'])
 def client_panier_add():
     mycursor = get_db().cursor()
     id_client = session['id_user']
@@ -21,10 +21,10 @@ def client_panier_add():
 # ajout dans le panier d'une déclinaison d'un article (si 1 declinaison : immédiat sinon => vu pour faire un choix
     sql = ''' SELECT * FROM declinaison 
     LEFT JOIN couleur ON couleur.id_couleur = declinaison.couleur_declinaison 
-    LEFT JOIN taille ON taille.id_taille = declinaison.taille_declinaison WHERE id_equipement = %s;'''
-    mycursor.execute(sql, id_article)
+    LEFT JOIN taille ON taille.id_taille = declinaison.taille_declinaison
+    WHERE id_equipement = %s;'''
+    mycursor.execute(sql, (id_article, ))
     declinaisons = mycursor.fetchall()
-
 
 
     # Regroupement par couleur (ex pour la couleur rouge : 3 tailles différentes)
@@ -38,7 +38,9 @@ def client_panier_add():
     if len(declinaisons) == 1:
         id_declinaison_article = declinaisons[0]['id_declinaison']
     elif len(declinaisons) == 0:
-        abort("pb nb de declinaison")
+        sql = ''' SELECT * FROM equipement WHERE id_equipement = %s'''
+        mycursor.execute(sql, (id_article, ))
+        article = mycursor.fetchone()
     else:
         sql = ''' SELECT * FROM equipement WHERE id_equipement = %s'''
         mycursor.execute(sql, (id_article))
@@ -48,20 +50,31 @@ def client_panier_add():
                                    , quantite=quantite
                                    , article=article, declinaisons2=declinaisons2)
 
-# ajout dans le panier d'un article
-    sql = ''' SELECT * FROM ligne_panier WHERE id_equipement = %s AND id_utilisateur = %s '''
-    mycursor.execute(sql, (id_article, id_client))
-    ligne_panier = mycursor.fetchone()
+    return redirect('/client/article/show')
 
-    if ligne_panier is None:
-        sql = ''' INSERT INTO ligne_panier (id_equipement, id_utilisateur, quantite, id_declinaison) VALUES (%s, %s, %s, %s) '''
-        mycursor.execute(sql, (id_article, id_client, quantite, id_declinaison_article))
+@client_panier.route('/client/panier/add/declinaison', methods=['GET', 'POST'])
+def client_panier_add_declinaison():
+    mycursor = get_db().cursor()
+    id_client = session['id_user']
+    id_article = request.form.get('id_article')
+    quantite = request.form.get('quantite')
+    id_declinaison_article = request.form.get('item_declinaison.id_declinaison', None)
+    prix_unitaire = request.form.get('equipement.prix_equipement', None)
+
+    sql = ''' SELECT * FROM ligne_panier WHERE id_declinaison = %s AND id_utilisateur = %s '''
+    mycursor.execute(sql, (id_article, id_client))
+    article_panier = mycursor.fetchone()
+
+    if article_panier is None:
+        sql = ''' INSERT INTO ligne_panier (quantite, prix, id_declinaison, id_utilisateur) VALUES (%s, %s, %s, %s) '''
+        mycursor.execute(sql, (quantite, quantite, id_declinaison_article, id_client))
     else:
-        sql = ''' UPDATE ligne_panier SET quantite = quantite + %s WHERE id_equipement = %s AND id_utilisateur = %s '''
-        mycursor.execute(sql, (id_article, id_client, quantite, id_declinaison_article))
+        sql = ''' UPDATE ligne_panier 
+        SET quantite = quantite + %s 
+        WHERE id_declinaison = %s AND id_utilisateur = %s '''
+        mycursor.execute(sql, (quantite, id_declinaison_article, id_client))
 
     get_db().commit()
-
     return redirect('/client/article/show')
 
 @client_panier.route('/client/panier/delete', methods=['POST'])
