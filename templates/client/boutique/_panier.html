@@ -1,5 +1,5 @@
             <div class="col-7">
-            {% if articles_panier | length >= 0 %}
+            {% if articles_panier | length > 0 %}
                 <h3>Liste des articles dans mon panier</h3>
                 <table class="table table-hover table-responsive">
                     <tr>
@@ -65,6 +65,16 @@
                     {% if prix_total %}
                     Total à payer : <strong>{{ "{:,.2f} €".format(prix_total) }}</strong>
                     {% endif %}
-
+            {% else %}
+            <table class="table table-hover table-responsive">
+                <tr>
+                    <th style="width: 300px">Nom</th>
+                    <th style="width: 50px">Quantité</th>
+                    <th style="width: 50px">Prix</th>
+                    <th style="width: 100px">Sous-Total</th>
+                    <th style="width: 400px">Action</th>
+                </tr>
+                <h3 style=color:red;>Votre panier est vide</h3>
+            </table>
             {% endif %}
             </div>
