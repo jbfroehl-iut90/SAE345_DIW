@@ -39,7 +39,9 @@
                     {% if item_declinaison.stock is defined and item_declinaison.stock != None %}
                         {% if item_declinaison.stock > 0 %}
                             <form  action="/client/panier/add/declinaison"  method="post" class="col-2">
-                                 <input type="radio" name="id_declinaison" value="{{ item_declinaison.id_declinaison }}" required>
+                                 <input type="radio" name="id_radio" value="{{ item_declinaison.id_declinaison }}" required>
+                                 <input type="hidden" name="id_declinaison" value="{{ article.id_equipement }}">
+                                 <input type="hidden" name="prix" value="{{ article.prix_equipement }}">
                                     <small class="text-muted">Stock restant : {{ item_declinaison.stock }}</small>
                                  <div class="input-group">
                                     <button class="btn  btn-success" id="button-addon1">

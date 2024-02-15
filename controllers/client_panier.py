@@ -17,7 +17,6 @@ def client_panier_add():
     quantite = request.form.get('quantite')
     # ---------
     id_declinaison_article=request.form.get('id_declinaison', None)
-    print(id_declinaison_article)
 # ajout dans le panier d'une déclinaison d'un article (si 1 declinaison : immédiat sinon => vu pour faire un choix
     sql = ''' SELECT * FROM declinaison 
     LEFT JOIN couleur ON couleur.id_couleur = declinaison.couleur_declinaison 
@@ -25,7 +24,6 @@ def client_panier_add():
     WHERE id_equipement = %s;'''
     mycursor.execute(sql, (id_article, ))
     declinaisons = mycursor.fetchall()
-
 
     # Regroupement par couleur (ex pour la couleur rouge : 3 tailles différentes)
     declinaisons2 = {}
@@ -46,7 +44,10 @@ def client_panier_add():
         mycursor.execute(sql, (id_article))
         article = mycursor.fetchone()
     
-    print(declinaisons)  
+    print("declinaisons", declinaisons) 
+    print("") 
+    print("declinaisons2", declinaisons2)
+    print("")
     print( 'id_declinaison_article', id_declinaison_article)  
     return render_template('client/boutique/declinaison_article.html'
                                    , declinaisons=declinaisons
@@ -61,25 +62,24 @@ def client_panier_add_declinaison():
     id_client = session['id_user']
     id_article = request.form.get('id_article')
     quantite = request.form.get('quantite')
-    id_declinaison_article = request.form.get('item_declinaison.id_declinaison', None)
-    prix_unitaire = request.form.get('equipement.prix_equipement', None)
+    id_declinaison_article = request.form.get('id_declinaison', None)
+    prix = request.form.get('prix', None)
     
-    print("id_declinaison :" + id_declinaison_article)
-    
+    print("id_declinaison_article final", id_declinaison_article)
+    print("prix final", prix)
     sql = ''' SELECT * FROM ligne_panier WHERE id_declinaison = %s AND id_utilisateur = %s '''
     mycursor.execute(sql, (id_article, id_client))
     article_panier = mycursor.fetchone()
 
     if article_panier is None:
         sql = ''' INSERT INTO ligne_panier (quantite, prix, id_declinaison, id_utilisateur) VALUES (%s, %s, %s, %s) '''
-        mycursor.execute(sql, (quantite, quantite, id_declinaison_article, id_client))
+        mycursor.execute(sql, (quantite, prix, id_declinaison_article, id_client))
     else:
         sql = ''' UPDATE ligne_panier 
         SET quantite = quantite + %s 
         WHERE id_declinaison = %s AND id_utilisateur = %s '''
         mycursor.execute(sql, (quantite, id_declinaison_article, id_client))
 
-    print(article_panier)
     get_db().commit()
     return redirect('/client/article/show')
 
