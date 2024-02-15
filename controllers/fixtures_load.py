@@ -435,6 +435,7 @@ CREATE TABLE note(
             '''
     mycursor.execute(sql)
 
+
     
     get_db().commit()
     return redirect('/')
