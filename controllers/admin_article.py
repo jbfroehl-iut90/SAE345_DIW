@@ -88,20 +88,22 @@ def valid_add_article():
 def delete_article():
     id_article=request.args.get('id_article')
     mycursor = get_db().cursor()
-    sql = ''' SELECT * FROM equipement WHERE id_equipement = %s '''
+    # Sélectionne le nombre de déclinaisons pour un article donné 
+    sql = ''' SELECT COUNT(*) as nb_declinaison FROM declinaison WHERE id_equipement = %s'''
     mycursor.execute(sql, id_article)
     nb_declinaison = mycursor.fetchone()
+    print(nb_declinaison)
     if nb_declinaison['nb_declinaison'] > 0:
         message= u'il y a des declinaisons dans cet article : vous ne pouvez pas le supprimer'
         flash(message, 'alert-warning')
     else:
-        sql = ''' requête admin_article_4 '''
+        sql = ''' SELECT * FROM equipement WHERE id_equipement = %s '''
         mycursor.execute(sql, id_article)
         article = mycursor.fetchone()
         print(article)
-        image = article['image']
+        image = article['image_equipement']
 
-        sql = ''' requête admin_article_5  '''
+        sql = ''' DELETE FROM equipement WHERE id_equipement = %s '''
         mycursor.execute(sql, id_article)
         get_db().commit()
         if image != None:
@@ -129,16 +131,19 @@ def edit_article():
     mycursor.execute(sql)
     types_article = mycursor.fetchall()
 
-    # sql = '''
-    # requête admin_article_6
-    # '''
-    # mycursor.execute(sql, id_article)
-    # declinaisons_article = mycursor.fetchall()
+    sql = '''
+    SELECT * FROM declinaison 
+    LEFT JOIN couleur ON couleur.id_couleur = declinaison.couleur_declinaison
+    LEFT JOIN taille ON taille.id_taille = declinaison.taille_declinaison
+    WHERE id_equipement = %s
+    '''
+    mycursor.execute(sql, id_article)
+    declinaisons_article = mycursor.fetchall()
 
     return render_template('admin/article/edit_article.html'
                            ,article=article
                            ,types_article=types_article
-                         #  ,declinaisons_article=declinaisons_article
+                          ,declinaisons_article=declinaisons_article
                            )
 
 

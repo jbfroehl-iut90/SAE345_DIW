@@ -35,7 +35,7 @@ def valid_add_declinaison_article():
     stock = request.form.get('stock')
     taille = request.form.get('taille')
     couleur = request.form.get('couleur')
-    # attention au doublon
+
     get_db().commit()
     return redirect('/admin/article/edit?id_article=' + id_article)
 
@@ -65,6 +65,7 @@ def valid_edit_declinaison_article():
     stock = request.form.get('stock','')
     taille_id = request.form.get('id_taille','')
     couleur_id = request.form.get('id_couleur','')
+
     mycursor = get_db().cursor()
 
     message = u'declinaison_article modifié , id:' + str(id_declinaison_article) + '- stock :' + str(stock) + ' - taille_id:' + str(taille_id) + ' - couleur_id:' + str(couleur_id)

@@ -381,8 +381,8 @@ CREATE TABLE note(
     sql = '''
     INSERT INTO declinaison (couleur_declinaison, taille_declinaison, stock, id_equipement) VALUES
     (1, 1, 10, 1),
-    (1, 2, 10, 1),
-    (1, 3, 10, 1),
+    (2, 2, 10, 1),
+    (3, 3, 10, 1),
     (1, 4, 10, 2),
     (1, 5, 10, 2),
     (1, 6, 10, 2),
