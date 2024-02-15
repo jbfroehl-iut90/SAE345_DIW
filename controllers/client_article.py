@@ -52,6 +52,12 @@ def client_article_show():                                 # remplace client_ind
     mycursor.execute(sql, tuple(params))
     articles = mycursor.fetchall()
         
+    for article in articles:
+        sql = ''' select sum(stock) as stock from declinaison where id_equipement = %s'''
+        mycursor.execute(sql, (article["id_equipement"], ))
+        # Ajout de la clé stock dans le dictionnaire article
+        article["stock"] = mycursor.fetchone()["stock"]
+        
     # utilisation du filtre
     sql3=''' select * from categorie_sport '''
     mycursor.execute(sql3)
