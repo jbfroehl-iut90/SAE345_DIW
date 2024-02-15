@@ -77,6 +77,20 @@ def client_panier_add_declinaison():
     get_db().commit()
     return redirect('/client/article/show')
 
+# Ajouter 1 à la quantité dans le panier
+@client_panier.route('/client/panier/addqty', methods=['POST'])
+def add_qty():
+    mycursor = get_db().cursor()
+    id_client = session['id_user']
+    id_ligne_panier = request.form.get('id_ligne_panier','')
+    quantite = 1
+    
+    mysql = ''' UPDATE ligne_panier SET quantite = quantite + 1 WHERE id_ligne_panier = %s AND id_utilisateur = %s '''
+    mycursor.execute(mysql, (id_ligne_panier, id_client))
+    
+    get_db().commit()
+    return redirect('/client/article/show')
+
 @client_panier.route('/client/panier/delete', methods=['POST'])
 def client_panier_delete():
     mycursor = get_db().cursor()
