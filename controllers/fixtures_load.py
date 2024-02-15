@@ -278,29 +278,6 @@ CREATE TABLE note(
     '''
     mycursor.execute(sql)
     
-    sql = '''
-    CREATE TABLE ligne_panier(
-    id_ligne_panier INT AUTO_INCREMENT,
-    quantite INT,
-    prix_unitaire DECIMAL(10,2),
-    id_equipement INT,
-    id_utilisateur INT,
-    PRIMARY KEY(id_ligne_panier),
-    CONSTRAINT fk_ligne_panier_equipement FOREIGN KEY (id_equipement) REFERENCES equipement(id_equipement),
-    CONSTRAINT fk_ligne_panier_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur)
-); 
-            '''
-    mycursor.execute(sql)
-
-    sql = '''
-    INSERT INTO ligne_panier (quantite, prix_unitaire, id_equipement, id_utilisateur) VALUES
-    (2, 80, 1, 2),
-    (1, 90, 2, 2),
-    (1, 200, 3, 2), 
-    (1, 40, 4, 2),
-    (1, 70, 5, 2);
-    '''
-    mycursor.execute(sql)
 
     sql = '''
     CREATE TABLE etat(
@@ -344,7 +321,7 @@ CREATE TABLE note(
     CREATE TABLE ligne_commande(
     commande_id INT,
     equipement_id INT,
-    prix DECIMAL(10,2),
+    prix INT,
     quantite INT,
     PRIMARY KEY(commande_id, equipement_id),
     CONSTRAINT fk_ligne_commande_commande FOREIGN KEY (commande_id) REFERENCES commande(id_commande),
@@ -444,7 +421,20 @@ CREATE TABLE note(
     '''
     mycursor.execute(sql)
 
+    sql = '''
+    CREATE TABLE ligne_panier(
+    id_ligne_panier INT AUTO_INCREMENT,
+    quantite INT,
+    prix INT,
+    id_declinaison INT,
+    id_utilisateur INT,
+    PRIMARY KEY(id_ligne_panier),
+    CONSTRAINT fk_ligne_panier_declinaison FOREIGN KEY (id_declinaison) REFERENCES declinaison(id_declinaison),
+    CONSTRAINT fk_ligne_panier_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur)
+); 
+            '''
+    mycursor.execute(sql)
 
-
+    
     get_db().commit()
     return redirect('/')

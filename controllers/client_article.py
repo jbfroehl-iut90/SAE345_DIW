@@ -69,19 +69,19 @@ def client_article_show():                                 # remplace client_ind
     articles_panier = []
 
     if len(articles_panier) >= 1:
-        sql = '''  select * from ligne_panier where id_utilisateur = %s left join equipement on ligne_panier.id_article = equipement.id_equipement'''
+        sql = '''  select * from ligne_panier where id_utilisateur = %s left join declinaison on ligne_panier.id_declinaison = declinaison.id_declinaison'''
         mycursor.execute(sql, id_client)
         articles_panier = mycursor.fetchall()
 
-        sql = ''' select sum(prix_equipement) as prix_total from ligne_panier where id_utilisateur = %s left join equipement on ligne_panier.id_article = equipement.id_equipement'''
+        sql = ''' select sum(prix) as prix_total from ligne_panier where id_utilisateur = %s left join equipement on ligne_panier.id_article = equipement.id_equipement'''
         prix_total = mycursor.fetchone()
 
     else:
-        sql = ''' select * from ligne_panier left join equipement on ligne_panier.id_equipement = equipement.id_equipement where id_utilisateur = %s'''
+        sql = ''' select * from ligne_panier where id_utilisateur = %s'''
         mycursor.execute(sql, id_client)
         articles_panier = mycursor.fetchall()
 
-        sql = ''' select sum(prix_equipement) as prix_total from ligne_panier left join equipement on ligne_panier.id_equipement = equipement.id_equipement where id_utilisateur = %s'''
+        sql = ''' select sum(prix) as prix_total from ligne_panier left join declinaison on ligne_panier.id_declinaison = declinaison.id_declinaison where id_utilisateur = %s'''
         prix_total = mycursor.fetchone()
 
     print(articles_panier)

@@ -15,7 +15,7 @@ def client_commande_valide():
     mycursor = get_db().cursor()
     id_client = session['id_user']
     # Selection des articles du panier
-    sql = ''' SELECT * FROM ligne_panier right join equipement on ligne_panier.id_equipement = equipement.id_equipement WHERE id_utilisateur = %s
+    sql = ''' SELECT * FROM ligne_panier right join equipement on ligne_panier.id_declinaison = declinaison.id_declinaison WHERE id_utilisateur = %s
     '''
     articles_panier = []
     mycursor.execute(sql, (id_client))
@@ -23,7 +23,7 @@ def client_commande_valide():
 
     if len(articles_panier) >= 1:
         # Calcul du prix total du panier
-        sql = ''' SELECT sum(prix_unitaire * quantite) as prix_total FROM ligne_panier WHERE id_utilisateur = %s'''
+        sql = ''' SELECT sum(prix * quantite) as prix_total FROM ligne_panier WHERE id_utilisateur = %s'''
         mycursor.execute(sql, (id_client))
         prix_total = None
     else:
@@ -60,7 +60,7 @@ def client_commande_add():
     # numéro de la dernière commande
     for item in items_ligne_panier:
         sql = "DELETE FROM ligne_panier WHERE id_ligne_panier = %s"
-        sql = ''' INSERT INTO ligne_commande (id_commande, id_equipement, quantite, prix_unitaire) VALUES (%s, %s, %s, %s)'''
+        sql = ''' INSERT INTO ligne_commande (id_commande, id_equipement, quantite, prix) VALUES (%s, %s, %s, %s)'''
 
     get_db().commit()
     flash(u'Commande ajoutée','alert-success')
