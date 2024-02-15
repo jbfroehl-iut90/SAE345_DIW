@@ -22,14 +22,18 @@ def admin_commande_show():
         id_commande = request.args.get('id_commande', None)
     except:
         id_commande = None
-    print(id_commande)
     if id_commande != None:
-        sql = ''' SELECT * FROM ligne_commande LEFT JOIN equipement ON ligne_commande.equipement_id = equipement.id_equipement WHERE commande_id = %s'''
+        sql = ''' SELECT * FROM ligne_commande 
+        LEFT JOIN equipement ON ligne_commande.equipement_id = equipement.id_equipement 
+        LEFT JOIN (SELECT id_equipement, COUNT(*) as nb_declinaisons FROM declinaison GROUP BY id_equipement) as nb_declinaisons ON equipement.id_equipement = nb_declinaisons.id_equipement
+        WHERE commande_id = %s'''
         articles_commande = []
         mycursor.execute(sql, (id_commande))
         articles_commande = mycursor.fetchall()
     else:
-        sql = ''' SELECT * FROM ligne_commande LEFT JOIN equipement ON ligne_commande.equipement_id = equipement.id_equipement'''
+        sql = ''' SELECT * FROM ligne_commande LEFT JOIN equipement ON ligne_commande.equipement_id = equipement.id_equipement
+        LEFT JOIN (SELECT id_equipement, COUNT(*) as nb_declinaisons FROM declinaison GROUP BY id_equipement) as nb_declinaisons ON equipement.id_equipement = nb_declinaisons.id_equipement
+        '''
         articles_commande = []
         mycursor.execute(sql)
         articles_commande = mycursor.fetchall()
