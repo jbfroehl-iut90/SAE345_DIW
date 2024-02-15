@@ -20,7 +20,7 @@ def client_commande_valide():
     articles_panier = []
     mycursor.execute(sql, (id_client))
     articles_panier = mycursor.fetchall()
-
+    
     if len(articles_panier) >= 1:
         # Calcul du prix total du panier
         sql = ''' SELECT sum(prix * quantite) as prix_total FROM ligne_panier WHERE id_utilisateur = %s'''

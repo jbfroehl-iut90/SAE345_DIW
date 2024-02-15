@@ -85,7 +85,7 @@ def client_article_show():                                 # remplace client_ind
         prix_total = mycursor.fetchone()
 
     else:
-        sql = ''' select equipement.libelle_equipement, quantite, prix, ligne_panier.id_declinaison, id_utilisateur from ligne_panier
+        sql = ''' select equipement.libelle_equipement, id_ligne_panier,  quantite, prix, ligne_panier.id_declinaison, id_utilisateur from ligne_panier
         left join declinaison on ligne_panier.id_declinaison = declinaison.id_declinaison
         left join equipement on declinaison.id_equipement = equipement.id_equipement
         where id_utilisateur = %s'''

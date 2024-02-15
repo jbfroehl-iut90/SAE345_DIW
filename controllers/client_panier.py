@@ -44,15 +44,10 @@ def client_panier_add():
         mycursor.execute(sql, (id_article))
         article = mycursor.fetchone()
     
-    print("declinaisons", declinaisons) 
-    print("") 
-    print("declinaisons2", declinaisons2)
-    print("")
-    print( 'id_declinaison_article', id_declinaison_article)  
-    return render_template('client/boutique/declinaison_article.html'
-                                   , declinaisons=declinaisons
-                                   , quantite=quantite
-                                   , article=article, declinaisons2=declinaisons2)
+        return render_template('client/boutique/declinaison_article.html'
+                                    , declinaisons=declinaisons
+                                    , quantite=quantite
+                                    , article=article, declinaisons2=declinaisons2)
 
     return redirect('/client/article/show')
 
@@ -84,12 +79,16 @@ def client_panier_add_declinaison():
     return redirect('/client/article/show')
 
 # Ajouter 1 à la quantité dans le panier
-@client_panier.route('/client/panier/addqty', methods=['POST'])
+@client_panier.route('/client/panier/addqty', methods=['GET', 'POST'])
 def add_qty():
     mycursor = get_db().cursor()
     id_client = session['id_user']
     id_ligne_panier = request.form.get('id_ligne_panier','')
-    quantite = 1
+    
+    sql = ''' SELECT * FROM ligne_panier WHERE id_ligne_panier = %s AND id_utilisateur = %s '''
+    mycursor.execute(sql, (id_ligne_panier, id_client))
+    ligne_panier = mycursor.fetchone()
+    print("ligne_panier", ligne_panier)
     
     mysql = ''' UPDATE ligne_panier SET quantite = quantite + 1 WHERE id_ligne_panier = %s AND id_utilisateur = %s '''
     mycursor.execute(mysql, (id_ligne_panier, id_client))
@@ -135,7 +134,7 @@ def client_panier_vider():
         sql2=''' UPDATE declinaison SET stock = stock + %s WHERE id_declinaison = %s '''
         mycursor.execute(sql2, (item['quantite'], item['id_declinaison']))
         
-        get_db().commit()
+    get_db().commit()
     return redirect('/client/article/show')
 
 
@@ -143,14 +142,8 @@ def client_panier_vider():
 def client_panier_delete_line():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    id_declinaison_article = request.form.get('id_declinaison')
-    id_equipment = request.form.get('id_article')
     id_ligne_panier = request.form.get('id_ligne_panier')
-
-    sql = ''' SELECT * FROM ligne_panier WHERE id_utilisateur = %s AND id_ligne_panier = %s '''
-    mycursor.execute(sql, (id_client, id_ligne_panier))
-    ligne_panier = mycursor.fetchone()
-
+    print("id_ligne_panier", id_ligne_panier)
     sql = ''' DELETE FROM ligne_panier WHERE id_utilisateur = %s AND id_ligne_panier = %s'''
     mycursor.execute(sql, (id_client, id_ligne_panier))
 
