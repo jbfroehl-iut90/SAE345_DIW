@@ -40,6 +40,7 @@
 {# #}                                    {% if item.stock > 0 %}
                                         <form  action="/client/panier/add"  method="post" class="col-5">
                                             <input type="hidden" name="id_article" value="{{ item.id_equipement }}">
+                                            <input type="hidden" name="prix" value="{{ item.prix_equipement }}">
                                             <div class="input-group">
                                             <button class="btn  btn-success"  id="button-addon1">
                                                 <i class="fas fa-shopping-cart">Ajouter</i>

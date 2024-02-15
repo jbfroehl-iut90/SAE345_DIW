@@ -17,7 +17,7 @@ def client_panier_add():
     quantite = request.form.get('quantite')
     # ---------
     id_declinaison_article=request.form.get('id_declinaison', None)
-
+    print(id_declinaison_article)
 # ajout dans le panier d'une déclinaison d'un article (si 1 declinaison : immédiat sinon => vu pour faire un choix
     sql = ''' SELECT * FROM declinaison 
     LEFT JOIN couleur ON couleur.id_couleur = declinaison.couleur_declinaison 
@@ -45,7 +45,10 @@ def client_panier_add():
         sql = ''' SELECT * FROM equipement WHERE id_equipement = %s'''
         mycursor.execute(sql, (id_article))
         article = mycursor.fetchone()
-        return render_template('client/boutique/declinaison_article.html'
+    
+    print(declinaisons)  
+    print( 'id_declinaison_article', id_declinaison_article)  
+    return render_template('client/boutique/declinaison_article.html'
                                    , declinaisons=declinaisons
                                    , quantite=quantite
                                    , article=article, declinaisons2=declinaisons2)
@@ -60,7 +63,9 @@ def client_panier_add_declinaison():
     quantite = request.form.get('quantite')
     id_declinaison_article = request.form.get('item_declinaison.id_declinaison', None)
     prix_unitaire = request.form.get('equipement.prix_equipement', None)
-
+    
+    print("id_declinaison :" + id_declinaison_article)
+    
     sql = ''' SELECT * FROM ligne_panier WHERE id_declinaison = %s AND id_utilisateur = %s '''
     mycursor.execute(sql, (id_article, id_client))
     article_panier = mycursor.fetchone()
@@ -74,6 +79,7 @@ def client_panier_add_declinaison():
         WHERE id_declinaison = %s AND id_utilisateur = %s '''
         mycursor.execute(sql, (quantite, id_declinaison_article, id_client))
 
+    print(article_panier)
     get_db().commit()
     return redirect('/client/article/show')
 
