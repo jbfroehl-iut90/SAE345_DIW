@@ -125,12 +125,16 @@ def client_panier_vider():
     client_id = session['id_user']
     # sélection des lignes de panier
     sql = ''' SELECT * FROM ligne_panier WHERE id_utilisateur = %s '''
-    items_panier = []
+    mycursor.execute(sql, (client_id, ))
+    items_panier = mycursor.fetchall()
     for item in items_panier:
         # suppression de la ligne de panier de l'article pour l'utilisateur connecté
-        sql = ''' DELETE FROM ligne_panier WHERE id_equipement = %s AND id_utilisateur = %s '''
+        sql = ''' DELETE FROM ligne_panier WHERE id_ligne_panier = %s AND id_utilisateur = %s '''
+        mycursor.execute(sql, (item['id_ligne_panier'], client_id))
         # mise à jour du stock de l'article : stock = stock + qté de la ligne pour l'article
-        sql2=''' UPDATE equipement SET stock = stock + %s WHERE id_equipement = %s '''
+        sql2=''' UPDATE declinaison SET stock = stock + %s WHERE id_declinaison = %s '''
+        mycursor.execute(sql2, (item['quantite'], item['id_declinaison']))
+        
         get_db().commit()
     return redirect('/client/article/show')
 
