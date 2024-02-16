@@ -69,11 +69,19 @@ def client_panier_add_declinaison():
     if article_panier is None:
         sql = ''' INSERT INTO ligne_panier (quantite, prix, id_declinaison, id_utilisateur) VALUES (%s, %s, %s, %s) '''
         mycursor.execute(sql, (quantite, prix, id_declinaison_article, id_client))
+        
+        # Retirer stock de la déclinaison
+        sql2=''' UPDATE declinaison SET stock = stock - %s WHERE id_declinaison = %s '''
+        mycursor.execute(sql2, (quantite, id_declinaison_article))
     else:
         sql = ''' UPDATE ligne_panier 
         SET quantite = quantite + %s 
         WHERE id_declinaison = %s AND id_utilisateur = %s '''
         mycursor.execute(sql, (quantite, id_declinaison_article, id_client))
+        
+        # Retirer stock de la déclinaison
+        sql2=''' UPDATE declinaison SET stock = stock - %s WHERE id_declinaison = %s '''
+        mycursor.execute(sql2, (quantite, id_declinaison_article))
 
     get_db().commit()
     return redirect('/client/article/show')
@@ -88,10 +96,13 @@ def add_qty():
     sql = ''' SELECT * FROM ligne_panier WHERE id_ligne_panier = %s AND id_utilisateur = %s '''
     mycursor.execute(sql, (id_ligne_panier, id_client))
     ligne_panier = mycursor.fetchone()
-    print("ligne_panier", ligne_panier)
     
     mysql = ''' UPDATE ligne_panier SET quantite = quantite + 1 WHERE id_ligne_panier = %s AND id_utilisateur = %s '''
     mycursor.execute(mysql, (id_ligne_panier, id_client))
+    
+    # Retirer stock de la déclinaison
+    sql2=''' UPDATE declinaison SET stock = stock - 1 WHERE id_declinaison = %s '''
+    mycursor.execute(sql2, (ligne_panier['id_declinaison']))
     
     get_db().commit()
     return redirect('/client/article/show')
@@ -102,14 +113,23 @@ def client_panier_delete():
     id_client = session['id_user']
     id_ligne_panier = request.form.get('id_ligne_panier')
     qtycommande = request.form.get('quantite')
-    quantite = 1
 
+    sql = ''' SELECT * FROM ligne_panier WHERE id_ligne_panier = %s AND id_utilisateur = %s '''
+    mycursor.execute(sql, (id_ligne_panier, id_client))
+    ligne_panier = mycursor.fetchone()
+    
     if int(qtycommande) > 1:
         mysql = ''' UPDATE ligne_panier SET quantite = quantite - 1 WHERE id_ligne_panier = %s AND id_utilisateur = %s '''
         mycursor.execute(mysql, (id_ligne_panier, id_client))
+        
+        sql2=''' UPDATE declinaison SET stock = stock + 1 WHERE id_declinaison = %s '''
+        mycursor.execute(sql2, (ligne_panier['id_declinaison']))
     else:
         mysql = ''' DELETE FROM ligne_panier WHERE id_ligne_panier = %s AND id_utilisateur = %s '''
         mycursor.execute(mysql, (id_ligne_panier, id_client))
+        
+        sql2=''' UPDATE declinaison SET stock = stock + 1 WHERE id_declinaison = %s '''
+        mycursor.execute(sql2, (ligne_panier['id_declinaison']))
         
     get_db().commit()
     return redirect('/client/article/show')
@@ -144,11 +164,16 @@ def client_panier_delete_line():
     id_client = session['id_user']
     id_ligne_panier = request.form.get('id_ligne_panier')
     print("id_ligne_panier", id_ligne_panier)
+    sql = ''' SELECT * FROM ligne_panier WHERE id_ligne_panier = %s AND id_utilisateur = %s '''
+    mycursor.execute(sql, (id_ligne_panier, id_client))
+    ligne_panier = mycursor.fetchone()
+    
     sql = ''' DELETE FROM ligne_panier WHERE id_utilisateur = %s AND id_ligne_panier = %s'''
     mycursor.execute(sql, (id_client, id_ligne_panier))
 
-    sql2='''  UPDATE equipement SET stock = stock + %s WHERE id_equipement = %s'''  
-    # mycursor.execute(sql2, (ligne_panier['quantite'], id_declinaison_article))
+
+    sql2=''' UPDATE declinaison SET stock = stock + %s WHERE id_declinaison = %s '''
+    mycursor.execute(sql2, (ligne_panier['quantite'], ligne_panier['id_declinaison']))
 
     get_db().commit()
     return redirect('/client/article/show')
