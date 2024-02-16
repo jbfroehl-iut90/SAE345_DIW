@@ -173,7 +173,7 @@ def client_panier_delete_line():
 
 
     sql2=''' UPDATE declinaison SET stock = stock + %s WHERE id_declinaison = %s '''
-    mycursor.execute(sql2, (ligne_panier['quantite'], ligne_panier['id_declinaison']))
+    mycursor.execute(sql2, (ligne_panier['quantite'], ligne_panier['id_declinaison']))    
 
     get_db().commit()
     return redirect('/client/article/show')
