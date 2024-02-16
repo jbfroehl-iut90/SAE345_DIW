@@ -63,7 +63,7 @@ def client_panier_add_declinaison():
     print("id_declinaison_article final", id_declinaison_article)
     print("prix final", prix)
     sql = ''' SELECT * FROM ligne_panier WHERE id_declinaison = %s AND id_utilisateur = %s '''
-    mycursor.execute(sql, (id_article, id_client))
+    mycursor.execute(sql, (id_declinaison_article, id_client))
     article_panier = mycursor.fetchone()
 
     if article_panier is None:
