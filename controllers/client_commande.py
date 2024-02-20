@@ -14,13 +14,17 @@ client_commande = Blueprint('client_commande', __name__,
 def client_commande_valide():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    # Selection des articles du panier
-    sql = ''' SELECT * FROM ligne_panier right join equipement on ligne_panier.id_declinaison = declinaison.id_declinaison WHERE id_utilisateur = %s
+    # Selection des articles du panier et on récpère le libelle_equipement
+    sql = ''' SELECT * FROM ligne_panier 
+    LEFT JOIN declinaison ON ligne_panier.id_declinaison = declinaison.id_declinaison 
+    LEFT JOIN equipement ON declinaison.id_equipement = equipement.id_equipement
+    WHERE id_utilisateur = %s
     '''
     articles_panier = []
     mycursor.execute(sql, (id_client))
     articles_panier = mycursor.fetchall()
-    
+    print(articles_panier)
+
     if len(articles_panier) >= 1:
         # Calcul du prix total du panier
         sql = ''' SELECT sum(prix * quantite) as prix_total FROM ligne_panier WHERE id_utilisateur = %s'''
@@ -45,22 +49,36 @@ def client_commande_add():
     # choix de(s) (l')adresse(s)
 
     id_client = session['id_user']
-    sql = ''' SELECT * FROM ligne_panier WHERE id_utilisateur = %s'''
+    sql = ''' SELECT * FROM ligne_panier LEFT JOIN declinaison ON ligne_panier.id_declinaison = declinaison.id_declinaison WHERE id_utilisateur = %s'''
     items_ligne_panier = []
+    mycursor.execute(sql, (id_client))
+    items_ligne_panier = mycursor.fetchall()
+
     if items_ligne_panier is None or len(items_ligne_panier) < 1:
         flash(u'Pas d\'articles dans le ligne_panier', 'alert-warning')
         return redirect('/client/article/show')
-    a = datetime.strptime('my date', "%b %d %Y %H:%M")
+    # Date en Year-Month-Day
+    a = datetime.now().strftime('%Y-%m-%d')
+    print("date:",a)
+    
 
-    # sql = ''' creation de la commande '''
     sql = ''' INSERT INTO commande (id_utilisateur, date_achat, etat_id) VALUES (%s, %s, %s)'''
     mycursor.execute(sql, (id_client, a, 1))
 
-    sql = '''SELECT last_insert_id() as last_insert_id'''
-    # numéro de la dernière commande
+    sql  = ''' SELECT LAST_INSERT_ID() as last_insert_id'''
+    mycursor.execute(sql)
+    last_insert_id = mycursor.fetchone()['last_insert_id']
+    print("last_insert_id:",last_insert_id)
+
     for item in items_ligne_panier:
         sql = "DELETE FROM ligne_panier WHERE id_ligne_panier = %s"
-        sql = ''' INSERT INTO ligne_commande (id_commande, id_equipement, quantite, prix) VALUES (%s, %s, %s, %s)'''
+        mycursor.execute(sql, (item['id_ligne_panier']))
+        get_db().commit()
+
+    for item in items_ligne_panier:
+        print(item)
+        sql = ''' INSERT INTO ligne_commande (commande_id, equipement_id, prix, quantite) VALUES (%s, %s, %s, %s)'''
+        mycursor.execute(sql, (last_insert_id, item['id_equipement'], item['prix'], item['quantite']))
 
     get_db().commit()
     flash(u'Commande ajoutée','alert-success')
