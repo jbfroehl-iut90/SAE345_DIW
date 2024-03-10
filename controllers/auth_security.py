@@ -23,7 +23,7 @@ def auth_login_post():
     login = request.form.get('login')
     password = request.form.get('password')
     tuple_select = (login)
-    sql = " select * from UTILISATEUR where login=%s "
+    sql = " select * from utilisateur where login=%s "
     retour = mycursor.execute(sql, (login))
     user = mycursor.fetchone()
     if user:
@@ -56,7 +56,7 @@ def auth_signup_post():
     login = request.form.get('login')
     password = request.form.get('password')
     tuple_select = (login, email)
-    sql = " select * from UTILISATEUR where login=%s or email=%s "
+    sql = " select * from utilisateur where login=%s or email=%s "
     retour = mycursor.execute(sql, tuple_select)
     user = mycursor.fetchone()
     if user:
@@ -66,7 +66,7 @@ def auth_signup_post():
     # ajouter un nouveau user
     password = generate_password_hash(password, method='sha256')
     tuple_insert = (login, email, password, 'ROLE_client')
-    sql = """  INSERT INTO UTILISATEUR (login, email, password, role) values (%s, %s, %s, %s)  """
+    sql = """  INSERT INTO utilisateur (login, email, password, role) values (%s, %s, %s, %s)  """
     mycursor.execute(sql, tuple_insert)
     get_db().commit()
     sql = """  SELECT last_insert_id() as last_insert_id  """

@@ -15,7 +15,7 @@ def fct_fixtures_load():
     mycursor.execute(sql)
 
     sql='''
-    CREATE TABLE UTILISATEUR (
+    CREATE TABLE utilisateur (
   id_utilisateur INT AUTO_INCREMENT,
   login varchar(255),
   email varchar(255),
@@ -28,7 +28,7 @@ def fct_fixtures_load():
     '''
     mycursor.execute(sql)
     sql=''' 
-    INSERT INTO UTILISATEUR(id_utilisateur,login,email,password,role,nom,est_actif) VALUES
+    INSERT INTO utilisateur(id_utilisateur,login,email,password,role,nom,est_actif) VALUES
 (NULL,'admin','admin@admin.fr',
     'sha256$dPL3oH9ug1wjJqva$2b341da75a4257607c841eb0dbbacb76e780f4015f0499bb1a164de2a893fdbf',
     'ROLE_admin','admin','1'),
@@ -240,7 +240,7 @@ CREATE TABLE note(
     note INT,
     id_equipement INT,
     PRIMARY KEY(id_note),
-    CONSTRAINT fk_note_equipement FOREIGN KEY(id_equipement) REFERENCES EQUIPEMENT(id_equipement));
+    CONSTRAINT fk_note_equipement FOREIGN KEY(id_equipement) REFERENCES equipement(id_equipement));
 '''    
     mycursor.execute(sql)
     
