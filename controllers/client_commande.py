@@ -23,13 +23,11 @@ def client_commande_valide():
     articles_panier = []
     mycursor.execute(sql, (id_client))
     articles_panier = mycursor.fetchall()
-    print(articles_panier)
 
     if len(articles_panier) >= 1:
-        # Calcul du prix total du panier
         sql = ''' SELECT sum(prix * quantite) as prix_total FROM ligne_panier WHERE id_utilisateur = %s'''
         mycursor.execute(sql, (id_client))
-        prix_total = None
+        prix_total = mycursor.fetchone()['prix_total']
     else:
         prix_total = None
     # etape 2 : selection des adresses

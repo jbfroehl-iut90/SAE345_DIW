@@ -93,6 +93,7 @@ def client_article_show():                                 # remplace client_ind
         articles_panier = mycursor.fetchall()
 
         sql = ''' select sum(prix) as prix_total from ligne_panier left join declinaison on ligne_panier.id_declinaison = declinaison.id_declinaison where id_utilisateur = %s'''
+        mycursor.execute(sql, id_client)
         prix_total = mycursor.fetchone()
 
     return render_template('client/boutique/panier_article.html'
