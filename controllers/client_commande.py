@@ -91,15 +91,30 @@ def client_commande_add():
 def client_commande_show():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    sql = ''' SELECT * FROM commande WHERE id_utilisateur = %s ORDER BY etat_id, date_achat DESC'''
+    sql = ''' SELECT * FROM commande
+    LEFT JOIN etat ON commande.etat_id = etat.id_etat 
+    LEFT JOIN (SELECT commande_id, SUM(quantite) as nb_articles FROM ligne_commande GROUP BY commande_id) as nb_articles ON commande.id_commande = nb_articles.commande_id
+    LEFT JOIN (SELECT commande_id, SUM(prix_equipement * quantite) as total_commande 
+    FROM ligne_commande LEFT JOIN equipement ON ligne_commande.equipement_id = equipement.id_equipement GROUP BY commande_id) as total_commande 
+    ON commande.id_commande = total_commande.commande_id
+    WHERE id_utilisateur = %s 
+    '''
+    mycursor.execute(sql, (id_client))
     commandes = []
+    commandes = mycursor.fetchall()
 
-    articles_commande = None
+
+    articles_commande = []
     commande_adresses = None
     id_commande = request.args.get('id_commande', None)
     if id_commande != None:
         print(id_commande)
-        sql = ''' SELECT * FROM ligne_commande WHERE id_commande = %s'''
+        sql = ''' SELECT * FROM ligne_commande
+        LEFT JOIN equipement ON ligne_commande.equipement_id = equipement.id_equipement
+        WHERE commande_id = %s
+        '''
+        mycursor.execute(sql, (id_commande))
+        articles_commande = mycursor.fetchall()
 
         # partie 2 : selection de l'adresse de livraison et de facturation de la commande selectionnée
         sql = ''' selection des adressses '''
