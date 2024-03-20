@@ -40,7 +40,7 @@ def client_article_details():
     print('moyenne',moyenne)
         
     sql = ''' SELECT nom, id_commentaire, commentaire, statut, date_publication, equipement_id, utilisateur_id FROM commentaire 
-    LEFT JOIN utilisateur ON utilisateur_id = utilisateur.id_utilisateur WHERE equipement_id=%s and statut=1;'''
+    LEFT JOIN utilisateur ON utilisateur_id = utilisateur.id_utilisateur WHERE equipement_id=%s and statut=1 ORDER BY date_publication DESC, id_commentaire;'''
     mycursor.execute(sql, id_article)
     commentaires = mycursor.fetchall()
     

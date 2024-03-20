@@ -35,7 +35,13 @@
                     <tr>
                     {% endif %}
                         <td>{{ commentaire.nom }}({{ commentaire.utilisateur_id }})</td>
-                        <td> {% if commentaire.utilisateur_id == session['id_user'] %}
+                        <td> {% if commentaire.statut == 0 %}
+                            <strong><span style="color: red">(en attente de validation) :</span></strong>
+                            {% endif %} 
+                            {% if commentaire.statut == 1 %}
+                            <strong><span style="color: green">(validé) :</span></strong>
+                            {% endif %}
+                            {% if commentaire.utilisateur_id == session['id_user'] %}
                             <span style="color: red">(réponse de l'administrateur du site (webmaster) :</span>
                             {% endif %}
                             {{ commentaire.commentaire }}
@@ -53,6 +59,7 @@
                                       <input type="hidden" name="id_article" value="{{ commentaire.equipement_id }}">
                                       <input type="hidden" name="id_utilisateur" value="{{ commentaire.utilisateur_id }}">
                                       <input type="hidden" name="date_publication" value="{{ commentaire.date_publication }}">
+                                      <input type="hidden" name="id_commentaire" value="{{ commentaire.id_commentaire }}">
                                       <button class="btn btn-primary" > répondre </button>
                                   </form>
                             {% endif %}

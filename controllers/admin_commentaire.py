@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 from flask import Blueprint
 from flask import Flask, request, render_template, redirect, abort, flash, session
+from datetime import datetime, timedelta
 
 from connexion_db import get_db
 
@@ -14,7 +15,8 @@ def admin_article_details():
     mycursor = get_db().cursor()
     id_article =  request.args.get('id_article', None)
     sql = ''' SELECT id_commentaire, commentaire, statut, date_publication, equipement_id, utilisateur_id, nom
-    FROM commentaire LEFT JOIN utilisateur ON utilisateur_id=utilisateur.id_utilisateur where equipement_id=%s;  '''
+    FROM commentaire LEFT JOIN utilisateur ON utilisateur_id=utilisateur.id_utilisateur where equipement_id=%s
+    ORDER BY date_publication DESC, id_commentaire;  '''
     mycursor.execute(sql, (id_article,))
     commentaires = mycursor.fetchall()
     print(commentaires)
@@ -48,14 +50,37 @@ def admin_comment_add():
         id_utilisateur = request.args.get('id_utilisateur', None)
         id_article = request.args.get('id_article', None)
         date_publication = request.args.get('date_publication', None)
-        return render_template('admin/article/add_commentaire.html',id_utilisateur=id_utilisateur,id_article=id_article,date_publication=date_publication )
+        id_commentaire = request.args.get('id_commentaire', None)
+        return render_template('admin/article/add_commentaire.html',id_utilisateur=id_utilisateur,id_article=id_article,date_publication=date_publication, id_commentaire=id_commentaire) 
 
     mycursor = get_db().cursor()
     id_utilisateur = session['id_user']   #1 admin
     id_article = request.form.get('id_article', None)
     date_publication = request.form.get('date_publication', None)
     commentaire = request.form.get('commentaire', None)
-    sql = '''    requête admin_type_article_3   '''
+    id_commentaire = request.form.get('id_commentaire', None)
+        
+    # Trouver le dernier ID de commentaire
+    sql_max_id = '''SELECT MAX(id_commentaire) FROM commentaire;'''
+    mycursor.execute(sql_max_id)
+    max_id = mycursor.fetchall()
+    # Commencer par l'indice le plus élevé et reculer jusqu'à l'indice que nous avons récupéré
+    print(id_commentaire)
+    current_id = max_id[0]['MAX(id_commentaire)']
+    while current_id > int(id_commentaire):
+        print(current_id)
+        # Décaler les identifiants des commentaires suivants
+        sql_shift_ids = '''UPDATE commentaire SET id_commentaire = %s WHERE id_commentaire = %s;'''
+        mycursor.execute(sql_shift_ids, (current_id+1, current_id))
+        
+        current_id -= 1
+    
+    # Insérer le nouveau commentaire avec l'ID suivant
+    sql_insert_comment = '''INSERT INTO commentaire (id_commentaire, commentaire, statut, date_publication, equipement_id, utilisateur_id) 
+                            VALUES (%s, %s, %s, %s, %s, %s);'''
+    tuple_insert = (int(id_commentaire) + 1, commentaire, 1, date_publication, id_article, id_utilisateur)
+    mycursor.execute(sql_insert_comment, tuple_insert)
+
     get_db().commit()
     return redirect('/admin/article/commentaires?id_article='+id_article)
 
