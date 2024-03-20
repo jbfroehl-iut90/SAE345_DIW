@@ -21,6 +21,7 @@ def client_article_show():                                 # remplace client_ind
 
     sql = ''' select * from equipement '''
     
+    
     filter_word = request.form.get('filter_word')
     filter_prix_min = request.form.get('filter_prix_min')
     filter_prix_max = request.form.get('filter_prix_max')
@@ -57,6 +58,22 @@ def client_article_show():                                 # remplace client_ind
         mycursor.execute(sql, (article["id_equipement"], ))
         # Ajout de la clé stock dans le dictionnaire article
         article["stock"] = mycursor.fetchone()["stock"]
+        
+        # Calculer la moyenne des notes s'il y'en a 1
+        sql = ''' SELECT ROUND(SUM(note)/(COUNT(id_note)), 1) as moy_note FROM note WHERE id_equipement=%s;'''
+        mycursor.execute(sql, (article["id_equipement"], ))
+        article["moy_notes"] = mycursor.fetchone()["moy_note"]
+        
+        sql = ''' SELECT COUNT(note) as nb_notes FROM note WHERE id_equipement=%s;'''
+        mycursor.execute(sql, (article["id_equipement"], ))
+        article["nb_notes"] = mycursor.fetchone()["nb_notes"]
+        
+        # Calculer le nombre de commentaires
+        sql = '''SELECT COUNT(id_commentaire) as nb_commentaires FROM commentaire WHERE equipement_id=%s AND statut=1 AND utilisateur_id <> 1;'''
+        mycursor.execute(sql, (article["id_equipement"], ))
+        article["nb_avis"] = mycursor.fetchone()["nb_commentaires"]
+        print(article["nb_avis"])
+        
         
     # utilisation du filtre
     sql3=''' select * from categorie_sport '''

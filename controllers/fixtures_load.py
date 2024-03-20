@@ -11,7 +11,7 @@ fixtures_load = Blueprint('fixtures_load', __name__,
 @fixtures_load.route('/base/init')
 def fct_fixtures_load():
     mycursor = get_db().cursor()
-    sql=''' DROP TABLE IF EXISTS declinaison, ligne_commande, commande, etat, ligne_panier, note, equipement, categorie_sport, couleur, morphologie, marque, taille, utilisateur;  '''
+    sql=''' DROP TABLE IF EXISTS declinaison, ligne_commande, commande, etat, ligne_panier, note, commentaire, equipement, categorie_sport, couleur, morphologie, marque, taille, utilisateur;  '''
     mycursor.execute(sql)
 
     sql='''
@@ -237,42 +237,21 @@ def fct_fixtures_load():
     sql='''
 CREATE TABLE note(
     id_note INT AUTO_INCREMENT,
-    note INT,
+    note DECIMAL(2,1),
     id_equipement INT,
+    utilisateur_id INT,
     PRIMARY KEY(id_note),
-    CONSTRAINT fk_note_equipement FOREIGN KEY(id_equipement) REFERENCES equipement(id_equipement));
-'''    
+    CONSTRAINT fk_note_equipement FOREIGN KEY(id_equipement) REFERENCES equipement(id_equipement),
+    CONSTRAINT fk_note_utilisateur FOREIGN KEY(utilisateur_id) REFERENCES utilisateur(id_utilisateur));'''    
     mycursor.execute(sql)
     
     sql='''
-    INSERT INTO note (note, id_equipement) VALUES 
-    (4, 1),
-    (2, 1),
-    (5, 1),
-    (3, 1),
-    (4, 1),
-    (5, 1),
-    (4, 2),
-    (2, 2),
-    (5, 2),
-    (3, 2),
-    (4, 3),
-    (5, 3),
-    (4, 3),
-    (4, 3),
-    (1, 4),
-    (2, 4),
-    (3, 4),
-    (1, 4),
-    (4, 5),
-    (5, 5),
-    (2, 5),
-    (1, 5),
-    (4, 6),
-    (5, 6),
-    (2, 6),
-    (1, 6);
-    '''
+    INSERT INTO note (note, id_equipement, utilisateur_id) VALUES 
+    (5.0, 1, 3),
+    (4.5, 2, 2),
+    (3.5, 3, 1),
+    (2.0, 4, 1),
+    (1.0, 5, 2);'''
     mycursor.execute(sql)
     
 
@@ -431,7 +410,35 @@ CREATE TABLE note(
             '''
     mycursor.execute(sql)
 
+    sql='''CREATE TABLE commentaire(
+    id_commentaire INT AUTO_INCREMENT,
+    commentaire VARCHAR(511),
+    statut INT,
+    date_publication DATE,
+    equipement_id INT,
+    utilisateur_id INT,
+    PRIMARY KEY(id_commentaire),
+    CONSTRAINT fk_commentaire_equipement FOREIGN KEY (equipement_id) REFERENCES equipement(id_equipement),
+    CONSTRAINT fk_commentaire_utilisateur FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur)
+    );'''
+    
+    mycursor.execute(sql)
 
+    sql='''INSERT INTO commentaire (commentaire, statut, date_publication, equipement_id, utilisateur_id) VALUES
+('Super produit (publié le 17/11)', 1, '2022-11-17', 1, 3),
+('Bonne qualité (publié le 15/11)', 1, '2022-11-15', 1, 2),
+('Je suis satisfait', 1, '2022-11-19', 2, 1),
+('A acheter', 0, '2022-11-12', 5, 1),
+('Super nickel', 1, '2022-10-11', 4, 2),
+('Parfait', 1, '2022-12-11', 1, 1),
+('Mauvaise qualité', 1, '2022-11-11', 3, 1),
+('Déjà cassé', 0, '2022-11-11', 1, 2),
+('Je recommande', 1, '2022-11-11', 1, 1),
+('A éviter', 1, '2022-11-11', 1, 3),
+('Je suis déçu', 1, '2022-11-11', 1, 2),
+('Je ne recommande pas', 0, '2022-11-11', 1, 1);'''
+
+    mycursor.execute(sql)
     
     get_db().commit()
     return redirect('/')

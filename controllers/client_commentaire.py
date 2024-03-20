@@ -36,35 +36,44 @@ def client_article_details():
         
     sql = ''' SELECT ROUND(SUM(note)/(COUNT(id_note)), 1) as moy_note, COUNT(id_note) as nb_note FROM note WHERE id_equipement=%s;'''
     mycursor.execute(sql, id_article)
+    moyenne = mycursor.fetchone()
+    print('moyenne',moyenne)
+        
+    sql = ''' SELECT nom, id_commentaire, commentaire, statut, date_publication, equipement_id, utilisateur_id FROM commentaire 
+    LEFT JOIN utilisateur ON utilisateur_id = utilisateur.id_utilisateur WHERE equipement_id=%s and statut=1;'''
+    mycursor.execute(sql, id_article)
+    commentaires = mycursor.fetchall()
+    
+    sql = ''' SELECT COUNT(commande_id) AS nb_commandes_article FROM commande 
+    LEFT JOIN ligne_commande ON commande.id_commande = ligne_commande.commande_id
+    WHERE commande.id_utilisateur=%s AND ligne_commande.equipement_id=%s;'''
+    mycursor.execute(sql, (id_client, id_article))
+    commandes_articles = mycursor.fetchone()
+    print('commandes_articles',commandes_articles)
+    
+    sql = ''' SELECT note FROM note WHERE utilisateur_id=%s AND id_equipement=%s;'''
+    mycursor.execute(sql, (id_client, id_article))
     note = mycursor.fetchone()
     print('note',note)
-        
-        # sql = '''
-    #
-    # '''
-    # mycursor.execute(sql, ( id_article))
-    # commentaires = mycursor.fetchall()
-    # sql = '''
-    # '''
-    # mycursor.execute(sql, (id_client, id_article))
-    # commandes_articles = mycursor.fetchone()
-    # sql = '''
-    # '''
-    # mycursor.execute(sql, (id_client, id_article))
-    # note = mycursor.fetchone()
-    # print('note',note)
     # if note:
-    #     note=note['note']
-    # sql = '''
-    # '''
-    # mycursor.execute(sql, (id_client, id_article))
-    # nb_commentaires = mycursor.fetchone()
+    #    note=note['note']
+    sql = '''SELECT COUNT(id_commentaire) as nb_commentaires_utilisateur FROM commentaire WHERE utilisateur_id=%s AND equipement_id=%s AND statut=%s ORDER BY date_publication;'''
+    mycursor.execute(sql, (id_client, id_article, 1))
+    nb_commentaires_utilisateur = mycursor.fetchone()
+    print('nb_commentaires_utilisateur',nb_commentaires_utilisateur)
+    
+    sql='''SELECT COUNT(id_commentaire) as nb_commentaires_total FROM commentaire WHERE equipement_id=%s AND utilisateur_id <> 1;'''
+    mycursor.execute(sql, id_article)
+    nb_commentaires = mycursor.fetchone()
+    print('nb_commentaires',nb_commentaires)
     return render_template('client/article_info/article_details.html'
                            , article=article
-                           # , commentaires=commentaires
                            , commandes_articles=commandes_articles
+                           , commentaires=commentaires
                            , note=note
+                           , nb_commentaires_utilisateur=nb_commentaires_utilisateur
                             , nb_commentaires=nb_commentaires
+                            , moyenne=moyenne
                            )
 
 @client_commentaire.route('/client/commentaire/add', methods=['POST'])
@@ -82,7 +91,7 @@ def client_comment_add():
 
     tuple_insert = (commentaire, id_client, id_article)
     print(tuple_insert)
-    sql = '''  '''
+    sql = ''' INSERT INTO commentaire (commentaire, statut, utilisateur_id, equipement_id) VALUES (%s, 0, %s, %s);'''
     mycursor.execute(sql, tuple_insert)
     get_db().commit()
     return redirect('/client/article/details?id_article='+id_article)
@@ -94,8 +103,9 @@ def client_comment_detete():
     id_client = session['id_user']
     id_article = request.form.get('id_article', None)
     date_publication = request.form.get('date_publication', None)
-    sql = '''   '''
-    tuple_delete=(id_client,id_article,date_publication)
+    id_commentaire = request.form.get('id_commentaire', None)
+    sql = ''' DELETE FROM commentaire WHERE id_commentaire = %s AND utilisateur_id=%s AND equipement_id=%s AND date_publication=%s;'''
+    tuple_delete=(id_commentaire, id_client,id_article,date_publication)
     mycursor.execute(sql, tuple_delete)
     get_db().commit()
     return redirect('/client/article/details?id_article='+id_article)
@@ -106,9 +116,9 @@ def client_note_add():
     id_client = session['id_user']
     note = request.form.get('note', None)
     id_article = request.form.get('id_article', None)
-    tuple_insert = (note, id_client, id_article)
+    tuple_insert = (note, id_article, id_client)
     print(tuple_insert)
-    sql = '''   '''
+    sql = ''' INSERT INTO note (note, id_equipement, utilisateur_id) VALUES (%s, %s, %s);'''
     mycursor.execute(sql, tuple_insert)
     get_db().commit()
     return redirect('/client/article/details?id_article='+id_article)
@@ -119,9 +129,9 @@ def client_note_edit():
     id_client = session['id_user']
     note = request.form.get('note', None)
     id_article = request.form.get('id_article', None)
-    tuple_update = (note, id_client, id_article)
+    tuple_update = (note, id_article, id_client)
     print(tuple_update)
-    sql = '''  '''
+    sql = ''' UPDATE note SET note=%s WHERE id_equipement=%s AND utilisateur_id=%s;'''
     mycursor.execute(sql, tuple_update)
     get_db().commit()
     return redirect('/client/article/details?id_article='+id_article)
@@ -133,7 +143,7 @@ def client_note_delete():
     id_article = request.form.get('id_article', None)
     tuple_delete = (id_client, id_article)
     print(tuple_delete)
-    sql = '''  '''
+    sql = ''' DELETE FROM note WHERE utilisateur_id=%s AND id_equipement=%s;'''
     mycursor.execute(sql, tuple_delete)
     get_db().commit()
     return redirect('/client/article/details?id_article='+id_article)

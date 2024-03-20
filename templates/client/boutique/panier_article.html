@@ -46,6 +46,7 @@
                                             <button class="btn  btn-success"  id="button-addon1">
                                                 <i class="fas fa-shopping-cart">Ajouter</i>
                                             </button>
+                                            
                                             </div>
                                         </form>
 {# #}                                    {% endif %}
@@ -59,6 +60,7 @@
                                          {% endif %}
                                     {% endif %}
                                      </div>
+                                   
                                 </div>
                             </div>
                             <div class="card-footer">
@@ -73,18 +75,19 @@
                                 {% endif %}
                                 <br>
                             {% endif %}
-                            {% if item.nb_notes is defined %}
+                            {% if item.nb_notes is defined and item.nb_notes != None %}
                                 {% if item.nb_notes > 0 %}
                                  <a  href="/client/article/details?id_article={{ item.id_equipement }}" >
-                                    <span style="color: #3A7734"> note : {{  "{:,.1f}".format(item.moy_notes) }}({{ item.nb_notes }})</span>
+                                    <span style="color: #3A7734"> note : {{  "{:,.1f}".format(item.moy_notes) }} ({{ item.nb_notes }} note(s))</span>
                                  </a>
                                 {% endif %}
                             {% endif %}
-                            {% if item.nb_avis is defined %}
+                            {% if item.nb_avis is defined and item.nb_avis != None %}
                                 {% if item.nb_avis > 0 %}
-                                 <a href="/client/article/details?id_article={{ item.id_equipement }}" >
+                                <br>
+                                <a href="/client/article/details?id_article={{ item.id_equipement }}" >
                                     <span style="color: #3A7734">({{ item.nb_avis }} avis)</span>
-                                 </a>
+                                </a>
                                 {% endif %}
                             {% endif %}
                             </div>

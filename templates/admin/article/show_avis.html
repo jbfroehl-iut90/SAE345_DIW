@@ -5,13 +5,13 @@
 <div class="container">
     <div class="text-center">
          <h2 class="card-title">
-             <span style="color: #0b2e13">{{ article.libelle }}</span> &nbsp;{{ article.prix }} €
+             <span style="color: #0b2e13">{{ article.libelle_equipement }}</span> &nbsp;{{ article.prix_equipement }} €
          </h2>
 
         <div class="card-body">
-        <h4>{{ article.description }}</h4>
-        {%  if article.image is not none %}
-            <img class="card-img-top rounded mx-auto d-block"  style="width:100px;height:100px"  src="{{ url_for('static', filename = 'images/' + article['image']) }}"  alt="image  de {{ article.nom }}" >
+        <h4>{{ article.description_equipement }}</h4>
+        {%  if article.image_equipement is not none %}
+            <img class="card-img-top rounded mx-auto d-block"  style="width:100px;height:100px"  src="{{ url_for('static', filename = 'images/' + article['image_equipement']) }}"  alt="image  de {{ article.nom }}" >
         {% else %} <img class="card-img-top rounded mx-auto d-block"   style="width:100px;height:100px"   src="{{ url_for('static', filename='images/no_photo.jpeg')}}"  alt="image  de {{ article.nom }}" >
         {% endif %}
 
