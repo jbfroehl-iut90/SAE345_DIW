@@ -13,8 +13,11 @@ admin_commentaire = Blueprint('admin_commentaire', __name__,
 def admin_article_details():
     mycursor = get_db().cursor()
     id_article =  request.args.get('id_article', None)
-    sql = ''' SELECT * FROM commentaire    '''
-    commentaires = {}
+    sql = ''' SELECT id_commentaire, commentaire, statut, date_publication, equipement_id, utilisateur_id, nom
+    FROM commentaire LEFT JOIN utilisateur ON utilisateur_id=utilisateur.id_utilisateur where equipement_id=%s;  '''
+    mycursor.execute(sql, (id_article,))
+    commentaires = mycursor.fetchall()
+    print(commentaires)
     sql = '''   SELECT * FROM equipement WHERE id_equipement=%s;   '''
     mycursor.execute(sql, (id_article,))
     article = mycursor.fetchone()
