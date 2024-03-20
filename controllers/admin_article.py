@@ -18,17 +18,13 @@ admin_article = Blueprint('admin_article', __name__,
 def show_article():
     mycursor = get_db().cursor()
     sql = '''  SELECT e.id_equipement, e.libelle_equipement, e.prix_equipement, e.description_equipement, e.image_equipement, 
-    e.marque_equipement_id, e.sport_equipement_id, e.morphologie_equipement_id,
-    COUNT(CASE WHEN c.statut = 0 THEN c.id_commentaire ELSE NULL END) as nb_commentaires_nouveaux 
+    e.marque_equipement_id, e.sport_equipement_id, e.morphologie_equipement_id
     FROM equipement e
-    LEFT JOIN commentaire c ON e.id_equipement = c.equipement_id 
-    LEFT JOIN declinaison d ON e.id_equipement = d.id_equipement
     GROUP BY e.id_equipement, e.libelle_equipement, e.prix_equipement, e.description_equipement, 
     e.image_equipement, e.marque_equipement_id,e.sport_equipement_id, e.morphologie_equipement_id;
 '''
     mycursor.execute(sql)
     equipement = mycursor.fetchall()
-    print(equipement)
     
     for id_equipement in equipement:
         sql = ''' SELECT SUM(stock) as stock FROM declinaison 
@@ -36,6 +32,14 @@ def show_article():
         mycursor.execute(sql, (id_equipement['id_equipement'], ))
         stock = mycursor.fetchone()
         id_equipement['stock'] = stock['stock']
+        
+        sql = ''' SELECT COUNT(*) as nb_commentaires_nouveaux FROM commentaire
+        WHERE equipement_id = %s AND statut = 0;'''
+        mycursor.execute(sql, (id_equipement['id_equipement'], ))
+        id_equipement['nb_commentaires_nouveaux'] = mycursor.fetchone()['nb_commentaires_nouveaux']
+        
+        
+    
     
     
     return render_template('admin/article/show_article.html', articles=equipement)

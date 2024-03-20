@@ -27,14 +27,17 @@ def admin_article_details():
                            , article=article
                            )
 
-@admin_commentaire.route('/admin/article/commentaires/delete', methods=['POST'])
+@admin_commentaire.route('/admin/article/commentaires/delete', methods=['POST', 'GET'])
 def admin_comment_delete():
     mycursor = get_db().cursor()
-    id_utilisateur = request.form.get('id_utilisateur', None)
-    id_article = request.form.get('id_article', None)
-    date_publication = request.form.get('date_publication', None)
-    sql = '''    requête admin_type_article_2   '''
-    tuple_delete=(id_utilisateur,id_article,date_publication)
+    id_commentaire = request.form.get('id_commentaire')
+    id_utilisateur = request.form.get('id_utilisateur')
+    id_article = request.form.get('id_article')
+    date_publication = request.form.get('date_publication')
+    sql = ''' DELETE FROM commentaire WHERE id_commentaire=%s AND utilisateur_id=%s AND equipement_id=%s AND date_publication=%s;'''
+    tuple_delete=(id_commentaire, id_utilisateur,id_article,date_publication)
+    mycursor.execute(sql, tuple_delete)
+    print(tuple_delete)
     get_db().commit()
     return redirect('/admin/article/commentaires?id_article='+id_article)
 
@@ -61,6 +64,7 @@ def admin_comment_add():
 def admin_comment_valider():
     id_article = request.args.get('id_article', None)
     mycursor = get_db().cursor()
-    sql = '''   requête admin_type_article_4   '''
+    sql = '''   UPDATE commentaire SET statut=1 WHERE statut=0 and equipement_id=%s;   '''
+    mycursor.execute(sql, (id_article,))
     get_db().commit()
     return redirect('/admin/article/commentaires?id_article='+id_article)

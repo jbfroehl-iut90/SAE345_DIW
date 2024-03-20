@@ -42,6 +42,7 @@
                         </td>
                         <td>
                                   <form  action="/admin/article/commentaires/delete"  style="display: inline-block;"  method="post" >
+                                    <input type="hidden" name="id_commentaire" value="{{ commentaire.id_commentaire }}">
                                       <input type="hidden" name="id_article" value="{{ commentaire.equipement_id }}">
                                       <input type="hidden" name="id_utilisateur" value="{{ commentaire.utilisateur_id }}">
                                       <input type="hidden" name="date_publication" value="{{ commentaire.date_publication }}">
