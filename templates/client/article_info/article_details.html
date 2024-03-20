@@ -31,42 +31,42 @@
     <div class="row">
 
     <div class="col-12">
-        {% if note.moy_note is not defined or  note.nb_note is not defined or  note.moy_note == None %}
+        {% if moyenne.moy_note is not defined or  moyenne.nb_note is not defined or  moyenne.moy_note == None %}
             <strong>Pas de Note</strong>
         {% else %}
-            <strong>Note moyenne de cet article : {{ note.moy_note }}</strong>&nbsp;({{ note.nb_note }} note(s))
+            <strong>Note moyenne de cet article : {{ moyenne.moy_note }}</strong>&nbsp;({{ moyenne.nb_note }} note(s))
         {% endif %}
     </div>
         {% if commandes_articles.nb_commandes_article is defined and commandes_articles.nb_commandes_article > 0 %}
             <div class="col-12">
-                {% if note is defined and note is number %}
+                {% if note.note is defined and note.note is number %}
 
                     <form  action="/client/note/edit"   method="post" class="row">
-                    <input type="hidden" name="id_article" value="{{ article.id_article }}">
+                    <input type="hidden" name="id_article" value="{{ article.id_equipement }}">
                     <div class="col-md-3">
                         <label for="input_note" class="d-flex justify-content-end align-items-end pe-3">Modifier votre note sur cet article : </label>
                     </div>
                     <div class="col-md-1">
-                        <input type="number" name="note" id="input_note" step="0.1" min="0" max="5" class="form-control col-md-2" value="{{ note }}" >
+                        <input type="number" name="note" id="input_note" step="0.5" min="0" max="5" class="form-control col-md-2" value="{{ note.note }}" >
                     </div>
                      <div class="col-md-2">
                          <button class="btn btn-primary" > Modifier votre note </button>
                      </div>
                     </form>
                     <form  action="/client/note/delete"   method="post" class="row">
-                    <input type="hidden" name="id_article" value="{{ article.id_article }}">
+                    <input type="hidden" name="id_article" value="{{ article.id_equipement }}">
                      <div class="col-md-2">
                          <button class="btn btn-primary" > Supprimer votre note </button>
                      </div>
                     </form>
                 {% else %}
                     <form  action="/client/note/add"   method="post" class="row">
-                    <input type="hidden" name="id_article" value="{{ article.id_article }}">
+                    <input type="hidden" name="id_article" value="{{ article.id_equipement }}">
                     <div class="col-md-3">
                         <label for="input_note" class="d-flex justify-content-end align-items-end pe-3">Mettre une note  sur cet article : </label>
                     </div>
                     <div class="col-md-1">
-                        <input type="number" name="note" id="input_note" step="0.1" min="0" max="5" class="form-control col-md-2" value="" >
+                        <input type="number" name="note" id="input_note" step="0.5" min="0" max="5" class="form-control col-md-2" value="" >
                     </div>
                      <div class="col-md-2">
                         <button class="btn btn-primary" > Mettre une note </button></div>
@@ -86,25 +86,25 @@
       {% if nb_commentaires.nb_commentaires_total is not defined or nb_commentaires.nb_commentaires_utilisateur is not defined %}
          <strong>NB comment not defined</strong>
                 {% else %}
-            <strong>Nombre de commentaire(s) : {{ nb_commentaires.nb_commentaires_utilisateur }} / 5 </strong><br>
+            <strong>Nombre de commentaire(s) : {{ nb_commentaires_utilisateur.nb_commentaires_utilisateur }} / 3 </strong><br>
             <strong>Nombre de commentaire(s) total :  {{nb_commentaires.nb_commentaires_total }}</strong>
         {% endif %}
       </div>
       {% if commandes_articles.nb_commandes_article is defined and commandes_articles.nb_commandes_article > 0 and
-            ((nb_commentaires.nb_commentaires_utilisateur is defined and nb_commentaires.nb_commentaires_utilisateur <5) or nb_commentaires.nb_commentaires_utilisateur is not defined) %}
+            ((nb_commentaires_utilisateur.nb_commentaires_utilisateur is defined and nb_commentaires_utilisateur.nb_commentaires_utilisateur < 3) or nb_commentaires_utilisateur.nb_commentaires_utilisateur is not defined) %}
           <form  action="/client/commentaire/add"   method="post">
                 <div class="col">
                   <label for="input_commentaire" class="form-label">Mettez un commentaire sur cet article : </label>
                      <textarea name="commentaire" class="form-control" aria-label="Votre commentaire" id="input_commentaire"  placeholder="Votre commentaire"></textarea>
                 </div>
               <input type="hidden" name="action" value="add_commentaire">
-              <input type="hidden" name="id_article" value="{{ article.id_article }}">
+              <input type="hidden" name="id_article" value="{{ article.id_equipement }}">
                 <form  action="/client/comment/add"  style="display: inline-block;"  method="post" >
                         <button class="btn btn-primary mt-2" > Ajouter un commentaire </button>
                 </form>
             </form>
         {% else %}
-            <small>(seul les clients qui ont acheté cet article peuvent le commenter ou nombre maxi de commentaires sur cet article (5) atteind)</small>
+            <small>(seul les clients qui ont acheté cet article peuvent le commenter ou nombre maxi de commentaires sur cet article (3) atteind)</small>
         {% endif %}
 
     </div>
@@ -126,7 +126,7 @@
 
                 {% for commentaire in commentaires %}
                     <tr>
-                        <td>{{ commentaire.nom }}({{ commentaire.id_utilisateur }})</td>
+                        <td>{{ commentaire.nom }}({{ commentaire.utilisateur_id }})</td>
                         <td>{% if commentaire.utilisateur_id == 1 %}
                             <span style="color: red">(réponse de l'administrateur du site (webmaster) ) :</span>
                             {% endif %}
@@ -135,10 +135,11 @@
 {#                        {{ commentaire.__dict__ }}#}
 {#                        </td>#}
                         <td>
-                            {% if commentaire.id_utilisateur == session['id_user'] %}
+                            {% if commentaire.utilisateur_id == session['id_user'] %}
                                   <form  action="/client/commentaire/delete"  style="display: inline-block;"  method="post" >
-                                      <input type="hidden" name="id_article" value="{{ commentaire.id_article }}">
-                                      <input type="hidden" name="id_utilisateur" value="{{ commentaire.id_utilisateur }}">
+                                      <input type="hidden" name="id_commentaire" value="{{ commentaire.id_commentaire }}">
+                                      <input type="hidden" name="id_article" value="{{ commentaire.equipement_id }}">
+                                      <input type="hidden" name="id_utilisateur" value="{{ commentaire.utilisateur_id }}">
                                       <input type="hidden" name="date_publication" value="{{ commentaire.date_publication }}">
                                       <button class="btn btn-primary" > supprimer </button>
                                   </form>

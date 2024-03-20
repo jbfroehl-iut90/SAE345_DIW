@@ -17,9 +17,17 @@ admin_article = Blueprint('admin_article', __name__,
 @admin_article.route('/admin/article/show')
 def show_article():
     mycursor = get_db().cursor()
-    sql = '''  SELECT * FROM equipement LEFT JOIN categorie_sport on equipement.sport_equipement_id = categorie_sport.id_categorie_sport'''
+    sql = '''  SELECT e.id_equipement, e.libelle_equipement, e.prix_equipement, e.description_equipement, e.image_equipement, 
+    e.marque_equipement_id, e.sport_equipement_id, e.morphologie_equipement_id, COUNT(CASE WHEN c.statut = 0 THEN c.id_commentaire ELSE NULL END) as nb_commentaires_nouveaux 
+    FROM equipement e
+    LEFT JOIN commentaire c ON e.id_equipement = c.equipement_id 
+    GROUP BY e.id_equipement, e.libelle_equipement, e.prix_equipement, e.description_equipement, 
+    e.image_equipement, e.marque_equipement_id,e.sport_equipement_id, e.morphologie_equipement_id;
+'''
     mycursor.execute(sql)
     equipement = mycursor.fetchall()
+    
+    
     return render_template('admin/article/show_article.html', articles=equipement)
 
 

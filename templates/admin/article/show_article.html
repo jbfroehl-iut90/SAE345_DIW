@@ -54,9 +54,9 @@ articles (tableau de dictionnaires)
                    <td>
                   {% if ligne.nb_commentaires_nouveaux is defined %}
                      {% if ligne.nb_commentaires_nouveaux > 0 %}
-                         <a href="/admin/article/commentaires?id_article={{ ligne.id_article }}"><strong style="color: red">{{ ligne.nb_commentaires_nouveaux }} avis non lu(s) ⚠️ </strong></a>
+                         <a href="/admin/article/commentaires?id_article={{ ligne.id_equipement }}"><strong style="color: red">{{ ligne.nb_commentaires_nouveaux }} avis non lu(s) ⚠️ </strong></a>
                      {% else %}
-                        <strong class="text-muted"></strong>
+                        <strong class="text-muted">0 avis non lu</strong>
                      {% endif %}
                   {% else %}
                       nb_avis ND

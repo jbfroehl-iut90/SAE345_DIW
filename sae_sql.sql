@@ -415,3 +415,29 @@ CREATE TABLE ligne_panier(
     CONSTRAINT fk_ligne_panier_declinaison FOREIGN KEY (id_declinaison) REFERENCES declinaison(id_declinaison),
     CONSTRAINT fk_ligne_panier_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur)
 ); 
+
+CREATE TABLE commentaire(
+    id_commentaire INT AUTO_INCREMENT,
+    commentaire VARCHAR(511),
+    statut INT,
+    date_publication DATE,
+    equipement_id INT,
+    utilisateur_id INT,
+    PRIMARY KEY(id_commentaire),
+    CONSTRAINT fk_commentaire_equipement FOREIGN KEY (equipement_id) REFERENCES equipement(id_equipement),
+    CONSTRAINT fk_commentaire_utilisateur FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur)
+    );
+
+INSERT INTO commentaire (commentaire, statut, date_publication, equipement_id, utilisateur_id) VALUES
+('Super produit', 1, '2022-11-11', 1, 3),
+('Bonne qualité', 1, '2022-11-11', 1, 2),
+('Je suis satisfait', 1, '2022-11-11', 2, 1),
+('A acheter', 0, '2022-11-11', 5, 1),
+('Super nickel', 1, '2022-11-11', 4, 2),
+('Parfait', 1, '2022-11-11', 1, 1),
+('Mauvaise qualité', 1, '2022-11-11', 3, 1),
+('Déjà cassé', 0, '2022-11-11', 1, 2),
+('Je recommande', 1, '2022-11-11', 1, 1),
+('A éviter', 1, '2022-11-11', 1, 3),
+('Je suis déçu', 1, '2022-11-11', 1, 2),
+('Je ne recommande pas', 0, '2022-11-11', 1, 1);
