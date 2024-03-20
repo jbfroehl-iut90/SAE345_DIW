@@ -18,6 +18,27 @@ def add_declinaison_article():
     tailles=None
     d_taille_uniq=None
     d_couleur_uniq=None
+
+    sql = ''' SELECT * FROM equipement WHERE id_equipement = %s '''
+    mycursor.execute(sql, (id_article,))
+    article = mycursor.fetchone()
+
+    sql = ''' SELECT * FROM couleur'''
+    mycursor.execute(sql)
+    couleurs = mycursor.fetchall()
+
+    sql = ''' SELECT * FROM taille'''
+    mycursor.execute(sql)
+    tailles = mycursor.fetchall()
+
+    sql = ''' SELECT id_taille, libelle FROM taille WHERE id_taille NOT IN (SELECT id_taille FROM declinaison WHERE id_equipement = %s) '''
+    mycursor.execute(sql, (id_article,))
+    d_taille_uniq = mycursor.fetchall()
+
+    sql = ''' SELECT id_couleur, libelle FROM couleur WHERE id_couleur NOT IN (SELECT id_couleur FROM declinaison WHERE id_equipement = %s) '''
+    mycursor.execute(sql, (id_article,))
+    d_couleur_uniq = mycursor.fetchall()
+
     return render_template('admin/article/add_declinaison_article.html'
                            , article=article
                            , couleurs=couleurs
@@ -36,12 +57,15 @@ def valid_add_declinaison_article():
     taille = request.form.get('taille')
     couleur = request.form.get('couleur')
 
+    sql = ''' INSERT INTO declinaison (id_equipement, stock, id_taille, id_couleur) VALUES (%s, %s, %s, %s) '''
+
     get_db().commit()
     return redirect('/admin/article/edit?id_article=' + id_article)
 
 
 @admin_declinaison_article.route('/admin/declinaison_article/edit', methods=['GET'])
 def edit_declinaison_article():
+    id_article = request.args.get('article_id')
     id_declinaison_article = request.args.get('id_declinaison_article')
     mycursor = get_db().cursor()
     declinaison_article=[]
@@ -49,6 +73,27 @@ def edit_declinaison_article():
     tailles=None
     d_taille_uniq=None
     d_couleur_uniq=None
+
+    sql = ''' SELECT * FROM declinaison WHERE id_declinaison = %s '''
+    mycursor.execute(sql, (id_declinaison_article,))
+    declinaison_article = mycursor.fetchone()
+
+    sql = ''' SELECT * FROM couleur'''
+    mycursor.execute(sql)
+    couleurs = mycursor.fetchall()
+
+    sql = ''' SELECT * FROM taille'''
+    mycursor.execute(sql)
+    tailles = mycursor.fetchall()
+
+    sql = ''' SELECT id_taille, libelle_taille FROM taille WHERE id_taille NOT IN (SELECT id_taille FROM declinaison WHERE id_equipement = %s) '''
+    mycursor.execute(sql, (id_article,))
+    d_taille_uniq = mycursor.fetchall()
+
+    sql = ''' SELECT * FROM couleur WHERE id_couleur NOT IN (SELECT id_couleur FROM declinaison WHERE id_equipement = %s) '''
+    mycursor.execute(sql, (id_article,))
+    d_couleur_uniq = mycursor.fetchall()
+
     return render_template('admin/article/edit_declinaison_article.html'
                            , tailles=tailles
                            , couleurs=couleurs

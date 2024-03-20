@@ -6,8 +6,8 @@
 {% block body %}
     <h2>modifier la déclinaison d'un article </h2>
         <div class="row mt-5">
-            article : <strong>{{ declinaison_article.nom }}</strong><br>
-            {% if declinaison_article.image_article is defined and declinaison_article.image_article is not none %}
+            article : <strong>{{ declinaison_equipement.nom }}</strong><br>
+            {% if declinaison_equipement.image_equipement is defined and declinaison_article.image_equipement is not none %}
             <img class="card-img-top rounded mx-4 d-block"  style="width:200px; height:200px; border: 1px solid black; padding: 25px;"  src="{{ url_for('static', filename = 'images/')}}{{ declinaison_article.image_article}}"  alt="image  de {{ declinaison_article["libelle"] }}" >
             {% else %}
             <i class="card-img-top rounded mx-4 d-block">pas de photo</i>{#{{ declinaison_article|pprint }}#}
@@ -26,11 +26,12 @@
                         <input type="hidden" name="taille" value="1">
                     {% else %}
                     <label for="id_taille">taille :
+                        
                         <select name="id_taille" class="form-select">
                             {% for taille in tailles %}
                                  <option value="{{ taille.id_taille }}"
                                          {% if taille.id_taille == declinaison_article.taille_id %} selected {% endif %}
-                                 > {{ taille.libelle }}</option>
+                                 > {{ taille.libelle_taille }}</option>
                             {% endfor %}
                         </select>
                     </label>
@@ -45,7 +46,7 @@
                             {% for couleur in couleurs %}
                                  <option value="{{ couleur.id_couleur }}"
                                          {% if couleur.id_couleur == declinaison_article.couleur_id %} selected {% endif %}
-                                 > {{ couleur.libelle }}</option>
+                                 > {{ couleur.libelle_couleur }}</option>
                             {% endfor %}
                         </select>
                     </label>

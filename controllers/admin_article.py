@@ -17,7 +17,9 @@ admin_article = Blueprint('admin_article', __name__,
 @admin_article.route('/admin/article/show')
 def show_article():
     mycursor = get_db().cursor()
-    sql = '''  SELECT * FROM equipement LEFT JOIN categorie_sport on equipement.sport_equipement_id = categorie_sport.id_categorie_sport'''
+    sql = '''  SELECT * FROM equipement 
+    LEFT JOIN categorie_sport on equipement.sport_equipement_id = categorie_sport.id_categorie_sport
+    LEFT JOIN declinaison on equipement.id_equipement = declinaison.id_equipement'''
     mycursor.execute(sql)
     equipement = mycursor.fetchall()
     return render_template('admin/article/show_article.html', articles=equipement)
@@ -69,9 +71,9 @@ def valid_add_article():
         filename=None
 
     # Ajoute l'article nouvellement crée dans equipement
-    sql = '''  INSERT INTO equipement (libelle_equipement, image_equipement, prix_equipement, sport_equipement_id, description_equipement, stock) VALUES (%s, %s, %s, %s, %s, %s)'''
+    sql = '''  INSERT INTO equipement (libelle_equipement, image_equipement, prix_equipement, sport_equipement_id, description_equipement) VALUES (%s, %s, %s, %s, %s)'''
 
-    tuple_add = (nom, filename, prix, type_article_id, description, stock)
+    tuple_add = (nom, filename, prix, type_article_id, description)
     print(tuple_add)
     mycursor.execute(sql, tuple_add)
     get_db().commit()

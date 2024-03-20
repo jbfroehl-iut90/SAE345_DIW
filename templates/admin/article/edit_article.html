@@ -35,7 +35,7 @@ types_article : tableau de dictionnaires
                         <input name="image"  onchange="loadFile(event)" type="file" class="form-control" value="testeuu.jpg">
                     </label>
                     <label for="stock">Stock :
-                        <input name="stock" type="number" min="0" value="{{ article.stock }}" class="form-control">
+                        <input name="stock" type="number" min="0" value="{{ declinaisons_article.stock }}" class="form-control">
                     </label>
 
                 <label for="type_article_id">Type de l'article :
