@@ -90,22 +90,29 @@ def client_article_show():                                 # remplace client_ind
     session['filtre'] = True
 
     articles_panier = []
+    sql = ''' select * from ligne_panier where id_utilisateur = %s '''
+    mycursor.execute(sql, id_client)
+    articles_panier = mycursor.fetchall()
+    print(articles_panier)
+
+    print("len : ",len(articles_panier))
 
     if len(articles_panier) >= 1:
-        sql = '''  select libelle_equipement, quantite, prix, id_declinaison, id_utilisateur from ligne_panier where id_utilisateur = %s 
-        left join declinaison on ligne_panier.id_declinaison = declinaison.id_declinaison
-        left join equipement on declinaison.id_equipement = equipement.id_equipement'''
+        sql = ''' select equipement.libelle_equipement, id_ligne_panier,  quantite, prix, ligne_panier.id_declinaison, id_utilisateur 
+        from ligne_panier, declinaison, equipement
+        where ligne_panier.id_declinaison = declinaison.id_declinaison and declinaison.id_equipement = equipement.id_equipement and id_utilisateur = %s''' 
         mycursor.execute(sql, id_client)
         articles_panier = mycursor.fetchall()
 
-        sql = ''' select sum(prix) as prix_total from ligne_panier where id_utilisateur = %s left join equipement on ligne_panier.id_article = equipement.id_equipement'''
+        # Total de tout les éléments dans le panier (donc stock * prix + stock * prix + ...)
+        sql = ''' SELECT SUM(prix * quantite) as prix_total 
+        FROM ligne_panier, declinaison 
+        WHERE ligne_panier.id_declinaison = declinaison.id_declinaison AND id_utilisateur = %s'''
+        mycursor.execute(sql, id_client)
         prix_total = mycursor.fetchone()
 
     else:
-        sql = ''' select equipement.libelle_equipement, id_ligne_panier,  quantite, prix, ligne_panier.id_declinaison, id_utilisateur from ligne_panier
-        left join declinaison on ligne_panier.id_declinaison = declinaison.id_declinaison
-        left join equipement on declinaison.id_equipement = equipement.id_equipement
-        where id_utilisateur = %s'''
+        sql = ''' select * from ligne_panier where id_utilisateur = %s '''
         mycursor.execute(sql, id_client)
         articles_panier = mycursor.fetchall()
 

@@ -59,9 +59,7 @@ def client_panier_add_declinaison():
     quantite = request.form.get('quantite')
     id_declinaison_article = request.form.get('id_declinaison', None)
     prix = request.form.get('prix', None)
-    
-    print("id_declinaison_article final", id_declinaison_article)
-    print("prix final", prix)
+    # ajout dans le panier d'une déclinaison d'un article (si 1 declinaison : immédiat sinon => vu pour faire un choix
     sql = ''' SELECT * FROM ligne_panier WHERE id_declinaison = %s AND id_utilisateur = %s '''
     mycursor.execute(sql, (id_declinaison_article, id_client))
     article_panier = mycursor.fetchone()
