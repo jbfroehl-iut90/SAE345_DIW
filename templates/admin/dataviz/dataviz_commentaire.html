@@ -53,18 +53,14 @@
 
 <h2>visualisation de données : graph.js</h2>
 <h3>Documentation</h3>
-<br>
-    <a href="https://tobiasahlin.com/blog/chartjs-charts-to-get-you-started/" target="_blank"> tuto partie1 graph.js</a><br>
-    <a href="https://tobiasahlin.com/blog/introduction-to-chartjs" target="_blank"> tuto partie2 graph.js</a>&nbsp;
-<br>
-    <a href="https://www.youtube.com/watch?v=E2hytuQvLlE" target="_blank"> vidéo : flask + graph.js</a>&nbsp;
-    <br>
-
+    <br><br>
+    <h2>graphique nombre de note supérieure ou égale à 4/5</h2>
+    {# https://jinja.palletsprojects.com/en/3.0.x/templates/#html-escaping #}
 {# https://jinja.palletsprojects.com/en/3.0.x/templates/#html-escaping #}
-    <div style="width: 900px; height: 500px; border: #0a53be 1px solid;">
+    <div style="width: 800; height: 500; border: #0a53be 1px solid;">
         <canvas id="Chart1" ></canvas>
     </div>
-    graphique 1
+    graphique nombre de note supérieure ou égale à 4/5
     <script>
 	var ctx1 = document.getElementById("Chart1").getContext("2d");
 	var Chart1 = new Chart( ctx1, {
@@ -73,16 +69,46 @@
   			labels: {{ labels | safe }},
   			datasets: [
   				{
-  				label: "Type d'articles (nombre)",
-  				data: {{ values | safe }},
+  				label: "Notes >= 4/5",
+  				data: {{ values_graph | safe }},
   				fill: false,
                  backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850",
              "#faf24c"
              , "#6a6ce7","#55f68f","#D0c309","#c45000"],
   				borderColor: "rgb(75,192,192)",
-  				lineTension: 0.1
+  				lineTension: 10
   				}
-  			]
+  			],
+  		},
+  		option: {
+  			responsive: false
+  		}
+	});
+    </script>
+    <br><br><br>
+    <h2>graphique nombre de note inférieure à 3/5</h2>
+    <div style="width: auto; height: auto; border: #0a53be 1px solid;">
+        <canvas id="Chart2" ></canvas>
+    </div>
+    graphique nombre de note inférieure à 3/5
+    <script>
+	var ctx1 = document.getElementById("Chart2").getContext("2d");
+	var Chart1 = new Chart( ctx1, {
+  		type: "bar",
+  		data: {
+  			labels: {{ labels | safe }},
+  			datasets: [
+  				{
+  				label: "Notes < 3/5",
+  				data: {{ values_graph2 | safe }},
+  				fill: false,
+                 backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850",
+             "#faf24c"
+             , "#6a6ce7","#55f68f","#D0c309","#c45000"],
+  				borderColor: "rgb(75,192,192)",
+  				lineTension: 10
+  				}
+  			],
   		},
   		option: {
   			responsive: false
@@ -105,7 +131,7 @@
          backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850",
              "#faf24c"
              , "#6a6ce7","#55f68f","#D0c309","#c45000"],
-        data: {{ values | safe }},
+        data: {{ values_graph2 | safe }},
       }]
     },
     options: {

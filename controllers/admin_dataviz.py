@@ -85,7 +85,6 @@ def show_commentaire_data():
     i = 0
     for row in values:
         id = row['id_equipement']
-        print(row['id_equipement'])
         sql = ''' SELECT COUNT(id_commentaire) as nb_commentaire FROM commentaire WHERE equipement_id = %s;'''
         mycursor.execute(sql, (id, ))
         values[i]['nb_commentaire'] = mycursor.fetchall()[0]['nb_commentaire']
@@ -95,9 +94,45 @@ def show_commentaire_data():
 
         i += 1
     
-    print(values)
+    
+    values_graph = []
+    sql = '''
+            SELECT libelle_categorie_sport FROM categorie_sport;
+           '''    
+    mycursor.execute(sql)
+    labels_val = mycursor.fetchall()
+    labels = [str(row['libelle_categorie_sport']) for row in labels_val]
+    
+    sql = ''' SELECT id_categorie_sport FROM categorie_sport;'''
+    mycursor.execute(sql)
+    ids = mycursor.fetchall()
+    
+    temp_values = []
+    for id in ids:
+        sql = ''' SELECT COUNT(id_note) as nb_note FROM note
+                    JOIN equipement ON note.id_equipement = equipement.id_equipement
+                    JOIN categorie_sport ON equipement.sport_equipement_id = categorie_sport.id_categorie_sport
+                    WHERE categorie_sport.id_categorie_sport = %s AND note > 3.9;'''
+        mycursor.execute(sql, (id['id_categorie_sport'],))
+        temp_values.append(mycursor.fetchall()[0]['nb_note'])
+    
+    values_graph = [int(row) for row in temp_values]
+    
+    temp_values = []
+    for id in ids:
+        sql = ''' SELECT COUNT(id_note) as nb_note FROM note
+                    JOIN equipement ON note.id_equipement = equipement.id_equipement
+                    JOIN categorie_sport ON equipement.sport_equipement_id = categorie_sport.id_categorie_sport
+                    WHERE categorie_sport.id_categorie_sport = %s AND note < 3;'''
+        mycursor.execute(sql, (id['id_categorie_sport'],))
+        temp_values.append(mycursor.fetchall()[0]['nb_note'])
+    
+    values_graph2 = [int(row) for row in temp_values]
+    print(values_graph)
     
     return render_template('admin/dataviz/dataviz_commentaire.html'
                            , datas_show=datas_show
                            , labels=labels
-                           , values=values)
+                           , values=values,
+                           values_graph = values_graph,
+                           values_graph2 = values_graph2)
