@@ -427,14 +427,36 @@ CREATE TABLE note(
     sql='''INSERT INTO commentaire (commentaire, statut, date_publication, equipement_id, utilisateur_id) VALUES
 ('Super produit (publié le 17/11)', 1, '2022-11-17', 1, 3),
 ('Bonne qualité (publié le 15/11)', 1, '2022-11-15', 1, 2),
-('Je suis satisfait', 1, '2022-11-19', 2, 1),
+('Je suis satisfait', 1, '2022-11-19', 2, 2),
 ('A acheter', 0, '2022-11-12 10:15:15', 5, 2),
 ('Super nickel', 1, '2022-10-11', 4, 2),
-('Mauvaise qualité', 0, '2022-11-11', 3, 1),
+('Mauvaise qualité', 0, '2022-11-11', 3, 3),
 ('Déjà cassé', 0, '2022-11-11', 1, 2),
 ('A éviter', 0, '2022-11-11', 1, 3),
-('Je suis déçu', 1, '2022-11-11', 1, 2);'''
+('Je suis déçu', 1, '2022-11-11', 1, 2),
+('Je recommande', 1, '2022-11-11', 1, 2),
+('Je suis satisfait', 1, '2022-11-11', 5, 2),
+('Abimé', 0, '2022-11-11', 5, 2),
+('Je suis satisfait', 0, '2022-11-11', 5, 2),
+('Acheter pour mon fils', 1, '2022-11-11', 6, 3),
+('Je suis satisfait', 1, '2022-11-11', 7, 3),
+('Je recommande', 1, '2022-11-11', 8, 2),
+('Je suis satisfait', 0, '2022-11-11', 9, 2),
+('Je recommande', 0, '2022-11-11', 10, 2),
+('Je suis satisfait', 1, '2022-11-11', 11, 2),
+('Je recommande', 0, '2022-11-11', 12, 2),
+('Je suis satisfait', 1, '2022-11-11', 13, 2),
+('Je recommande', 1, '2022-11-11', 14, 2),
+('Je suis satisfait', 1, '2022-11-11', 15, 2),
+('Je recommande', 0, '2022-11-11', 16, 2),
+('Je suis satisfait', 1, '2022-11-11', 17, 2),
+('Je recommande', 0, '2022-11-11', 18, 2),
+('Je suis satisfait', 1, '2022-11-11', 19, 2),
+('Je recommande', 1, '2022-11-11', 20, 2),
+('Je suis satisfait', 1, '2022-11-11', 19, 2),
+('Je recommande', 1, '2022-11-11', 20, 2);
+'''
     mycursor.execute(sql)
-    
+
     get_db().commit()
     return redirect('/')
