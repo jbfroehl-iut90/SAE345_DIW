@@ -20,32 +20,23 @@
 {% block body %}
 <br>
 
-    <h2> nombre d'articles :
-{#    <span style="color: red;">{{ cout_total.nbr_articles }}</span></h2>#}
+    <h2> nombre total de commentaire : <span style="color: red;">{{ datas_show[0]['nb_commentaire_total'] }}</span></h2>
 
 <table class="table">
     <thead class="thead-dark">
         <tr>
-           <th>type d'article</th> <th>(id)</th><th>nombre d'articles</th>
+           <th>nom equipement</th> <th>(id)</th><th>nombre de commentaire</th><th>nombre de note</th>
         </tr>
     </thead>
     <tbody>
-    {% if types_articles_nb | length >= 1 %}
-        {% for ligne in types_articles_nb %}
-           <tr>
-                  <td>{{ ligne.libelle }}</td>
-                  <td>{{ ligne.id_type_article }}</td>
-                   <td><span style="color: red">
-                       {% if ligne.nbr_articles_stock is not none %}  {{ ligne.nbr_articles }} {% else %}
-                       pas d'article {% endif %}
-                   </span></td>
-
-           </tr>
+        {% for data in values %}
+            <tr>
+                <td>{{ data['libelle_equipement'] }}</td>
+                <td>{{ data['id_equipement'] }}</td>
+                <td>{{ data['nb_commentaire'] }}</td>
+                <td>{{ data['nb_note'] }}</td>
+            </tr>
         {% endfor %}
-    {% else %}
-        pas de stock
-    {% endif %}
-    </tbody>
 </table>
     <br>
 {#    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>#}

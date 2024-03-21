@@ -65,22 +65,38 @@ def show_dataviz_map():
 
 @admin_dataviz.route('/admin/dataviz/dataviz_commentaire')
 def show_commentaire_data():
-    mycursor = get_db().cursor()
-    sql = '''
-    
-           '''
-    # mycursor.execute(sql)
-    # datas_show = mycursor.fetchall()
-    # labels = [str(row['libelle']) for row in datas_show]
-    # values = [int(row['nbr_articles']) for row in datas_show]
-
-    # sql = '''
-    #         
-    #        '''
     datas_show=[]
     labels=[]
     values=[]
+    mycursor = get_db().cursor()
+    sql = '''
+            SELECT COUNT(id_commentaire) as nb_commentaire_total from commentaire;
+           '''
+    mycursor.execute(sql)
+    datas_show = mycursor.fetchall()
+    print(datas_show)
+    
+    sql = '''
+            SELECT id_equipement, libelle_equipement FROM equipement;
+            '''
+    
+    mycursor.execute(sql)
+    values = mycursor.fetchall()
+    i = 0
+    for row in values:
+        id = row['id_equipement']
+        print(row['id_equipement'])
+        sql = ''' SELECT COUNT(id_commentaire) as nb_commentaire FROM commentaire WHERE equipement_id = %s;'''
+        mycursor.execute(sql, (id, ))
+        values[i]['nb_commentaire'] = mycursor.fetchall()[0]['nb_commentaire']
+        sql= ''' SELECT COUNT(id_note) as nb_note FROM note WHERE id_equipement = %s;'''
+        mycursor.execute(sql, (id,))
+        values[i]['nb_note'] = mycursor.fetchall()[0]['nb_note']
 
+        i += 1
+    
+    print(values)
+    
     return render_template('admin/dataviz/dataviz_commentaire.html'
                            , datas_show=datas_show
                            , labels=labels
