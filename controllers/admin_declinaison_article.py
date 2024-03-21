@@ -31,11 +31,11 @@ def add_declinaison_article():
     mycursor.execute(sql)
     tailles = mycursor.fetchall()
 
-    sql = ''' SELECT id_taille, libelle FROM taille WHERE id_taille NOT IN (SELECT id_taille FROM declinaison WHERE id_equipement = %s) '''
+    sql = ''' SELECT id_taille, libelle_taille FROM taille WHERE id_taille NOT IN (SELECT id_taille FROM declinaison WHERE id_equipement = %s) '''
     mycursor.execute(sql, (id_article,))
     d_taille_uniq = mycursor.fetchall()
 
-    sql = ''' SELECT id_couleur, libelle FROM couleur WHERE id_couleur NOT IN (SELECT id_couleur FROM declinaison WHERE id_equipement = %s) '''
+    sql = ''' SELECT id_couleur, libelle_couleur FROM couleur WHERE id_couleur NOT IN (SELECT id_couleur FROM declinaison WHERE id_equipement = %s) '''
     mycursor.execute(sql, (id_article,))
     d_couleur_uniq = mycursor.fetchall()
 
@@ -57,8 +57,8 @@ def valid_add_declinaison_article():
     taille = request.form.get('taille')
     couleur = request.form.get('couleur')
 
-    sql = ''' INSERT INTO declinaison (id_equipement, stock, id_taille, id_couleur) VALUES (%s, %s, %s, %s) '''
-
+    sql = ''' INSERT INTO declinaison (id_equipement, stock, taille_declinaison, couleur_declinaison) VALUES (%s, %s, %s, %s) '''
+    mycursor.execute(sql, (id_article, stock, taille, couleur))
     get_db().commit()
     return redirect('/admin/article/edit?id_article=' + id_article)
 
@@ -74,8 +74,8 @@ def edit_declinaison_article():
     d_taille_uniq=None
     d_couleur_uniq=None
 
-    sql = ''' SELECT * FROM declinaison WHERE id_declinaison = %s '''
-    mycursor.execute(sql, (id_declinaison_article,))
+    sql = ''' SELECT * FROM declinaison LEFT JOIN equipement ON equipement.id_equipement = declinaison.id_equipement WHERE id_declinaison = %s'''
+    mycursor.execute(sql, (id_declinaison_article, ))
     declinaison_article = mycursor.fetchone()
 
     sql = ''' SELECT * FROM couleur'''
@@ -90,7 +90,7 @@ def edit_declinaison_article():
     mycursor.execute(sql, (id_article,))
     d_taille_uniq = mycursor.fetchall()
 
-    sql = ''' SELECT * FROM couleur WHERE id_couleur NOT IN (SELECT id_couleur FROM declinaison WHERE id_equipement = %s) '''
+    sql = ''' SELECT * FROM couleur WHERE id_couleur NOT IN (SELECT id_couleur FROM declinaison WHERE id_equipement = %s)'''
     mycursor.execute(sql, (id_article,))
     d_couleur_uniq = mycursor.fetchall()
 
@@ -113,6 +113,10 @@ def valid_edit_declinaison_article():
 
     mycursor = get_db().cursor()
 
+    sql = ''' UPDATE declinaison SET stock = %s, taille_declinaison = %s, couleur_declinaison = %s WHERE id_declinaison = %s '''
+    mycursor.execute(sql, (stock, taille_id, couleur_id, id_declinaison_article))
+    get_db().commit()
+
     message = u'declinaison_article modifié , id:' + str(id_declinaison_article) + '- stock :' + str(stock) + ' - taille_id:' + str(taille_id) + ' - couleur_id:' + str(couleur_id)
     flash(message, 'alert-success')
     return redirect('/admin/article/edit?id_article=' + str(id_article))
@@ -122,6 +126,11 @@ def valid_edit_declinaison_article():
 def admin_delete_declinaison_article():
     id_declinaison_article = request.args.get('id_declinaison_article','')
     id_article = request.args.get('id_article','')
+
+    mycursor = get_db().cursor()
+    sql = ''' DELETE FROM declinaison WHERE id_declinaison = %s '''
+    mycursor.execute(sql, (id_declinaison_article,))
+    get_db().commit()
 
     flash(u'declinaison supprimée, id_declinaison_article : ' + str(id_declinaison_article),  'alert-success')
     return redirect('/admin/article/edit?id_article=' + str(id_article))

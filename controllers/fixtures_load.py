@@ -11,7 +11,7 @@ fixtures_load = Blueprint('fixtures_load', __name__,
 @fixtures_load.route('/base/init')
 def fct_fixtures_load():
     mycursor = get_db().cursor()
-    sql=''' DROP TABLE IF EXISTS declinaison, ligne_commande, commande, etat, ligne_panier, note, commentaire, equipement, categorie_sport, couleur, morphologie, marque, taille, utilisateur;  '''
+    sql=''' DROP TABLE IF EXISTS adresse, declinaison, ligne_commande, commande, etat, ligne_panier, note, commentaire, equipement, categorie_sport, couleur, morphologie, marque, taille, utilisateur;  '''
     mycursor.execute(sql)
 
     sql='''
@@ -457,6 +457,32 @@ CREATE TABLE note(
 ('Je recommande', 1, '2022-11-11', 20, 2);
 '''
     mycursor.execute(sql)
+
+    sql = '''
+    CREATE TABLE adresse(
+    id_adresse INT AUTO_INCREMENT,
+    adresse VARCHAR(255),
+    code_postal VARCHAR(255),
+    ville VARCHAR(255),
+    valide tinyint(1),
+    nom VARCHAR(255),
+    id_utilisateur INT,
+    PRIMARY KEY(id_adresse),
+    CONSTRAINT fk_adresse_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur)
+);
+            '''
+    mycursor.execute(sql)
+
+    sql = '''
+    INSERT INTO adresse (adresse, code_postal, ville, valide,nom, id_utilisateur) VALUES
+    ('1 rue du groudron par terre', '75000', 'Paris',1,'Jean', 2),
+    ('2 rue des petits canards', '69000', 'Lyon',0,'Jeanne', 2),
+    ('3 rue du chocolat en poudre', '13000', 'Marseille',0,'Jean', 2),
+    ('4 chemin du pont', '31000', 'Toulouse',1,'Jeanne', 2),
+    ('5 rue du grand mechant loup', '33000', 'Bordeaux',1,'Jean', 2);
+    '''
+    mycursor.execute(sql)
+
 
     get_db().commit()
     return redirect('/')

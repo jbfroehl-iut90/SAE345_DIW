@@ -37,15 +37,14 @@
             </thead>
             <tbody>
                 {% for adresse in adresses %}
-                    <tr {% if adresse.valide is defined and adresse.valide==0 %} style="color: darkorange"{% endif %}>
-
+                    <tr {% if adresse.valide is defined and adresse.valide==0 %} style="color: darkorange" {% endif %}>
                         <td>{{ adresse.nom }}-{{ adresse.valide}}</td>
-                        <td>{{ adresse.rue }}</td>
+                        <td>{{ adresse.adresse }}</td>
                         <td>{{ adresse.code_postal }}</td>
                         <td>{{ adresse.ville }}</td>
                         <td>
                             {% if adresse.valide is defined and adresse.valide==0 %}
-                                <span style="color: darkorange">*</span>
+                                <span style="color: darkorange">* En attente de validation</span>
                             {% else %}
                                 <a class="btn btn-primary" href="/client/coordonnee/edit_adresse?id_adresse={{ adresse.id_adresse }}"> Modifier </a>
                             <form action="/client/coordonnee/delete_adresse" style="display: inline-block;"  method="post">

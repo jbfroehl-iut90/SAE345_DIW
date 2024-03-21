@@ -32,6 +32,12 @@ def show_article():
         mycursor.execute(sql, (id_equipement['id_equipement'], ))
         stock = mycursor.fetchone()
         id_equipement['stock'] = stock['stock']
+
+        # NOmbre de déclinasons
+        sql = ''' SELECT COUNT(*) as nb_declinaisons FROM declinaison 
+        WHERE id_equipement = %s'''
+        mycursor.execute(sql, (id_equipement['id_equipement'], ))
+        id_equipement['nb_declinaisons'] = mycursor.fetchone()['nb_declinaisons']
         
         sql = ''' SELECT COUNT(*) as nb_commentaires_nouveaux FROM commentaire
         WHERE equipement_id = %s AND statut = 0;'''
@@ -179,7 +185,7 @@ def valid_edit_article():
     prix = request.form.get('prix', '')
     description = request.form.get('description')
     sql = '''
-    SELECT image FROM equipement WHERE id_equipement = %s
+    SELECT image_equipement FROM equipement WHERE id_equipement = %s
        '''
     mycursor.execute(sql, id_article)
     image_nom = mycursor.fetchone()
@@ -195,7 +201,7 @@ def valid_edit_article():
             image_nom = filename
 
     # UPdate de la table equipement avec les changements effectués
-    sql = ''' UPDATE TABLE equipement SET libelle_equipement = %s, image_equipement = %s, prix_equipement = %s, sport_equipement_id = %s, description = %s WHERE id_equipement = %s'''
+    sql = ''' UPDATE equipement SET libelle_equipement = %s, image_equipement = %s, prix_equipement = %s, sport_equipement_id = %s, description_equipement = %s WHERE id_equipement = %s'''
     mycursor.execute(sql, (nom, image_nom, prix, type_article_id, description, id_article))
     get_db().commit()
     if image_nom is None:
