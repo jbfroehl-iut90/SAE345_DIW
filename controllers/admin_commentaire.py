@@ -51,7 +51,8 @@ def admin_comment_add():
         id_article = request.args.get('id_article', None)
         date_publication = request.args.get('date_publication', None)
         id_commentaire = request.args.get('id_commentaire', None)
-        return render_template('admin/article/add_commentaire.html',id_utilisateur=id_utilisateur,id_article=id_article,date_publication=date_publication, id_commentaire=id_commentaire) 
+        libelle = request.args.get('libelle', None)
+        return render_template('admin/article/add_commentaire.html',id_utilisateur=id_utilisateur,id_article=id_article,date_publication=date_publication, id_commentaire=id_commentaire, libelle=libelle) 
 
     mycursor = get_db().cursor()
     id_utilisateur = session['id_user']   #1 admin
