@@ -130,9 +130,22 @@ def show_commentaire_data():
     values_graph2 = [int(row) for row in temp_values]
     print(values_graph)
     
+    labels_2 = ['Commentaires invalidés', 'Commentaires validés']
+    temp_values = []
+    sql = ''' SELECT COUNT(id_commentaire) as nb_commentaire_invalider FROM commentaire WHERE statut=0;'''
+    mycursor.execute(sql)
+    temp_values.append(mycursor.fetchall()[0]['nb_commentaire_invalider'])
+    sql = ''' SELECT COUNT(id_commentaire) as nb_commentaire_valider FROM commentaire WHERE statut=1;'''
+    mycursor.execute(sql)
+    temp_values.append(mycursor.fetchall()[0]['nb_commentaire_valider'])
+    values_graph3 = [int(row) for row in temp_values]
+    print(values_graph3)
     return render_template('admin/dataviz/dataviz_commentaire.html'
                            , datas_show=datas_show
                            , labels=labels
                            , values=values,
                            values_graph = values_graph,
-                           values_graph2 = values_graph2)
+                           values_graph2 = values_graph2,
+                           values_graph3 = values_graph3,
+                            labels_2 = labels_2
+                           )

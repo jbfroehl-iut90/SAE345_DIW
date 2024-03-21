@@ -125,13 +125,13 @@
 	var Chart2 = new Chart(document.getElementById("pie-chart"), {
     type: 'pie',
     data: {
-      labels: {{ labels | safe }},
+      labels: {{ labels_2 | safe }},
       datasets: [{
-        label: "Type d'articles (nombre)",
+        label: "Infos commentaire",
          backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850",
              "#faf24c"
              , "#6a6ce7","#55f68f","#D0c309","#c45000"],
-        data: {{ values_graph2 | safe }},
+        data: {{ values_graph3 | safe }},
       }]
     },
     options: {
@@ -142,8 +142,4 @@
      }
     });
     </script>
-
-    <a href="https://www.youtube.com/watch?v=TcwYXIIM-fs" target="_blank">dataviz, c'est quoi en 1 mn ? (juste la première minute)</a>
-    <br>
-    <a href="https://www.youtube.com/watch?v=bZDnSUjfMt8" target="_blank">dataviz, c'est quoi ? (juste la première minute)</a>
 {% endblock %}
