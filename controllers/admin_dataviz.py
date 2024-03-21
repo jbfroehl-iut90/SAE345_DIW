@@ -63,3 +63,25 @@ def show_dataviz_map():
                           )
 
 
+@admin_dataviz.route('/admin/dataviz/dataviz_commentaire')
+def show_commentaire_data():
+    mycursor = get_db().cursor()
+    sql = '''
+    
+           '''
+    # mycursor.execute(sql)
+    # datas_show = mycursor.fetchall()
+    # labels = [str(row['libelle']) for row in datas_show]
+    # values = [int(row['nbr_articles']) for row in datas_show]
+
+    # sql = '''
+    #         
+    #        '''
+    datas_show=[]
+    labels=[]
+    values=[]
+
+    return render_template('admin/dataviz/dataviz_commentaire.html'
+                           , datas_show=datas_show
+                           , labels=labels
+                           , values=values)
