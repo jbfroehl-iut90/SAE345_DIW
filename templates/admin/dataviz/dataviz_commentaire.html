@@ -33,8 +33,18 @@
             <tr>
                 <td>{{ data['libelle_equipement'] }}</td>
                 <td>{{ data['id_equipement'] }}</td>
-                <td>{{ data['nb_commentaire'] }}</td>
-                <td>{{ data['nb_note'] }}</td>
+                {% if data['nb_commentaire'] < 1 %}
+                    <td><span style="color: red;" >{{ data['nb_commentaire'] }}</span></td>
+                {% else %}
+                    <td>{{ data['nb_commentaire'] }}</td>
+                {% endif %}
+
+                {% if data['nb_note'] < 1 %}
+                    <td><span style="color: red;">{{ data['nb_note'] }}</span><td>
+                {% else %}
+                    <td>{{ data['nb_note'] }}</td>
+                {% endif %}
+
             </tr>
         {% endfor %}
 </table>

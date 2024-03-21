@@ -248,10 +248,19 @@ CREATE TABLE note(
     sql='''
     INSERT INTO note (note, id_equipement, utilisateur_id) VALUES 
     (5.0, 1, 3),
+    (4.5, 1, 2),
     (4.5, 2, 2),
+    (3.5, 3, 3),
     (3.5, 3, 1),
     (2.0, 4, 1),
-    (1.0, 5, 2);'''
+    (1.0, 5, 2),
+    (5.0, 6, 3),
+    (4.5, 7, 3),
+    (3.5, 8, 3),
+    (3.5, 9, 1),
+    (2.0, 10, 3),
+    (1.0, 10, 2)
+    ;'''
     mycursor.execute(sql)
     
 
