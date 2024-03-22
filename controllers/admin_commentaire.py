@@ -95,3 +95,13 @@ def admin_comment_valider():
     mycursor.execute(sql, (id_article,))
     get_db().commit()
     return redirect('/admin/article/commentaires?id_article='+id_article)
+
+@admin_commentaire.route('/admin/article/commentaires/valider_un_commentaire', methods=['POST','GET'])
+def admin_comment_valider_commentaire():
+    id_article = request.args.get('id_article', None)
+    id_commentaire = request.args.get('id_commentaire', None)
+    mycursor = get_db().cursor()
+    sql = '''   UPDATE commentaire SET statut=1 WHERE statut=0 and equipement_id=%s and id_commentaire=%s;   '''
+    mycursor.execute(sql, (id_article, id_commentaire))
+    get_db().commit()
+    return redirect('/admin/article/commentaires?id_article='+id_article)
