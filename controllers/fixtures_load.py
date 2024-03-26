@@ -549,5 +549,18 @@ CREATE TABLE note(
     (3, 8, '2021-11-06', 4);    '''
     mycursor.execute(sql)
     
+    sql=  '''
+    CREATE TABLE historique(
+        id_historique INT AUTO_INCREMENT,
+        id_utilisateur INT,
+        id_equipement INT,
+        date_consultation DATE,
+        PRIMARY KEY(id_historique),
+        CONSTRAINT fk_historique_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur),
+        CONSTRAINT fk_historique_equipement FOREIGN KEY (id_equipement) REFERENCES equipement(id_equipement)
+        );
+        '''
+    mycursor.execute(sql)
+    
     get_db().commit()
     return redirect('/')
