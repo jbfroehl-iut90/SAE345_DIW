@@ -97,6 +97,29 @@ def client_historique_add(article_id, client_id):
 
 
 @client_liste_envies.route('/client/envies/down', methods=['get'])
+def client_liste_envies_article_move_down():
+    mycursor = get_db().cursor()
+    id_client = session['id_user']
+    id_article = request.args.get('id_article')
+    sql = ''' SELECT ordre FROM liste_envie WHERE id_utilisateur = %s AND id_equipement = %s;'''
+    mycursor.execute(sql, (id_client, id_article))
+    ordre = mycursor.fetchone()['ordre']
+    
+    sql = '''
+    UPDATE liste_envie SET ordre = ordre + 1
+    WHERE id_utilisateur = %s AND ordre = %s;
+    '''
+    mycursor.execute(sql, (id_client, ordre + 1))
+    
+    sql = '''
+    UPDATE liste_envie SET ordre = ordre - 1
+    WHERE id_utilisateur = %s AND id_equipement = %s;
+    '''
+    mycursor.execute(sql, (id_client, id_article))
+    
+    
+    get_db().commit()
+    return redirect('/client/envies/show')
 
 @client_liste_envies.route('/client/envies/up', methods=['get'])
 def client_liste_envies_article_move_up():
