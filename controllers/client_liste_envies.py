@@ -55,13 +55,22 @@ def client_liste_envies_show():
     articles_liste_envies = []
     articles_historique = []
     sql = '''
-    SELECT 
+    SELECT e.id_equipement as id_article, e.libelle_equipement as nom, e.prix_equipement as prix, e.image_equipement as image,
+    COUNT(d.id_declinaison) as nb_declinaisons, SUM(d.stock) as stock
+    FROM liste_envie l
+    LEFT JOIN equipement e ON l.id_equipement = e.id_equipement
+    LEFT JOIN declinaison d ON e.id_equipement = d.id_equipement
+    WHERE l.id_utilisateur = %s
+    GROUP BY e.id_equipement
+    '''
+    mycursor.execute(sql, (id_client, ))
+    articles_liste_envies = mycursor.fetchall()
     return render_template('client/liste_envies/liste_envies_show.html'
                            ,articles_liste_envies=articles_liste_envies
                            , articles_historique=articles_historique
                            #, nb_liste_envies= nb_liste_envies
                            )
-
+    
 
 
 def client_historique_add(article_id, client_id):
