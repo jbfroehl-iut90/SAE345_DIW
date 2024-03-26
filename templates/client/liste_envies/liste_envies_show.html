@@ -20,7 +20,7 @@ articles (tableau de dictionnaires)
 <table class="table">
     <thead class="thead-dark">
         <tr>
-            <th>nom</th><th>id</th><th>prix</th><th>stock</th><th>nb déclinaisons</th><th>image</th><th>opération</th>
+            <th>nom</th><th>id</th><th>prix</th><th>stock</th><th>date ajout</th><th>nb déclinaisons</th><th>image</th><th>opération</th>
         </tr>
     </thead>
     <tbody>
@@ -42,7 +42,7 @@ articles (tableau de dictionnaires)
                   {% endif %}
                   </td>
 
-                 {# <td>{{ ligne.date_create }} {{ ligne.date_create.strftime('%d-%m-%Y') }} </td> #}
+                 { <td> {{ ligne.date_create.strftime('%d-%m-%Y') }} </td> }
                   <td>
                       {% if ligne.nb_declinaisons is defined %}
                         {{ ligne.nb_declinaisons }}

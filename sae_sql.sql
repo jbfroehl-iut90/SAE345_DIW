@@ -506,4 +506,12 @@ INSERT INTO adresse (adresse, code_postal, ville, valide,nom, id_utilisateur) VA
     ('4 chemin du pont', '31000', 'Toulouse',1,'Jeanne', 2),
     ('5 rue du grand mechant loup', '33000', 'Bordeaux',1,'Jean', 2);
     
-    
+CREATE TABLE liste_envie(
+    id_liste_envie INT AUTO_INCREMENT,
+    id_utilisateur INT,
+    id_equipement INT,
+    date_ajout DATE,
+    PRIMARY KEY(id_liste_envie, id_utilisateur, id_equipement),
+    CONSTRAINT fk_liste_envie_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur),
+    CONSTRAINT fk_liste_envie_equipement FOREIGN KEY (id_equipement) REFERENCES equipement(id_equipement)
+    );
