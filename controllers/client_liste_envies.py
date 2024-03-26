@@ -2,6 +2,8 @@
 # -*- coding:utf-8 -*-
 from flask import Blueprint
 from flask import Flask, request, render_template, redirect, url_for, abort, flash, session, g
+import os
+from datetime import datetime
 
 from connexion_db import get_db
 
@@ -14,11 +16,13 @@ def client_liste_envies_add():
     mycursor = get_db().cursor()
     id_client = session['id_user']
     id_article = request.args.get('id_article')
+    myDate = datetime.now()
+    print(myDate)
     sql = '''
-    INSERT INTO liste_envie (id_utilisateur, id_equipement)
-    VALUES (%s, %s)
+    INSERT INTO liste_envie (id_utilisateur, id_equipement, date_ajout)
+    VALUES (%s, %s, %s)
     '''
-    mycursor.execute(sql, (id_client, id_article))
+    mycursor.execute(sql, (id_client, id_article, myDate))
     get_db().commit()
     return redirect('/client/article/show')
 
@@ -56,7 +60,7 @@ def client_liste_envies_show():
     articles_historique = []
     sql = '''
     SELECT e.id_equipement as id_article, e.libelle_equipement as nom, e.prix_equipement as prix, e.image_equipement as image,
-    COUNT(d.id_declinaison) as nb_declinaisons, SUM(d.stock) as stock
+    COUNT(d.id_declinaison) as nb_declinaisons, SUM(d.stock) as stock, date_ajout 
     FROM liste_envie l
     LEFT JOIN equipement e ON l.id_equipement = e.id_equipement
     LEFT JOIN declinaison d ON e.id_equipement = d.id_equipement

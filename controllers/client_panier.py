@@ -24,7 +24,13 @@ def client_panier_add():
     WHERE id_equipement = %s;'''
     mycursor.execute(sql, (id_article, ))
     declinaisons = mycursor.fetchall()
-
+    
+    sql = '''
+    DELETE FROM liste_envie
+    WHERE id_utilisateur = %s AND id_equipement = %s'''
+    mycursor.execute(sql, (id_client, id_article))
+    get_db().commit()
+    
     # Regroupement par couleur (ex pour la couleur rouge : 3 tailles différentes)
     declinaisons2 = {}
     for declinaison in declinaisons:
