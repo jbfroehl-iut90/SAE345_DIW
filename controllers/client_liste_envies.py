@@ -26,7 +26,7 @@ def client_liste_envies_add():
     INSERT INTO liste_envie (id_utilisateur, id_equipement, date_ajout, ordre)
     VALUES (%s, %s, %s, %s)
     '''
-    mycursor.execute(sql, (id_client, id_article, myDate, nb_ordre))
+    mycursor.execute(sql, (id_client, id_article, myDate, nb_ordre + 1))
     get_db().commit()
     return redirect('/client/article/show')
 
@@ -74,7 +74,6 @@ def client_liste_envies_show():
     '''
     mycursor.execute(sql, (id_client, ))
     articles_liste_envies = mycursor.fetchall()
-    print(articles_liste_envies)
     return render_template('client/liste_envies/liste_envies_show.html'
                            ,articles_liste_envies=articles_liste_envies
                            , articles_historique=articles_historique
@@ -104,12 +103,12 @@ def client_liste_envies_article_move_down():
     sql = ''' SELECT ordre FROM liste_envie WHERE id_utilisateur = %s AND id_equipement = %s;'''
     mycursor.execute(sql, (id_client, id_article))
     ordre = mycursor.fetchone()['ordre']
-    
+    print(ordre)
     sql = '''
     UPDATE liste_envie SET ordre = ordre + 1
     WHERE id_utilisateur = %s AND ordre = %s;
     '''
-    mycursor.execute(sql, (id_client, ordre + 1))
+    mycursor.execute(sql, (id_client, ordre - 1))
     
     sql = '''
     UPDATE liste_envie SET ordre = ordre - 1
@@ -151,15 +150,34 @@ def client_liste_envies_article_move_last():
     mycursor = get_db().cursor()
     id_client = session['id_user']
     id_article = request.args.get('id_article')
-    sql = '''
-    SELECT min(ordre) as max_ordre FROM liste_envie WHERE id_utilisateur = %s'''
+    
+    sql = ''' SELECT min(ordre) as min_ordre FROM liste_envie WHERE id_utilisateur = %s;'''
     mycursor.execute(sql, (id_client, ))
-    min_ordre = mycursor.fetchone()['max_ordre']
+    min_ordre = mycursor.fetchone()['min_ordre']
     
     sql = '''
-        UPDATE liste_envie SET ordre = %s - 1
+    SELECT ordre FROM liste_envie WHERE id_utilisateur = %s AND id_equipement = %s;
+    '''
+    mycursor.execute(sql, (id_client, id_article))
+    ordre = mycursor.fetchone()['ordre']
+    
+    sql = ''' SELECT * FROM liste_envie WHERE id_utilisateur = %s AND ordre < %s;'''
+    mycursor.execute(sql, (id_client, ordre))
+    liste = mycursor.fetchall()
+    
+    
+    for article in liste:
+        sql = '''
+        UPDATE liste_envie SET ordre = ordre + 1
+        WHERE id_utilisateur = %s AND id_equipement = %s
+        '''
+        mycursor.execute(sql, (id_client, article['id_equipement']))
+        
+    sql = '''
+        UPDATE liste_envie SET ordre = %s
         WHERE id_utilisateur = %s AND id_equipement = %s
     '''
+    
     mycursor.execute(sql, (min_ordre, id_client, id_article))
     get_db().commit()
     return redirect('/client/envies/show')
@@ -169,15 +187,31 @@ def client_liste_envies_article_move_first():
     mycursor = get_db().cursor()
     id_client = session['id_user']
     id_article = request.args.get('id_article')
-    sql = '''
-    SELECT max(ordre) as max_ordre FROM liste_envie WHERE id_utilisateur = %s'''
+    sql = ''' SELECT max(ordre) as min_ordre FROM liste_envie WHERE id_utilisateur = %s;'''
     mycursor.execute(sql, (id_client, ))
-    max_ordre = mycursor.fetchone()['max_ordre']
-    
+    max_ordre = mycursor.fetchone()['min_ordre']
     
     sql = '''
-    UPDATE liste_envie SET ordre = %s + 1 
-    WHERE id_utilisateur = %s AND id_equipement = %s
+    SELECT ordre FROM liste_envie WHERE id_utilisateur = %s AND id_equipement = %s;
+    '''
+    mycursor.execute(sql, (id_client, id_article))
+    ordre = mycursor.fetchone()['ordre']
+    
+    sql = ''' SELECT * FROM liste_envie WHERE id_utilisateur = %s AND ordre > %s;'''
+    mycursor.execute(sql, (id_client, ordre))
+    liste = mycursor.fetchall()
+    
+    
+    for article in liste:
+        sql = '''
+        UPDATE liste_envie SET ordre = ordre - 1
+        WHERE id_utilisateur = %s AND id_equipement = %s
+        '''
+        mycursor.execute(sql, (id_client, article['id_equipement']))
+        
+    sql = '''
+        UPDATE liste_envie SET ordre = %s
+        WHERE id_utilisateur = %s AND id_equipement = %s
     '''
     mycursor.execute(sql, (max_ordre, id_client, id_article))
     

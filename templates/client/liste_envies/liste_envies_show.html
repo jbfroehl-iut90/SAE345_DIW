@@ -20,7 +20,7 @@
            <tr>
                   <td>{{ ligne.nom }}</td>
                   <td>{{ ligne.id_article }}</td>
-                  <td>{{ ligne.prix }}  {{  "{:,.2f} €".format(ligne.prix) }}</td>
+                  <td>{{  "{:,.2f} €".format(ligne.prix) }}</td>
                   <td>
                   {% if ligne.stock is defined %}
                      {% if ligne.stock > 0 %}

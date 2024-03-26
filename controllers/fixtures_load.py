@@ -1,7 +1,6 @@
 #! /usr/bin/python
 # -*- coding:utf-8 -*-
 from flask import *
-import datetime
 from decimal import *
 from connexion_db import get_db
 
@@ -537,5 +536,13 @@ CREATE TABLE note(
     '''
     mycursor.execute(sql)
 
+    sql = '''
+    INSERT INTO liste_envie (id_utilisateur, id_equipement, date_ajout, ordre) VALUES
+    (2, 1, '2022-11-11',1),
+    (2, 2, '2022-11-11',2),
+    (2, 3, '2022-11-11',3),
+    (2, 4, '2022-11-11',4);    '''
+    mycursor.execute(sql)
+    
     get_db().commit()
     return redirect('/')
