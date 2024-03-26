@@ -74,6 +74,19 @@ def client_article_show():                                 # remplace client_ind
         article["nb_avis"] = mycursor.fetchone()["nb_commentaires"]
         print(article["nb_avis"])
         
+        sql = '''
+        SELECT 
+            CASE 
+                WHEN COUNT(*) > 0 THEN 1 
+                ELSE 0 
+            END AS liste_envie
+        FROM liste_envie
+        WHERE id_utilisateur = %s AND id_equipement = %s;
+        '''
+        mycursor.execute(sql, (id_client, article["id_equipement"]))
+        article["liste_envie"] = mycursor.fetchone()["liste_envie"]
+        print(article["liste_envie"])
+        
         
     # utilisation du filtre
     sql3=''' select * from categorie_sport '''

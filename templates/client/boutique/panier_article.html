@@ -53,8 +53,8 @@
 {# #}                                {% endif %}
                                      <div class="col-2 align-content-end">
                                     {% if item.liste_envie is defined %}
-                                         {%if  item.liste_envie== 1%}
-                                             <a href="/client/envie/add?id_article={{ item.id_equipement }}" style="text-decoration: none">💛</a>
+                                         {%if  item.liste_envie == 1%}
+                                             <a href="/client/envie/delete_view?id_article={{ item.id_equipement }}" style="text-decoration: none">💛</a>
                                          {% else %}
                                              <a href="/client/envie/add?id_article={{ item.id_equipement }}" style="text-decoration: none">🤍</a>
                                          {% endif %}

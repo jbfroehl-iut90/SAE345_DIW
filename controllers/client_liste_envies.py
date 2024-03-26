@@ -14,6 +14,12 @@ def client_liste_envies_add():
     mycursor = get_db().cursor()
     id_client = session['id_user']
     id_article = request.args.get('id_article')
+    sql = '''
+    INSERT INTO liste_envie (id_utilisateur, id_equipement)
+    VALUES (%s, %s)
+    '''
+    mycursor.execute(sql, (id_client, id_article))
+    get_db().commit()
     return redirect('/client/article/show')
 
 @client_liste_envies.route('/client/envie/delete', methods=['get'])
@@ -21,14 +27,35 @@ def client_liste_envies_delete():
     mycursor = get_db().cursor()
     id_client = session['id_user']
     id_article = request.args.get('id_article')
+    sql = '''
+    DELETE FROM liste_envie
+    WHERE id_utilisateur = %s AND id_equipement = %s
+    '''
+    mycursor.execute(sql, (id_client, id_article))
+    get_db().commit()
     return redirect('/client/envies/show')
 
+@client_liste_envies.route('/client/envie/delete_view', methods=['get'])
+def client_liste_envies_delete_view():
+    mycursor = get_db().cursor()
+    id_client = session['id_user']
+    id_article = request.args.get('id_article')
+    sql = '''
+    DELETE FROM liste_envie
+    WHERE id_utilisateur = %s AND id_equipement = %s
+    '''
+    mycursor.execute(sql, (id_client, id_article))
+    get_db().commit()
+    return redirect('/client/article/show')
+    
 @client_liste_envies.route('/client/envies/show', methods=['get'])
 def client_liste_envies_show():
     mycursor = get_db().cursor()
     id_client = session['id_user']
     articles_liste_envies = []
     articles_historique = []
+    sql = '''
+    SELECT 
     return render_template('client/liste_envies/liste_envies_show.html'
                            ,articles_liste_envies=articles_liste_envies
                            , articles_historique=articles_historique

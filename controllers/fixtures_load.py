@@ -11,7 +11,7 @@ fixtures_load = Blueprint('fixtures_load', __name__,
 @fixtures_load.route('/base/init')
 def fct_fixtures_load():
     mycursor = get_db().cursor()
-    sql=''' DROP TABLE IF EXISTS adresse, declinaison, ligne_commande, commande, etat, ligne_panier, note, commentaire, equipement, categorie_sport, couleur, morphologie, marque, taille, utilisateur;  '''
+    sql=''' DROP TABLE IF EXISTS adresse, declinaison, liste_envie, ligne_commande, commande, etat, ligne_panier, note, commentaire, equipement, categorie_sport, couleur, morphologie, marque, taille, utilisateur;  '''
     mycursor.execute(sql)
 
     sql='''
@@ -523,6 +523,17 @@ CREATE TABLE note(
     '''
     mycursor.execute(sql)
 
+    sql = '''
+    CREATE TABLE liste_envie(
+    id_liste_envie INT AUTO_INCREMENT,
+    id_utilisateur INT,
+    id_equipement INT,
+    PRIMARY KEY(id_liste_envie, id_utilisateur, id_equipement),
+    CONSTRAINT fk_liste_envie_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur),
+    CONSTRAINT fk_liste_envie_equipement FOREIGN KEY (id_equipement) REFERENCES equipement(id_equipement)
+    );
+    '''
+    mycursor.execute(sql)
 
     get_db().commit()
     return redirect('/')
