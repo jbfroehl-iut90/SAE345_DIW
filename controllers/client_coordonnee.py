@@ -58,7 +58,9 @@ def client_coordonnee_edit_valide():
         return render_template('client/coordonnee/edit_coordonnee.html'
                                #, user=user
                                )
-
+    
+    sql = ''' UPDATE utilisateur SET nom = %s, login = %s, email = %s WHERE id_utilisateur = %s '''
+    mycursor.execute(sql, (nom, login, email, id_client))
 
     get_db().commit()
     return redirect('/client/coordonnee/show')
@@ -83,7 +85,7 @@ def client_coordonnee_add_adresse():
 
     sql = ''' SELECT * FROM utilisateur
     LEFT JOIN adresse ON utilisateur.id_utilisateur = adresse.id_utilisateur
-    WHERE id_utilisateur = %s '''
+    WHERE utilisateur.id_utilisateur = %s '''
     mycursor.execute(sql, (id_client,))
     utilisateur = mycursor.fetchone()
 
@@ -99,6 +101,11 @@ def client_coordonnee_add_adresse_valide():
     rue = request.form.get('rue')
     code_postal = request.form.get('code_postal')
     ville = request.form.get('ville')
+
+    sql = ''' INSERT INTO adresse (adresse,code_postal,ville,valide, nom, id_utilisateur) VALUES (%s, %s, %s, %s, %s, %s) '''
+    mycursor.execute(sql, (rue, code_postal, ville, 0, nom, id_client))
+    get_db().commit()
+
     return redirect('/client/coordonnee/show')
 
 @client_coordonnee.route('/client/coordonnee/edit_adresse')
@@ -129,5 +136,7 @@ def client_coordonnee_edit_adresse_valide():
     code_postal = request.form.get('code_postal')
     ville = request.form.get('ville')
     id_adresse = request.form.get('id_adresse')
+
+    sql = ''' UPDATE adresse SET  '''
 
     return redirect('/client/coordonnee/show')
