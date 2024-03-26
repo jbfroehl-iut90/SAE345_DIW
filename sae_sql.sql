@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS adresse, declinaison, ligne_commande, commande, etat, ligne_panier, note, commentaire, equipement, categorie_sport, couleur, morphologie, marque, taille, utilisateur;  
+DROP TABLE IF EXISTS adresse, declinaison, liste_envie, historique, ligne_commande, commande, etat, ligne_panier, note, commentaire, equipement, categorie_sport, couleur, morphologie, marque, taille, utilisateur;
     
 
     

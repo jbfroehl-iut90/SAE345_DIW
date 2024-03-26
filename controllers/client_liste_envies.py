@@ -78,6 +78,9 @@ def client_liste_envies_show():
     sql = ''' SELECT COUNT(id_liste_envie) as nb_liste_envies FROM liste_envie WHERE id_utilisateur = %s;'''
     mycursor.execute(sql, (id_client, ))
     nb_liste_envies = mycursor.fetchone()['nb_liste_envies']
+    
+    sql = ''' SELECT e.id_equipement as id_article, e.libelle_equipement as nom,  e.prix_equipement as prix, e.image_equipement as image,
+    FROM historique LEFT JOIN equipement e ON historique.id_equipement = e.id_equipement'''
 
     return render_template('client/liste_envies/liste_envies_show.html'
                            ,articles_liste_envies=articles_liste_envies
