@@ -562,5 +562,18 @@ CREATE TABLE note(
         '''
     mycursor.execute(sql)
     
+    sql = '''
+    INSERT INTO historique (id_utilisateur, id_equipement, date_consultation) VALUES
+    (2, 1, '2022-11-11'),
+    (2, 2, '2022-11-11'),
+    (2, 3, '2022-11-11'),
+    (2, 4, '2022-11-11'),
+    (3, 15, '2021-12-10'),
+    (3, 3, '2023-10-10'),
+    (3, 1, '2020-08-10'),
+    (3, 8, '2021-11-06');
+    '''
+    mycursor.execute(sql)
+    
     get_db().commit()
     return redirect('/')
