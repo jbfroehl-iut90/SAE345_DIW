@@ -40,7 +40,14 @@ def client_panier_add():
             declinaisons2[declinaison['libelle_couleur']] = [declinaison]
 
     if len(declinaisons) == 1:
-        id_declinaison_article = declinaisons[0]['id_declinaison']
+        sql = ''' SELECT * FROM equipement WHERE id_equipement = %s'''
+        mycursor.execute(sql, (id_article))
+        article = mycursor.fetchone()
+        
+        return render_template('client/boutique/declinaison_article.html',
+                                declinaisons=declinaisons,
+                                quantite=quantite,
+                                article=article, declinaisons2=declinaisons2)
     elif len(declinaisons) == 0:
         sql = ''' SELECT * FROM equipement WHERE id_equipement = %s'''
         mycursor.execute(sql, (id_article, ))

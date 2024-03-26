@@ -14,7 +14,6 @@ client_commande = Blueprint('client_commande', __name__,
 def client_commande_valide():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    # Selection des articles du panier et on récpère le libelle_equipement
     sql = ''' SELECT * FROM ligne_panier 
     LEFT JOIN declinaison ON ligne_panier.id_declinaison = declinaison.id_declinaison 
     LEFT JOIN equipement ON declinaison.id_equipement = equipement.id_equipement
@@ -32,12 +31,20 @@ def client_commande_valide():
     else:
         prix_total = None
     # etape 2 : selection des adresses
+    sql = ''' SELECT * FROM adresse WHERE id_utilisateur = %s'''
+    mycursor.execute(sql, (id_client))
+    adresses = mycursor.fetchall()
+    id_adresse_fav = None
+    for adresse in adresses:
+       if adresse['valide'] == 1:
+           id_adresse_fav = adresse['id_adresse']
+
     return render_template('client/boutique/panier_validation_adresses.html'
-                           #, adresses=adresses
+                           , adresses=adresses
                            , articles_panier=articles_panier
                            , prix_total= prix_total
                            , validation=1
-                           #, id_adresse_fav=id_adresse_fav
+                           , id_adresse_fav=id_adresse_fav
                            )
 
 
@@ -112,7 +119,9 @@ def client_commande_show():
         articles_commande = mycursor.fetchall()
 
         # partie 2 : selection de l'adresse de livraison et de facturation de la commande selectionnée
-        sql = ''' selection des adressses '''
+        sql = ''' SELECT * FROM adresse '''
+        mycursor.execute(sql)
+        commande_adresses = mycursor.fetchall()
 
     return render_template('client/commandes/show.html'
                            , commandes=commandes
