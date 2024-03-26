@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    <h2>ajouter une déclinaison pour l'equipement <span style="color:red;">"{{ article }}"</span></h2>
+    <h2>ajouter une déclinaison pour l'equipement <span style="color:red;">"{{ article.libelle_equipement }}"</span></h2>
     <div class="row mt-5">
     {% if article.image_equipement is defined and article.image_equipement is not none %}
         <img class="card-img-top rounded mx-4 d-block"  style="width:200px; height:200px; border: 1px solid black; padding: 25px;" id="output" src="{{ url_for('static', filename = 'images/')}}{{ article.image_equipement }}" alt="">

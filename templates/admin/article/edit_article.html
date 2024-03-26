@@ -34,9 +34,9 @@ types_article : tableau de dictionnaires
                     <label for="image">Image actuelle : <span style="color:red">{{ article.image_equipement }}</span>
                         <input name="image"  onchange="loadFile(event)" type="file" class="form-control" value="testeuu.jpg">
                     </label>
-                    <label for="stock">Stock :
+                    <!-- <label for="stock">Stock :
                         <input name="stock" type="number" min="0" value="{{ declinaisons_article.stock }}" class="form-control">
-                    </label>
+                    </label> -->
 
                 <label for="type_article_id">Type de l'article :
                     <select name="type_article_id" class="form-select">
@@ -54,10 +54,14 @@ types_article : tableau de dictionnaires
                     <a class="btn btn-secondary mt-2" href="/admin/article/show"  role="button">retour</a>
                 </form>
 
+                <br>
                 <div class="container-fluid " style="width: 1000px;">
 
                     <div style="display: flex; justify-content: space-between">
-                        <h3>déclinaison en fonction de la taille/couleur (variante)</h3>
+                        <br><br><br>
+                        <h3>Versions</h3>
+                        <br>
+                        <br>
                         <a class="img-fluid" href="/admin/declinaison_article/add?id_article={{ article.id_equipement }}">
                             <button class="btn btn-primary">
                                 Ajouter une déclinaison (variante)

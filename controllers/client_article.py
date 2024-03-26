@@ -128,7 +128,11 @@ def client_article_show():                                 # remplace client_ind
         articles_panier = mycursor.fetchall()
 
         sql = ''' SELECT sum(prix * quantite) as prix_total FROM ligne_panier WHERE id_utilisateur = %s'''
+<<<<<<< Updated upstream
         mycursor.execute(sql, (id_client))
+=======
+        mycursor.execute(sql, id_client)
+>>>>>>> Stashed changes
         prix_total = mycursor.fetchone()['prix_total']
 
     return render_template('client/boutique/panier_article.html'
