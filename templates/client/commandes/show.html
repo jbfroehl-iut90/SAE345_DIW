@@ -5,7 +5,7 @@
             <h3>Recapitulatifs de la commande selectionnée</h3>
             <table class="table">
                 <thead class="thead-dark">
-                    <tr><th>Nom</th><th>Quantite</th><th>Prix</th><th>Prix total</th></tr>
+                    <tr><th>Nom</th><th>Quantite</th><th>Prix</th><th>Prix total de la ligne</th></tr>
                 </thead>
                 <tbody>
                         {% for ligne in articles_commande %}
@@ -27,7 +27,7 @@
                                 </td>
                                 <td>{{ ligne.quantite }}</td>
                                 <td>{{ ligne.prix }} €</td>
-                                <td>{{ ligne.prix_ligne }} €  </td>
+                                <td>{{ ligne.prix * ligne.quantite }} €  </td>
                             </tr>
                         {% endfor %}
 
@@ -57,7 +57,7 @@
                         <tr>
                             <th>Date de commande</th>
                             <th>Nombre d'articles</th>
-                            <th>Coût total</th>
+                            <th>Coût total de la commande</th>
                             <th>Etat de la commande</th>
                             <th style="text-align: center;">Options</th>
                         </tr>

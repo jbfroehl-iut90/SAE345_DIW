@@ -84,10 +84,12 @@ def valid_add_article():
     prix = request.form.get('prix', '')
     description = request.form.get('description', '')
     image = request.files.get('image', '')
-    couleur = request.form.get('id_couleur', '')
+    couleur = request.form.get('couleur_id', '')
+    print("couleur :",couleur)
     taille = request.form.get('taille_id', '')
-    print(taille)
+    print("taille : ",taille)
     stock = request.form.get('nb_stock', '')
+    print("stock : ",stock)
 
     if image:
         filename = 'img_upload'+ str(int(2147483647 * random())) + '.png'
@@ -102,6 +104,11 @@ def valid_add_article():
     tuple_add = (nom, filename, prix, type_article_id, description)
     print(tuple_add)
     mycursor.execute(sql, tuple_add)
+    get_db().commit()
+
+    # Crée une déclinaison par défaut de l'article nouvellement crée
+    sql = ''' INSERT INTO declinaison (id_equipement, couleur_declinaison, taille_declinaison, stock) VALUES (%s, %s, %s, %s)'''
+    mycursor.execute(sql, (mycursor.lastrowid, couleur, taille, stock))
     get_db().commit()
 
     print(u'Nouvel equipement ajouté , nom: ', nom, ' - Catégorie :', type_article_id, ' - prix:', prix,

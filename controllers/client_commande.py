@@ -23,6 +23,7 @@ def client_commande_valide():
     articles_panier = []
     mycursor.execute(sql, (id_client))
     articles_panier = mycursor.fetchall()
+    print(articles_panier)
 
     if len(articles_panier) >= 1:
         sql = ''' SELECT sum(prix * quantite) as prix_total FROM ligne_panier WHERE id_utilisateur = %s'''
@@ -57,7 +58,6 @@ def client_commande_add():
         return redirect('/client/article/show')
     # Date en Year-Month-Day
     a = datetime.now().strftime('%Y-%m-%d')
-    print("date:",a)
     
 
     sql = ''' INSERT INTO commande (id_utilisateur, date_achat, etat_id) VALUES (%s, %s, %s)'''
@@ -66,7 +66,6 @@ def client_commande_add():
     sql  = ''' SELECT LAST_INSERT_ID() as last_insert_id'''
     mycursor.execute(sql)
     last_insert_id = mycursor.fetchone()['last_insert_id']
-    print("last_insert_id:",last_insert_id)
 
     for item in items_ligne_panier:
         sql = "DELETE FROM ligne_panier WHERE id_ligne_panier = %s"
@@ -74,7 +73,6 @@ def client_commande_add():
         get_db().commit()
 
     for item in items_ligne_panier:
-        print(item)
         sql = ''' INSERT INTO ligne_commande (commande_id, equipement_id, prix, quantite) VALUES (%s, %s, %s, %s)'''
         mycursor.execute(sql, (last_insert_id, item['id_equipement'], item['prix'], item['quantite']))
 
@@ -106,7 +104,6 @@ def client_commande_show():
     commande_adresses = None
     id_commande = request.args.get('id_commande', None)
     if id_commande != None:
-        print(id_commande)
         sql = ''' SELECT * FROM ligne_commande
         LEFT JOIN equipement ON ligne_commande.equipement_id = equipement.id_equipement
         WHERE commande_id = %s

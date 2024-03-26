@@ -32,7 +32,7 @@
                     <select name="couleur_id" class="form-select">
                         <option value="">Sélectionner une couleur</option>
                         {% for couleur in couleurs %}
-                             <option value="{{ couleur.id_couleur }}"> {{ couleur.libelle_couleur }}</option>
+                             <option value="{{ couleur.id_couleur }}"> {{ couleur.libelle_couleur }} et {{ couleur.id_couleur }}</option>
                         {% endfor %}
                     </select>
                 </label>
