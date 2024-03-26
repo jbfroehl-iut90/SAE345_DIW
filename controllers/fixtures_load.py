@@ -529,6 +529,7 @@ CREATE TABLE note(
     id_utilisateur INT,
     id_equipement INT,
     date_ajout DATE,
+    ordre INT,
     PRIMARY KEY(id_liste_envie, id_utilisateur, id_equipement),
     CONSTRAINT fk_liste_envie_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur),
     CONSTRAINT fk_liste_envie_equipement FOREIGN KEY (id_equipement) REFERENCES equipement(id_equipement)

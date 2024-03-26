@@ -1,12 +1,3 @@
-{#
-articles (tableau de dictionnaires)
-* tableau de "article"
-    * id_article, nom, type_article_id, prix
-    * option :
-        * stock ,
-        * nb_avis ,
-        * nb_declinaisons
-#}
 {% extends 'client/layout_client.html' %}
 
 {% block title %}
@@ -20,7 +11,7 @@ articles (tableau de dictionnaires)
 <table class="table">
     <thead class="thead-dark">
         <tr>
-            <th>nom</th><th>id</th><th>prix</th><th>stock</th><th>nb déclinaisons</th><th>image</th><th>opération</th>
+            <th>nom</th><th>id</th><th>prix</th><th>stock</th><th>date ajout</th><th>nb déclinaisons</th><th>ordre</th><th>image</th><th>opération</th>
         </tr>
     </thead>
     <tbody>
@@ -42,7 +33,7 @@ articles (tableau de dictionnaires)
                   {% endif %}
                   </td>
 
-                 {# <td>{{ ligne.date_create }} {{ ligne.date_create.strftime('%d-%m-%Y') }} </td> #}
+                 { <td> {{ ligne.date_create.strftime('%d-%m-%Y') }} </td> }
                   <td>
                       {% if ligne.nb_declinaisons is defined %}
                         {{ ligne.nb_declinaisons }}
@@ -50,6 +41,12 @@ articles (tableau de dictionnaires)
                          decli ND
                       {% endif %}
                   </td>
+                  <td>
+                    {% if ligne.ordre is defined %}
+                        {{ ligne.ordre }}
+                    {% else %}
+                        ordre ND
+                    {% endif %}
                   <td>
                         {%  if ligne.image is not none %}
                             <img style="width:40px;height:40px"  src="{{ url_for('static', filename = 'images/' + ligne['image']) }}"  alt="image  de {{ ligne.nom }}" >
