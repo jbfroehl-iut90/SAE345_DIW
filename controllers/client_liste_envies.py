@@ -74,10 +74,15 @@ def client_liste_envies_show():
     '''
     mycursor.execute(sql, (id_client, ))
     articles_liste_envies = mycursor.fetchall()
+    
+    sql = ''' SELECT COUNT(id_liste_envie) as nb_liste_envies FROM liste_envie WHERE id_utilisateur = %s;'''
+    mycursor.execute(sql, (id_client, ))
+    nb_liste_envies = mycursor.fetchone()['nb_liste_envies']
+
     return render_template('client/liste_envies/liste_envies_show.html'
                            ,articles_liste_envies=articles_liste_envies
                            , articles_historique=articles_historique
-                           #, nb_liste_envies= nb_liste_envies
+                           , nb_liste_envies= nb_liste_envies
                            )
     
 
