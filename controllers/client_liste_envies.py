@@ -100,5 +100,6 @@ def client_liste_envies_article_move():
     mycursor = get_db().cursor()
     id_client = session['id_user']
     id_article = request.args.get('id_article')
+    
   
     return redirect('/client/envies/show')
