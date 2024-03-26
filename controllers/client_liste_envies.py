@@ -18,11 +18,15 @@ def client_liste_envies_add():
     id_article = request.args.get('id_article')
     myDate = datetime.now()
     print(myDate)
+    sql = ''' SELECT COUNT(id_liste_envie) as nb_ordre FROM liste_envie WHERE id_utilisateur = %s'''
+    mycursor.execute(sql, id_client)
+    nb_ordre = mycursor.fetchone()['nb_ordre']
+    
     sql = '''
-    INSERT INTO liste_envie (id_utilisateur, id_equipement, date_ajout)
-    VALUES (%s, %s, %s)
+    INSERT INTO liste_envie (id_utilisateur, id_equipement, date_ajout, ordre)
+    VALUES (%s, %s, %s, %s)
     '''
-    mycursor.execute(sql, (id_client, id_article, myDate))
+    mycursor.execute(sql, (id_client, id_article, myDate, nb_ordre))
     get_db().commit()
     return redirect('/client/article/show')
 
@@ -60,13 +64,13 @@ def client_liste_envies_show():
     articles_historique = []
     sql = '''
     SELECT e.id_equipement as id_article, e.libelle_equipement as nom, e.prix_equipement as prix, e.image_equipement as image,
-    COUNT(d.id_declinaison) as nb_declinaisons, SUM(d.stock) as stock, l.date_ajout as date_create
+    COUNT(d.id_declinaison) as nb_declinaisons, SUM(d.stock) as stock, l.date_ajout as date_create, ordre
     FROM liste_envie l
     LEFT JOIN equipement e ON l.id_equipement = e.id_equipement
     LEFT JOIN declinaison d ON e.id_equipement = d.id_equipement
     WHERE l.id_utilisateur = %s
-    GROUP BY e.id_equipement, e.libelle_equipement, e.prix_equipement, e.image_equipement, date_create
-    ORDER BY date_create DESC;
+    GROUP BY e.id_equipement, e.libelle_equipement, e.prix_equipement, e.image_equipement, date_create, ordre
+    ORDER BY ordre DESC, date_create DESC;
     '''
     mycursor.execute(sql, (id_client, ))
     articles_liste_envies = mycursor.fetchall()
@@ -92,14 +96,67 @@ def client_historique_add(article_id, client_id):
     historiques = mycursor.fetchall()
 
 
-@client_liste_envies.route('/client/envies/up', methods=['get'])
 @client_liste_envies.route('/client/envies/down', methods=['get'])
-@client_liste_envies.route('/client/envies/last', methods=['get'])
-@client_liste_envies.route('/client/envies/first', methods=['get'])
-def client_liste_envies_article_move():
+
+@client_liste_envies.route('/client/envies/up', methods=['get'])
+def client_liste_envies_article_move_up():
     mycursor = get_db().cursor()
     id_client = session['id_user']
     id_article = request.args.get('id_article')
+    sql = ''' SELECT ordre FROM liste_envie WHERE id_utilisateur = %s AND id_equipement = %s;'''
+    mycursor.execute(sql, (id_client, id_article))
+    ordre = mycursor.fetchone()['ordre']
     
-  
+    sql = '''
+    UPDATE liste_envie SET ordre = ordre - 1
+    WHERE id_utilisateur = %s AND ordre = %s;
+    '''
+    mycursor.execute(sql, (id_client, ordre + 1))
+    
+    sql = '''
+    UPDATE liste_envie SET ordre = ordre + 1
+    WHERE id_utilisateur = %s AND id_equipement = %s;
+    '''
+    mycursor.execute(sql, (id_client, id_article))
+    
+    
+    get_db().commit()
+    return redirect('/client/envies/show')
+
+@client_liste_envies.route('/client/envies/last', methods=['get'])
+def client_liste_envies_article_move_last():
+    mycursor = get_db().cursor()
+    id_client = session['id_user']
+    id_article = request.args.get('id_article')
+    sql = '''
+    SELECT min(ordre) as max_ordre FROM liste_envie WHERE id_utilisateur = %s'''
+    mycursor.execute(sql, (id_client, ))
+    min_ordre = mycursor.fetchone()['max_ordre']
+    
+    sql = '''
+        UPDATE liste_envie SET ordre = %s - 1
+        WHERE id_utilisateur = %s AND id_equipement = %s
+    '''
+    mycursor.execute(sql, (min_ordre, id_client, id_article))
+    get_db().commit()
+    return redirect('/client/envies/show')
+
+@client_liste_envies.route('/client/envies/first', methods=['get'])
+def client_liste_envies_article_move_first():
+    mycursor = get_db().cursor()
+    id_client = session['id_user']
+    id_article = request.args.get('id_article')
+    sql = '''
+    SELECT max(ordre) as max_ordre FROM liste_envie WHERE id_utilisateur = %s'''
+    mycursor.execute(sql, (id_client, ))
+    max_ordre = mycursor.fetchone()['max_ordre']
+    
+    
+    sql = '''
+    UPDATE liste_envie SET ordre = %s + 1 
+    WHERE id_utilisateur = %s AND id_equipement = %s
+    '''
+    mycursor.execute(sql, (max_ordre, id_client, id_article))
+    
+    get_db().commit()
     return redirect('/client/envies/show')
