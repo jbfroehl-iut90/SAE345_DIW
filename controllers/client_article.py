@@ -118,20 +118,18 @@ def client_article_show():                                 # remplace client_ind
         articles_panier = mycursor.fetchall()
 
         # Total de tout les éléments dans le panier (donc stock * prix + stock * prix + ...)
-        sql = ''' SELECT SUM(prix * quantite) as prix_total 
-        FROM ligne_panier, declinaison 
-        WHERE ligne_panier.id_declinaison = declinaison.id_declinaison AND id_utilisateur = %s'''
-        mycursor.execute(sql, id_client)
-        prix_total = mycursor.fetchone()
+        sql = ''' SELECT sum(prix * quantite) as prix_total FROM ligne_panier WHERE id_utilisateur = %s'''
+        mycursor.execute(sql, (id_client))
+        prix_total = mycursor.fetchone()['prix_total']
 
     else:
         sql = ''' select * from ligne_panier where id_utilisateur = %s '''
         mycursor.execute(sql, id_client)
         articles_panier = mycursor.fetchall()
 
-        sql = ''' select sum(prix) as prix_total from ligne_panier left join declinaison on ligne_panier.id_declinaison = declinaison.id_declinaison where id_utilisateur = %s'''
-        mycursor.execute(sql, id_client)
-        prix_total = mycursor.fetchone()
+        sql = ''' SELECT sum(prix * quantite) as prix_total FROM ligne_panier WHERE id_utilisateur = %s'''
+        mycursor.execute(sql, (id_client))
+        prix_total = mycursor.fetchone()['prix_total']
 
     return render_template('client/boutique/panier_article.html'
                            , articles=articles
