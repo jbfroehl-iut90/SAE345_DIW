@@ -511,7 +511,19 @@ CREATE TABLE liste_envie(
     id_utilisateur INT,
     id_equipement INT,
     date_ajout DATE,
+    ordre INT,
     PRIMARY KEY(id_liste_envie, id_utilisateur, id_equipement),
     CONSTRAINT fk_liste_envie_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur),
     CONSTRAINT fk_liste_envie_equipement FOREIGN KEY (id_equipement) REFERENCES equipement(id_equipement)
     );
+
+    INSERT INTO liste_envie (id_utilisateur, id_equipement, date_ajout, ordre) VALUES
+    (2, 1, '2022-11-11',1),
+    (2, 2, '2022-11-11',2),
+    (2, 3, '2022-11-11',3),
+    (2, 4, '2022-11-11',4),
+    (2, 14, '2023-12-12', 5),
+    (3, 15, '2021-12-10', 1),
+    (3, 3, '2023-10-10', 2),
+    (3, 1, '2020-08-10', 3),
+    (3, 8, '2021-11-06', 4);
