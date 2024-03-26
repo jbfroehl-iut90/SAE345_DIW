@@ -51,15 +51,16 @@ def admin_commande_show():
     commande_adresses = None
     id_commande = request.args.get('id_commande', None)
     if id_commande != None:
-        sql = ''' SELECT * FROM ligne_commande WHERE id_commande = %s '''
+        sql = ''' SELECT * FROM ligne_commande WHERE commande_id = %s '''
         mycursor.execute(sql, (id_commande))
 
         commande_adresses = []
-        sql = ''' SELECT * FROM adresse WHERE id_adresse = %s '''
-        for ligne_commande in articles_commande:
-            mycursor.execute(sql, (ligne_commande['adresse_id']))
-            commande_adresses.append(mycursor.fetchone())
-            
+        # sql = ''' SELECT * FROM adresse WHERE id_adresse = %s '''
+        # for ligne_commande in articles_commande:
+        #     mycursor.execute(sql, (ligne_commande['adresse_id']))
+        #     commande_adresses.append(mycursor.fetchone())
+
+
     return render_template('admin/commandes/show.html'
                            , commandes=commandes
                            , articles_commande=articles_commande
