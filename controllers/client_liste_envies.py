@@ -96,14 +96,64 @@ def client_liste_envies_show():
 def client_historique_add(article_id, client_id):
     mycursor = get_db().cursor()
     client_id = session['id_user']
+    date = datetime.now()
     # rechercher si l'article pour cet utilisateur est dans l'historique
     # si oui mettre
-    sql ='''   '''
-    mycursor.execute(sql, (article_id, client_id))
-    historique_produit = mycursor.fetchall()
-    sql ='''   '''
-    mycursor.execute(sql, (client_id))
-    historiques = mycursor.fetchall()
+    sql =''' 
+    SELECT 
+        CASE 
+            WHEN EXISTS (SELECT 1 FROM historique WHERE id_utilisateur = %s AND id_equipement = %s) THEN FALSE 
+            ELSE TRUE 
+    END AS resultat;
+    '''
+    mycursor.execute(sql, (client_id, article_id))
+    test = mycursor.fetchone()['resultat']
+    if(test):
+        sql = ''' 
+        SELECT 
+            CASE 
+                WHEN (SELECT COUNT(id_historique) as count FROM historique WHERE id_utilisateur = %s) > 5 THEN FALSE 
+                ELSE TRUE
+        END AS resultat;
+        '''
+        mycursor.execute(sql, (client_id, ))
+        test2 = mycursor.fetchone()['resultat']
+        if(test2):
+            sql = '''
+            INSERT INTO historique (id_utilisateur, id_equipement, date_consultation)
+            VALUES (%s, %s, %s)
+            '''
+            mycursor.execute(sql, (client_id, article_id, date))
+            get_db().commit()
+        else:
+            sql = '''
+            SELECT MIN(date_consultation) as date_plus_ancienne FROM historique WHERE id_utilisateur = %s;
+            '''
+            mycursor.execute(sql, (client_id, ))
+            ancien = mycursor.fetchone()
+            sql = '''
+            SELECT MIN(id_historique) as id_historique FROM historique WHERE id_utilisateur = %s AND date_consultation = %s;
+            '''
+            mycursor.execute(sql, (client_id, ancien['date_plus_ancienne']))
+            id_ancien = mycursor.fetchone()
+            sql = '''
+            UPDATE historique SET id_equipement = %s, date_consultation = %s
+            WHERE id_historique = %s AND id_utilisateur = %s;
+            '''
+            mycursor.execute(sql, (article_id, date, id_ancien['id_historique'], client_id))
+            get_db().commit()
+    else:
+        sql = '''
+        SELECT id_historique FROM historique WHERE id_utilisateur = %s AND id_equipement = %s;
+        '''
+        mycursor.execute(sql, (client_id, article_id))
+        id_historique = mycursor.fetchone()
+        sql = '''
+        UPDATE historique SET date_consultation = %s AND nombre_consultation = nombre_consultation + 1
+        WHERE id_historique = %s AND id_utilisateur = %s;
+        '''
+        mycursor.execute(sql, (date, id_historique['id_historique'], client_id))
+        get_db().commit()
 
 
 @client_liste_envies.route('/client/envies/down', methods=['get'])

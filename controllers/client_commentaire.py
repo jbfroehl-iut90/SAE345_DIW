@@ -65,6 +65,9 @@ def client_article_details():
     sql='''SELECT COUNT(id_commentaire) as nb_commentaires_total FROM commentaire WHERE equipement_id=%s AND utilisateur_id <> 1;'''
     mycursor.execute(sql, id_article)
     nb_commentaires = mycursor.fetchone()
+    
+    client_historique_add(id_article, id_client)
+    
     print('nb_commentaires',nb_commentaires)
     return render_template('client/article_info/article_details.html'
                            , article=article
