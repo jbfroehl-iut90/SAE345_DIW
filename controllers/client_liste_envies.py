@@ -111,7 +111,8 @@ def client_liste_envies_show():
 def client_historique_add(article_id, client_id):
     mycursor = get_db().cursor()
     client_id = session['id_user']
-    date = datetime.now()
+    date = datetime.datetime.now()
+    date = date.strftime('%Y-%m-%d')
     # rechercher si l'article pour cet utilisateur est dans l'historique
     # si oui mettre
     sql =''' 
@@ -152,7 +153,7 @@ def client_historique_add(article_id, client_id):
             mycursor.execute(sql, (client_id, ancien['date_plus_ancienne']))
             id_ancien = mycursor.fetchone()
             sql = '''
-            UPDATE historique SET id_equipement = %s, date_consultation = %s
+            UPDATE historique SET id_equipement = %s, date_consultation = STR_TO_DATE(%s, '%%Y-%%m-%%d')
             WHERE id_historique = %s AND id_utilisateur = %s;
             '''
             mycursor.execute(sql, (article_id, date, id_ancien['id_historique'], client_id))
@@ -164,7 +165,7 @@ def client_historique_add(article_id, client_id):
         mycursor.execute(sql, (client_id, article_id))
         id_historique = mycursor.fetchone()
         sql = '''
-        UPDATE historique SET date_consultation = %s AND nombre_consultation = nombre_consultation + 1
+        UPDATE historique SET date_consultation =STR_TO_DATE(%s, '%%Y-%%m-%%d') AND nombre_consultation = nombre_consultation + 1
         WHERE id_historique = %s AND id_utilisateur = %s;
         '''
         mycursor.execute(sql, (date, id_historique['id_historique'], client_id))
