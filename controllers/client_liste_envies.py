@@ -97,6 +97,7 @@ def client_historique_add(article_id, client_id):
     mycursor = get_db().cursor()
     client_id = session['id_user']
     date = datetime.now()
+    date.strftime('%Y-%m-%d')
     # rechercher si l'article pour cet utilisateur est dans l'historique
     # si oui mettre
     sql =''' 
