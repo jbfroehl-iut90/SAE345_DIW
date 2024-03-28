@@ -2,8 +2,8 @@
 # -*- coding:utf-8 -*-
 from flask import Blueprint
 from flask import Flask, request, render_template, redirect, url_for, abort, flash, session, g
-import os
-from datetime import datetime
+from datetime import date
+import datetime
 from connexion_db import get_db
 
 client_liste_envies = Blueprint('client_liste_envies', __name__,
@@ -15,8 +15,7 @@ def client_liste_envies_add():
     mycursor = get_db().cursor()
     id_client = session['id_user']
     id_article = request.args.get('id_article')
-    myDate = datetime.now()
-    print(myDate)
+    myDate = datetime.date.today()
     sql = ''' SELECT COUNT(id_liste_envie) as nb_ordre FROM liste_envie WHERE id_utilisateur = %s'''
     mycursor.execute(sql, id_client)
     nb_ordre = mycursor.fetchone()['nb_ordre']
@@ -61,7 +60,20 @@ def client_liste_envies_show():
     id_client = session['id_user']
     articles_liste_envies = []
     articles_historique = []
-
+    date = datetime.date.today()
+    sql = '''
+    SELECT h.id_historique, h.date_consultation as date FROM historique h WHERE id_utilisateur = %s;
+    '''
+    mycursor.execute(sql, (id_client, ))
+    historique = mycursor.fetchall()
+    for article in historique:
+        if (date - article['date']).days > 30:
+            sql = '''
+            DELETE FROM historique WHERE id_historique = %s;
+            '''
+            mycursor.execute(sql, (article['id_historique'], ))
+            get_db().commit()
+    
     sql = '''
     SELECT e.id_equipement as id_article, e.libelle_equipement as nom, e.prix_equipement as prix, e.image_equipement as image,
     COUNT(d.id_declinaison) as nb_declinaisons, SUM(d.stock) as stock, l.date_ajout as date_create, ordre
@@ -96,8 +108,8 @@ def client_liste_envies_show():
 def client_historique_add(article_id, client_id):
     mycursor = get_db().cursor()
     client_id = session['id_user']
-    date = datetime.now()
-    date.strftime('%Y-%m-%d')
+    date = datetime.date.today()
+    print(type(date))
     # rechercher si l'article pour cet utilisateur est dans l'historique
     # si oui mettre
     sql =''' 
@@ -150,7 +162,7 @@ def client_historique_add(article_id, client_id):
         mycursor.execute(sql, (client_id, article_id))
         id_historique = mycursor.fetchone()
         sql = '''
-        UPDATE historique SET date_consultation = %s AND nombre_consultation = nombre_consultation + 1
+        UPDATE historique SET date_consultation = %s, nombre_consultation = nombre_consultation + 1
         WHERE id_historique = %s AND id_utilisateur = %s;
         '''
         mycursor.execute(sql, (date, id_historique['id_historique'], client_id))
