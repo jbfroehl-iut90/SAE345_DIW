@@ -3,8 +3,7 @@
 from flask import Blueprint
 from flask import Flask, request, render_template, redirect, url_for, abort, flash, session, g
 import os
-import datetime
-
+from datetime import datetime
 from connexion_db import get_db
 
 client_liste_envies = Blueprint('client_liste_envies', __name__,
@@ -60,23 +59,9 @@ def client_liste_envies_delete_view():
 def client_liste_envies_show():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    date = datetime.date.today()
     articles_liste_envies = []
     articles_historique = []
-    sql = '''
-    SELECT id_historique, date_consultation FROM historique WHERE id_utilisateur = %s;
-    '''
-    mycursor.execute(sql, (id_client, ))
-    temp_hist = mycursor.fetchall()
-    for hist in temp_hist:
-        difference_jours = (date - hist['date_consultation']).days
-        if difference_jours > 30:
-            sql = '''
-            DELETE FROM historique WHERE id_historique = %s;
-            '''
-            mycursor.execute(sql, (hist['id_historique'], ))
-            get_db().commit()  
-    
+
     sql = '''
     SELECT e.id_equipement as id_article, e.libelle_equipement as nom, e.prix_equipement as prix, e.image_equipement as image,
     COUNT(d.id_declinaison) as nb_declinaisons, SUM(d.stock) as stock, l.date_ajout as date_create, ordre
@@ -111,7 +96,7 @@ def client_liste_envies_show():
 def client_historique_add(article_id, client_id):
     mycursor = get_db().cursor()
     client_id = session['id_user']
-    date = datetime.datetime.today()
+    date = datetime.now()
     # rechercher si l'article pour cet utilisateur est dans l'historique
     # si oui mettre
     sql =''' 
