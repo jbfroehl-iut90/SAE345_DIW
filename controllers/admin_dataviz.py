@@ -11,22 +11,18 @@ admin_dataviz = Blueprint('admin_dataviz', __name__,
 @admin_dataviz.route('/admin/dataviz/etat1')
 def show_type_article_stock():
     mycursor = get_db().cursor()
-    sql = '''
-    
-           '''
-    # mycursor.execute(sql)
-    # datas_show = mycursor.fetchall()
-    # labels = [str(row['libelle']) for row in datas_show]
-    # values = [int(row['nbr_articles']) for row in datas_show]
+    sql = ''' SELECT COUNT(id_equipement) as nbr_articles, libelle_equipement FROM equipement GROUP BY libelle_equipement;'''
+    mycursor.execute(sql)
+    datas_show = mycursor.fetchall()
+    labels = [str(row['libelle_equipement']) for row in datas_show]
+    values = [int(row['nbr_articles']) for row in datas_show]
 
-    # sql = '''
-    #         
-    #        '''
+    sql = ''' SELECT COUNT(id_equipement) as nb_equipement FROM equipement; '''
     datas_show=[]
     labels=[]
     values=[]
 
-    return render_template('admin/dataviz/dataviz_etat_1.html'
+    return render_template('admin/dataviz/dataviz_stocks.html'
                            , datas_show=datas_show
                            , labels=labels
                            , values=values)
