@@ -529,21 +529,22 @@ CREATE TABLE liste_envie(
     (3, 8, '2021-11-06', 4);
 
 CREATE TABLE historique(
-    id_historique INT AUTO_INCREMENT,
-    id_utilisateur INT,
-    id_equipement INT,
-    date_consultation DATE,
-    PRIMARY KEY(id_historique),
-    CONSTRAINT fk_historique_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur),
-    CONSTRAINT fk_historique_equipement FOREIGN KEY (id_equipement) REFERENCES equipement(id_equipement)
-    );
+        id_historique INT AUTO_INCREMENT,
+        id_utilisateur INT,
+        id_equipement INT,
+        date_consultation DATE,
+        nombre_consultation INT,
+        PRIMARY KEY(id_historique),
+        CONSTRAINT fk_historique_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur),
+        CONSTRAINT fk_historique_equipement FOREIGN KEY (id_equipement) REFERENCES equipement(id_equipement)
+        );
 
-INSERT INTO historique (id_utilisateur, id_equipement, date_consultation) VALUES
-    (2, 1, '2022-11-11'),
-    (2, 2, '2022-11-11'),
-    (2, 3, '2022-11-11'),
-    (2, 4, '2022-11-11'),
-    (3, 15, '2021-12-10'),
-    (3, 3, '2023-10-10'),
-    (3, 1, '2020-08-10'),
-    (3, 8, '2021-11-06');
+INSERT INTO historique (id_utilisateur, id_equipement, date_consultation, nombre_consultation) VALUES
+    (2, 1, '2024-02-04', 2),
+    (2, 2, '2024-03-04', 1),
+    (2, 3, '2024-03-02', 1),
+    (2, 4, '2024-03-05', 1),
+    (3, 15, '2024-03-07', 3),
+    (3, 3, '2024-03-09', 4),
+    (3, 1, '2024-03-11', 5),
+    (3, 8, '2024-03-12', 8);
