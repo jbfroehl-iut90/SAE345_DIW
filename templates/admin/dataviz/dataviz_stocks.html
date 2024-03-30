@@ -14,14 +14,13 @@
 {% endblock %}
 
 {% block title %}
-    <title>afficher les types d'article</title>
+    <title>Afficher nos catégories d'équipement</title>
 {% endblock %}
 
 {% block body %}
 <br>
 
-    <h2> nombre d'articles :
-{#    <span style="color: red;">{{ cout_total }}</span></h2>#}
+    <h2> Nombre d'équipements : <span style="color: red;">{{ values }}</span></h2>
 
 <table class="table">
     <thead class="thead-dark">
@@ -30,11 +29,12 @@
         </tr>
     </thead>
     <tbody>
+        <p>h:{{ types_articles_nb }}</p>
     {% if types_articles_nb | length >= 1 %}
         {% for ligne in types_articles_nb %}
            <tr>
-                  <td>{{ ligne.libelle }}</td>
-                  <td>{{ ligne.id_type_article }}</td>
+                  <td>{{ ligne.libelle_categorie_sport }}</td>
+                  <td>{{ ligne.id_categorie_sport }}</td>
                    <td><span style="color: red">
                        {% if ligne.nbr_articles_stock is not none %}  {{ ligne.nbr_articles }} {% else %}
                        pas d'article {% endif %}
@@ -72,7 +72,7 @@
   			labels: {{ labels | safe }},
   			datasets: [
   				{
-  				label: "Type d'articles (nombre)",
+  				label: "Articles par catégorie de sport (nombre)",
   				data: {{ values | safe }},
   				fill: false,
                  backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850",
@@ -92,11 +92,11 @@
 
     <h2>demo graphique à secteurs : "camenberd" ,"donut" ( "pie-chart"  "doughtnut")</h2>
 
-    <canvas id="pie-chart" width="800" height="450"></canvas>
+    <canvas id="doughnut" width="800" height="450"></canvas>
 
     <script>
-	var Chart2 = new Chart(document.getElementById("pie-chart"), {
-    type: 'pie',
+	var Chart2 = new Chart(document.getElementById("doughnut"), {
+    type: 'doughnut',
     data: {
       labels: {{ labels | safe }},
       datasets: [{
@@ -114,6 +114,32 @@
       }
      }
     });
+    </script>
+
+    <canvas id="graph-3" width="800" height="450"></canvas>
+    <script>
+            var ctx3 = document.getElementById("graph-3").getContext("2d");
+            var Chart3 = new Chart(ctx3, {
+                type: 'horizontalBar',
+                data: {
+                    labels: {{ labels_decli | safe }},
+                    datasets: [
+                        {
+                            label: "Nombre de déclinaisons par article",
+                            backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850", "#faf24c", "#6a6ce7", "#55f68f", "#D0c309", "#c45000", '#c47897', '#6af32b',
+                        '#3e98bf', '#7e64da', '#f3c3b9', '#c4c450', '#f4f24c', '#6a6ce7', '#55f68f', '#D0c309'],
+                            data: {{ nb_declinaisons | safe }},
+                        }
+                    ]
+                },
+                options: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Nombre de déclinaisons par article'
+                    }
+                }
+            });
     </script>
 
     <a href="https://www.youtube.com/watch?v=TcwYXIIM-fs" target="_blank">dataviz, c'est quoi en 1 mn ? (juste la première minute)</a>

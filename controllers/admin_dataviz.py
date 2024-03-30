@@ -11,21 +11,48 @@ admin_dataviz = Blueprint('admin_dataviz', __name__,
 @admin_dataviz.route('/admin/dataviz/etat1')
 def show_type_article_stock():
     mycursor = get_db().cursor()
-    sql = ''' SELECT COUNT(id_equipement) as nbr_articles, libelle_equipement FROM equipement GROUP BY libelle_equipement;'''
+    sql = ''' SELECT COUNT(id_equipement) as nbr_articles, libelle_categorie_sport FROM equipement
+              JOIN categorie_sport ON equipement.sport_equipement_id = categorie_sport.id_categorie_sport
+              GROUP BY libelle_categorie_sport;'''
     mycursor.execute(sql)
     datas_show = mycursor.fetchall()
-    labels = [str(row['libelle_equipement']) for row in datas_show]
+    labels = [str(row['libelle_categorie_sport']) for row in datas_show]
     values = [int(row['nbr_articles']) for row in datas_show]
 
-    sql = ''' SELECT COUNT(id_equipement) as nb_equipement FROM equipement; '''
-    datas_show=[]
-    labels=[]
-    values=[]
+
+    sql = ''' SELECT COUNT(id_equipement) as nbr_articles FROM equipement;'''
+    mycursor.execute(sql)
+    datas_show = mycursor.fetchall()
+
+    sql = ''' SELECT COUNT(id_categorie_sport) as nbr_type_articles, libelle_categorie_sport FROM categorie_sport GROUP BY libelle_categorie_sport;'''
+    mycursor.execute(sql)
+    types_article_nb = mycursor.fetchall()
+
+    # Nombre d'equipements par type d'equipement
+    sql = ''' SELECT COUNT(id_equipement) as nbr_articles, libelle_categorie_sport FROM equipement
+              JOIN categorie_sport ON equipement.sport_equipement_id = categorie_sport.id_categorie_sport
+              GROUP BY libelle_categorie_sport;'''
+    mycursor.execute(sql)
+    equipement_par_type = mycursor.fetchall()
+
+    # Nombre de déclinaisons par equipement
+    sql = ''' SELECT COUNT(id_declinaison) as nbr_declinaisons, libelle_equipement FROM declinaison LEFT JOIN equipement ON declinaison.id_equipement = equipement.id_equipement GROUP BY libelle_equipement;'''
+    mycursor.execute(sql)
+    datas = mycursor.fetchall()
+    nb_declinaisons = [int(row['nbr_declinaisons']) for row in datas]
+    labels_decli = [str(row['libelle_equipement']) for row in datas]
+    print(nb_declinaisons)
+    print(labels_decli)
+
 
     return render_template('admin/dataviz/dataviz_stocks.html'
                            , datas_show=datas_show
                            , labels=labels
-                           , values=values)
+                           , values=values
+                           , types_articles_nb=types_article_nb
+                           ,equipement_par_type=equipement_par_type
+                           ,nb_declinaisons=nb_declinaisons
+                           ,labels_decli=labels_decli)
 
 
 # sujet 3 : adresses
