@@ -45,7 +45,7 @@
                         <select name="id_couleur" class="form-select">
                             {% for couleur in couleurs %}
                                  <option value="{{ couleur.id_couleur }}"
-                                         {% if couleur.id_couleur == declinaison_article.couleur_id %} selected {% endif %}
+                                         {% if couleur.id_couleur == declinaison_article.couleur_declinaison %} selected {% endif %}
                                  > {{ couleur.libelle_couleur }}</option>
                             {% endfor %}
                         </select>

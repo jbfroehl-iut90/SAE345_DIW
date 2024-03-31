@@ -28,16 +28,16 @@
                         {% endfor %}
                     </select>
                 </label>
-                <label for="couleur_id">Choiur une couleur :
-                    <select name="couleur_id" class="form-select">
+                <label for="couleur_id">Choisir une couleur :
+                    <select name="couleur_id" class="form-select" required>
                         <option value="">Sélectionner une couleur</option>
                         {% for couleur in couleurs %}
-                             <option value="{{ couleur.id_couleur }}"> {{ couleur.libelle_couleur }} et {{ couleur.id_couleur }}</option>
+                             <option value="{{ couleur.id_couleur }}"> {{ couleur.libelle_couleur }}</option>
                         {% endfor %}
                     </select>
                 </label>
                 <label for="taille_id">Choisir une taille :
-                    <select name="taille_id" class="form-select">
+                    <select name="taille_id" class="form-select" required>
                         <option value="">Sélectionner une taille</option>
                         {% for taille in tailles %}
                              <option value="{{ taille.id_taille }}" > {{ taille.libelle_taille }}</option>
