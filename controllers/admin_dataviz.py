@@ -11,6 +11,15 @@ admin_dataviz = Blueprint('admin_dataviz', __name__,
 @admin_dataviz.route('/admin/dataviz/etat1')
 def show_type_article_stock():
     mycursor = get_db().cursor()
+
+    # Equipements join couleur et taille
+    sql = ''' SELECT * FROM equipement 
+    JOIN declinaison ON equipement.id_equipement = declinaison.id_equipement
+    JOIN couleur ON declinaison.couleur_declinaison = couleur.id_couleur
+    JOIN taille ON declinaison.taille_declinaison = taille.id_taille;'''
+    mycursor.execute(sql)
+    equipement = mycursor.fetchall()
+
     sql = ''' SELECT COUNT(id_equipement) as nbr_articles, libelle_categorie_sport FROM equipement
               JOIN categorie_sport ON equipement.sport_equipement_id = categorie_sport.id_categorie_sport
               GROUP BY libelle_categorie_sport;'''
@@ -24,7 +33,9 @@ def show_type_article_stock():
     mycursor.execute(sql)
     datas_show = mycursor.fetchall()
 
-    sql = ''' SELECT COUNT(id_categorie_sport) as nbr_type_articles, libelle_categorie_sport FROM categorie_sport GROUP BY libelle_categorie_sport;'''
+    sql = ''' SELECT COUNT(equipement.id_equipement) as nbr_articles, categorie_sport.id_categorie_sport, categorie_sport.libelle_categorie_sport 
+    FROM equipement JOIN categorie_sport ON equipement.sport_equipement_id = categorie_sport.id_categorie_sport 
+    GROUP BY categorie_sport.id_categorie_sport, categorie_sport.libelle_categorie_sport; '''
     mycursor.execute(sql)
     types_article_nb = mycursor.fetchall()
 
@@ -44,15 +55,32 @@ def show_type_article_stock():
     print(nb_declinaisons)
     print(labels_decli)
 
+    # Couts des equipements par type d'equipement et en fonction des stocks
+    sql = ''' SELECT SUM(prix_equipement * stock) as prix_total, libelle_categorie_sport FROM equipement 
+              JOIN categorie_sport ON equipement.sport_equipement_id = categorie_sport.id_categorie_sport
+              JOIN declinaison ON equipement.id_equipement = declinaison.id_equipement
+              GROUP BY libelle_categorie_sport;'''
+    mycursor.execute(sql)
+    datas = mycursor.fetchall()
+    prix_total_cat = [int(row['prix_total']) for row in datas]
+    labels_prix = [str(row['libelle_categorie_sport']) for row in datas]
+
+    total = 0
+    for prix in prix_total_cat:
+        total += prix
 
     return render_template('admin/dataviz/dataviz_stocks.html'
+                           , equipement=equipement
                            , datas_show=datas_show
                            , labels=labels
                            , values=values
                            , types_articles_nb=types_article_nb
                            ,equipement_par_type=equipement_par_type
                            ,nb_declinaisons=nb_declinaisons
-                           ,labels_decli=labels_decli)
+                           ,labels_decli=labels_decli
+                           ,prix_total_cat=prix_total_cat
+                           ,labels_prix=labels_prix
+                           ,total=total)
 
 
 # sujet 3 : adresses

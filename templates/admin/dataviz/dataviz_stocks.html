@@ -11,6 +11,28 @@
 {#    attention il faut importer la bibliotheque chart.js avant de définir l'objet chart#}
 {#    <script src="{{ url_for('static', filename='chart.js') }}" ></script>#}
       <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+
+      <script>
+        // If btn_hide is clicked, hide the table and if the btn_show is clicked, show the table
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('btn_hide').disabled = true;
+            document.querySelector('.table-article').style.display = 'none';
+            document.querySelector('.text-btn-info').style.display = 'block';
+            document.getElementById('btn_hide').addEventListener('click', function() {
+                document.querySelector('.table-article').style.display = 'none';
+                // Désactiver le bouton
+                document.getElementById('btn_hide').disabled = true;
+                document.getElementById('btn_show').disabled = false;
+                document.querySelector('.text-btn-info').style.display = 'block';
+            });
+            document.getElementById('btn_show').addEventListener('click', function() {
+                document.querySelector('.table-article').style.display = 'table';
+                document.getElementById('btn_show').disabled = true;
+                document.getElementById('btn_hide').disabled = false;
+                document.querySelector('.text-btn-info').style.display = 'none';
+            });
+        });
+    </script>
 {% endblock %}
 
 {% block title %}
@@ -20,16 +42,15 @@
 {% block body %}
 <br>
 
-    <h2> Nombre d'équipements : <span style="color: red;">{{ values }}</span></h2>
+    <h2> Nombre total d'équipements : <span style="color: red;">{{ datas_show[0].nbr_articles }}</span></h2>
 
 <table class="table">
     <thead class="thead-dark">
         <tr>
-           <th>type d'article</th> <th>(id)</th><th>nombre d'articles</th>
+           <th>type de sport</th> <th>(id)</th><th>nombre d'équipements</th>
         </tr>
     </thead>
     <tbody>
-        <p>h:{{ types_articles_nb }}</p>
     {% if types_articles_nb | length >= 1 %}
         {% for ligne in types_articles_nb %}
            <tr>
@@ -47,52 +68,53 @@
     {% endif %}
     </tbody>
 </table>
+
+<!-- Pareil pour les articles -->
+<br>
+<h2> Articles </span></h2>
+<button type="button" class="btn btn-primary" id="btn_hide">Cacher la table des équipements</button>
+<button type="button" class="btn btn-primary" id="btn_show">Afficher la table des équipements</button>
+<br>
+<hr>
+<table class="table table-article">
+    <thead class="thead-dark">
+        <tr>
+           <th>nom</th> <th>id</th><th>type</th><th>couleur</th><th>taille</th><th>stock
+        </tr>
+    </thead>
+    <tbody>
+        {% if equipement | length >= 1 %}
+        {% for ligne in equipement %}
+           <tr>
+                  <td>{{ ligne.libelle_equipement }}</td>
+                  <td>{{ ligne.id_equipement }}</td>
+                    <td>{{ ligne.libelle_categorie_sport }}</td>
+                    <td>{{ ligne.libelle_couleur }}</td>
+                    <td>{{ ligne.libelle_taille }}</td>
+                    <td>{{ ligne.stock }}</td>
+
+           </tr>
+        {% endfor %}
+    {% else %}
+        pas de stock
+    {% endif %}
+    </tbody>
+</table>
+<p style="text-align: center; color: red;" class="text-btn-info">Cliquer sur le bouton pour afficher les équipements (parce que bon y'en a qlq uns)</p>
+<hr>
     <br>
 {#    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>#}
 
-<h2>visualisation de données : graph.js</h2>
-<h3>Documentation</h3>
+<h2>Répartition des équipements par catégorie de sports :</h2>
+<!-- <h3>Documentation</h3>
 <br>
     <a href="https://tobiasahlin.com/blog/chartjs-charts-to-get-you-started/" target="_blank"> tuto partie1 graph.js</a><br>
     <a href="https://tobiasahlin.com/blog/introduction-to-chartjs" target="_blank"> tuto partie2 graph.js</a>&nbsp;
 <br>
     <a href="https://www.youtube.com/watch?v=E2hytuQvLlE" target="_blank"> vidéo : flask + graph.js</a>&nbsp;
-    <br>
+    <br> -->
 
-{# https://jinja.palletsprojects.com/en/3.0.x/templates/#html-escaping #}
-    <div style="width: 900px; height: 500px; border: #0a53be 1px solid;">
-        <canvas id="Chart1" ></canvas>
-    </div>
-    graphique 1
-    <script>
-	var ctx1 = document.getElementById("Chart1").getContext("2d");
-	var Chart1 = new Chart( ctx1, {
-  		type: "bar",
-  		data: {
-  			labels: {{ labels | safe }},
-  			datasets: [
-  				{
-  				label: "Articles par catégorie de sport (nombre)",
-  				data: {{ values | safe }},
-  				fill: false,
-                 backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850",
-             "#faf24c"
-             , "#6a6ce7","#55f68f","#D0c309","#c45000"],
-  				borderColor: "rgb(75,192,192)",
-  				lineTension: 0.1
-  				}
-  			]
-  		},
-  		option: {
-  			responsive: false
-  		}
-	});
-    </script>
-
-
-    <h2>demo graphique à secteurs : "camenberd" ,"donut" ( "pie-chart"  "doughtnut")</h2>
-
-    <canvas id="doughnut" width="800" height="450"></canvas>
+    <canvas id="doughnut" width="800" height="300"></canvas>
 
     <script>
 	var Chart2 = new Chart(document.getElementById("doughnut"), {
@@ -100,7 +122,7 @@
     data: {
       labels: {{ labels | safe }},
       datasets: [{
-        label: "Type d'articles (nombre)",
+        label: "Type d'articles (nombre d'articles différents)",
          backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850",
              "#faf24c"
              , "#6a6ce7","#55f68f","#D0c309","#c45000"],
@@ -115,8 +137,10 @@
      }
     });
     </script>
-
-    <canvas id="graph-3" width="800" height="450"></canvas>
+<br>
+<hr>
+<h2>Nombre de déclinaisons par article</h2>
+    <canvas id="graph-3" width="400" height="200"></canvas>
     <script>
             var ctx3 = document.getElementById("graph-3").getContext("2d");
             var Chart3 = new Chart(ctx3, {
@@ -141,8 +165,43 @@
                 }
             });
     </script>
+<br>
+<hr>
+<h2>Répartition du cout des stocks par catégorie de sport</h2>
 
-    <a href="https://www.youtube.com/watch?v=TcwYXIIM-fs" target="_blank">dataviz, c'est quoi en 1 mn ? (juste la première minute)</a>
-    <br>
-    <a href="https://www.youtube.com/watch?v=bZDnSUjfMt8" target="_blank">dataviz, c'est quoi ? (juste la première minute)</a>
+{% if prix_total is not none %}
+    <canvas id="graph-4" width="400" height="100"></canvas>
+    <script>
+            var ctx4 = document.getElementById("graph-4").getContext("2d");
+            var Chart4 = new Chart(ctx4, {
+                type: 'pie',
+                data: {
+                    labels: {{ labels_prix | safe }},
+                    datasets: [
+                        {
+                            label: "Couts totaux des stocks (en €)",
+                            backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850", "#faf24c", "#6a6ce7", "#55f68f", "#D0c309", "#c45000", '#c47897', '#6af32b',
+                        '#3e98bf', '#7e64da', '#f3c3b9', '#c4c450', '#f4f24c', '#6a6ce7', '#55f68f', '#D0c309'],
+                            data: {{ prix_total_cat | safe }},
+                        }
+                    ]
+                },
+                options: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Couts totaux des stocks (en €)'
+                    }
+                }
+            });
+    </script>
+{% else %}
+    pas de stock
+
+{% endif %}
+<p style="text-align: center;">Coût total des stocks : <bold>{{ total }}</bold> €</p>
+
+<br>
+<br>
+<hr>
 {% endblock %}
