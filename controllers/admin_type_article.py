@@ -40,6 +40,14 @@ def valid_add_type_article():
 def delete_type_article():
     id_type_article = request.args.get('id_type_article', '')
     mycursor = get_db().cursor()
+
+    sql = ''' SELECT COUNT(*) as nb_equipement FROM equipement WHERE sport_equipement_id = %s'''
+    mycursor.execute(sql, (id_type_article))
+    nb_equipement = mycursor.fetchone()
+    if nb_equipement['nb_equipement'] > 0:
+        flash(u'Impossible de supprimer la catégorie de sport, des équipements sont associés', 'alert-danger')
+        return redirect('/admin/type-article/show')
+
     sql = ''' DELETE FROM categorie_sport WHERE id_categorie_sport = %s'''
     mycursor.execute(sql, (id_type_article))
     get_db().commit()

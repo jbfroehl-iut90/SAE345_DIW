@@ -57,7 +57,9 @@ def fct_fixtures_load():
         ('Sport d endurance'),
         ('Sport aquatique'),
         ('Cyclisme'),
-        ('Renforcement Musculaire')
+        ('Renforcement Musculaire'),
+        ('Autre'),
+        ('Sans catégorie');
     ;
     '''
     

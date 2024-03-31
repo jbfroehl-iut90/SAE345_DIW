@@ -82,7 +82,33 @@ types_article : tableau de dictionnaires
                                 <td></td>
                                 <td></td>
                             </tr>
-                        {% else %}
+                        {% endif %}
+                        {% if declinaisons_article | length == 1 %}
+                            {% for declinaison_article in declinaisons_article %}
+                            <tr>
+                                <td>
+                                    {{ declinaison_article.libelle_taille }} (variante par defaut)
+                                </td>
+                                <td style="color: {{ declinaison_article.couleur_anglais }};">
+                                    {{ declinaison_article.libelle_couleur }} (variante par defaut)
+                                </td>
+                                <td>{{ declinaison_article.stock }}</td>
+                                <td style="display: flex">
+                                    <!-- un button désactivé qui affiche 'non' au survol -->
+                                    <button class="btn btn-secondary mx-1" disabled>
+                                        supprimer
+                                    </button>
+
+                                    <a class="img-fluid" href="/admin/declinaison_article/edit?id_declinaison_article={{ declinaison_article.id_declinaison }}">
+                                        <button class="btn btn-primary mx-1">
+                                            editer
+                                        </button>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endif %}
+                        {% if declinaisons_article | length > 1 %}
                             {% for declinaison_article in declinaisons_article %}
                                 <tr>
                                     <td>

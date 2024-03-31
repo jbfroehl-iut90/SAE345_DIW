@@ -106,10 +106,20 @@ def valid_add_article():
     mycursor.execute(sql, tuple_add)
     get_db().commit()
 
-    # Crée une déclinaison par défaut de l'article nouvellement crée
-    sql = ''' INSERT INTO declinaison (id_equipement, couleur_declinaison, taille_declinaison, stock) VALUES (%s, %s, %s, %s)'''
-    mycursor.execute(sql, (mycursor.lastrowid, couleur, taille, stock))
-    get_db().commit()
+    
+    # Si il n'y a pas encore de declinaison pour cet article on rajoute un '(defaut)' a côté de la couleur et de la taille  :
+    sql = ''' SELECT COUNT(*) as nb_declinaison FROM declinaison WHERE id_equipement = %s'''
+    mycursor.execute(sql, mycursor.lastrowid)
+    nb_declinaison = mycursor.fetchone()
+    if nb_declinaison['nb_declinaison'] == 0:
+        sql = ''' INSERT INTO declinaison (id_equipement, couleur_declinaison, taille_declinaison, stock) VALUES (%s, %s, %s, %s)'''
+        print('couleur :', couleur, ' - taille :', taille, ' - stock :', stock)
+        mycursor.execute(sql, (mycursor.lastrowid, couleur,taille, stock))
+        get_db().commit()
+    else:
+        sql = ''' INSERT INTO declinaison (id_equipement, couleur_declinaison, taille_declinaison, stock) VALUES (%s, %s, %s, %s)'''
+        mycursor.execute(sql, (mycursor.lastrowid, couleur, taille, stock))
+        get_db().commit()
 
     print(u'Nouvel equipement ajouté , nom: ', nom, ' - Catégorie :', type_article_id, ' - prix:', prix,
           ' - description:', description, ' - image:', image)
@@ -128,21 +138,43 @@ def delete_article():
     mycursor.execute(sql, id_article)
     nb_declinaison = mycursor.fetchone()
     print(nb_declinaison)
-    if nb_declinaison['nb_declinaison'] > 0:
+    if nb_declinaison['nb_declinaison'] > 1:
         message= u'il y a des declinaisons dans cet article : vous ne pouvez pas le supprimer'
         flash(message, 'alert-warning')
     else:
         sql = ''' SELECT * FROM equipement WHERE id_equipement = %s '''
         mycursor.execute(sql, id_article)
         article = mycursor.fetchone()
-        print(article)
         image = article['image_equipement']
+
+        # Delete de l'article en faisant attention aux contraintes de clés étrangères
+        sql  = ''' DELETE FROM commentaire WHERE equipement_id = %s'''
+        mycursor.execute(sql, id_article)
+        get_db().commit()
+
+        sql = ''' DELETE FROM historique WHERE id_equipement = %s'''
+        mycursor.execute(sql, id_article)
+        get_db().commit()
+
+        sql = ''' DELETE FROM note WHERE id_equipement = %s'''
+        mycursor.execute(sql, id_article)
+        get_db().commit()
+
+        # Si l'article est dans des commandes, on ne peut pas le supprimer
+        sql = ''' SELECT COUNT(*) as nb_commandes FROM ligne_commande WHERE equipement_id = %s'''
+        mycursor.execute(sql, id_article)
+        nb_commandes = mycursor.fetchone()
+        if nb_commandes['nb_commandes'] > 0:
+            message = u'il y a des commandes pour cet article : vous ne pouvez pas le supprimer'
+            flash(message, 'alert-warning')
+            return redirect('/admin/article/show')
 
         sql = ''' DELETE FROM equipement WHERE id_equipement = %s '''
         mycursor.execute(sql, id_article)
         get_db().commit()
         if image != None:
             os.remove('static/images/' + image)
+
 
         print("un article supprimé, id :", id_article)
         message = u'un article supprimé, id : ' + id_article
