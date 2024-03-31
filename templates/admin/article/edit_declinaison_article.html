@@ -30,7 +30,7 @@
                         <select name="id_taille" class="form-select">
                             {% for taille in tailles %}
                                  <option value="{{ taille.id_taille }}"
-                                         {% if taille.id_taille == declinaison_article.taille_id %} selected {% endif %}
+                                         {% if taille.id_taille == declinaison_article.taille_declinaison %} selected {% endif %}
                                  > {{ taille.libelle_taille }}</option>
                             {% endfor %}
                         </select>

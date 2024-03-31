@@ -26,10 +26,10 @@ types_article : tableau de dictionnaires
                 <form class="w-190" method="post" action="/admin/article/edit" enctype="multipart/form-data">
                     <input type="hidden" value="{{ article.id_equipement }}" name="id_article">
                     <label for="nom">Nom :
-                        <input name="nom" type="text" value="{{ article.libelle_equipement }}" class="form-control">
+                        <input name="nom" type="text" value="{{ article.libelle_equipement }}" class="form-control" required>
                     </label>
                     <label for="prix" > Prix (€) :
-                        <input name="prix" type="number" min="0.0" step="0.01" value="{{ article.prix_equipement }}" class="form-control" >
+                        <input name="prix" type="number" min="0.0" step="0.01" value="{{ article.prix_equipement }}" class="form-control" required>
                     </label>
                     <label for="image">Image actuelle : <span style="color:red">{{ article.image_equipement }}</span>
                         <input name="image"  onchange="loadFile(event)" type="file" class="form-control" value="testeuu.jpg">

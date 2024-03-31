@@ -75,6 +75,7 @@ def fct_fixtures_load():
     mycursor.execute(sql)
     sql = ''' 
     INSERT INTO couleur(libelle_couleur, couleur_anglais) VALUES
+    ('Aucune', 'grey')
     ('Rouge', 'red'),
     ('Bleu', 'blue'),
     ('Vert', 'green'),
@@ -160,6 +161,7 @@ def fct_fixtures_load():
     ('XL'),
     ('XXL'),
     ('XXXL'),
+    ('Article seul'),
     ('Lot 2'),
     ('Lot 4'),
     ('Lot 6'),
