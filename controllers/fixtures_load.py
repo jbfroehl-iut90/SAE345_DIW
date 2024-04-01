@@ -337,8 +337,7 @@ CREATE TABLE note(
     ('1 rue du groudron par terre', '75000', 'Paris',1, 25, 'Jean', 2),
     ('2 rue des petits canards', '69000', 'Lyon',0, 92, 'Jeanne', 2),
     ('4 chemin du pont', '31000', 'Toulouse',1, 25, 'Jeanne', 2),
-    ('5 rue du grand mechant loup', '93000', 'Bordeaux',1, 92, 'Jean', 2),
-    ('6 rue du petit chaperon rouge', '93000', 'Bordeaux',1, 71, 'Jeanne', 2);
+    ('5 rue du grand mechant loup', '93000', 'Bordeaux',1, 92, 'Jean', 2);
     '''
     mycursor.execute(sql)
 
