@@ -10,7 +10,8 @@ fixtures_load = Blueprint('fixtures_load', __name__,
 @fixtures_load.route('/base/init')
 def fct_fixtures_load():
     mycursor = get_db().cursor()
-    sql=''' DROP TABLE IF EXISTS historique, liste_envie, commentaire, ligne_panier, declinaison, commande, ligne_commande, adresse, etat, note, equipement, marque, taille, morphologie, couleur, categorie_sport, utilisateur;'''
+    # Drop les tazbles en commençant par la fin pour éviter les erreurs de contraintes
+    sql=''' DROP TABLE IF EXISTS historique, liste_envie, commentaires, ligne_panier, ligne_commande, declinaison, equipement, note, commande, adresse, etat, utilisateur, marque, taille, morphologie, couleur, categorie_sport;'''
     mycursor.execute(sql)
 
     sql='''
@@ -366,29 +367,6 @@ CREATE TABLE note(
     mycursor.execute(sql)
 
     sql = '''
-    CREATE TABLE ligne_commande(
-    commande_id INT,
-    equipement_id INT,
-    prix INT,
-    quantite INT,
-    PRIMARY KEY(commande_id, equipement_id),
-    CONSTRAINT fk_ligne_commande_commande FOREIGN KEY (commande_id) REFERENCES commande(id_commande),
-    CONSTRAINT fk_ligne_commande_equipement FOREIGN KEY (equipement_id) REFERENCES equipement(id_equipement)
-);
-            '''
-    mycursor.execute(sql)
-
-    sql = '''
-    INSERT INTO ligne_commande (commande_id, equipement_id, prix, quantite) VALUES
-    (1, 1, 80, 2),
-    (2, 2, 90, 1),
-    (3, 3, 200, 1),
-    (3, 4, 40, 1),
-    (3, 5, 70, 1);
-    '''
-    mycursor.execute(sql)
-
-    sql = '''
     CREATE TABLE declinaison(
     id_declinaison INT AUTO_INCREMENT,
     couleur_declinaison INT,
@@ -467,6 +445,29 @@ CREATE TABLE note(
     (1, 14, 10, 20);
     '''
     mycursor.execute(sql)
+
+    sql = '''
+    CREATE TABLE ligne_commande(
+    commande_id INT,
+    declinaison_id INT,
+    prix INT,
+    quantite INT,
+    PRIMARY KEY(commande_id, declinaison_id),
+    CONSTRAINT fk_ligne_commande_commande FOREIGN KEY (commande_id) REFERENCES commande(id_commande),
+    CONSTRAINT fk_ligne_commande_declinaison FOREIGN KEY (declinaison_id) REFERENCES declinaison(id_declinaison)
+    );'''
+    mycursor.execute(sql)
+
+    sql = '''
+    INSERT INTO ligne_commande (commande_id, declinaison_id, prix, quantite) VALUES
+    (1, 1, 80, 2),
+    (2, 2, 90, 1),
+    (3, 3, 200, 1),
+    (3, 4, 40, 1),
+    (3, 5, 70, 1);
+    '''
+    mycursor.execute(sql)
+
 
     sql = '''
     CREATE TABLE ligne_panier(

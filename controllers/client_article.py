@@ -111,9 +111,12 @@ def client_article_show():                                 # remplace client_ind
     print("len : ",len(articles_panier))
 
     if len(articles_panier) >= 1:
-        sql = ''' select equipement.libelle_equipement, id_ligne_panier,  quantite, prix, ligne_panier.id_declinaison, id_utilisateur 
-        from ligne_panier, declinaison, equipement
-        where ligne_panier.id_declinaison = declinaison.id_declinaison and declinaison.id_equipement = equipement.id_equipement and id_utilisateur = %s''' 
+        sql = ''' SELECT * FROM ligne_panier 
+        LEFT JOIN declinaison ON ligne_panier.id_declinaison = declinaison.id_declinaison
+        LEFT JOIN couleur ON declinaison.couleur_declinaison = couleur.id_couleur
+        LEFT JOIN taille ON declinaison.taille_declinaison = taille.id_taille
+        LEFT JOIN equipement ON declinaison.id_equipement = equipement.id_equipement 
+        WHERE id_utilisateur = %s''' 
         mycursor.execute(sql, id_client)
         articles_panier = mycursor.fetchall()
 

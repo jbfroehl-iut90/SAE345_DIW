@@ -15,9 +15,11 @@ def client_commande_valide():
     mycursor = get_db().cursor()
     id_client = session['id_user']
     sql = ''' SELECT * FROM ligne_panier 
-    LEFT JOIN declinaison ON ligne_panier.id_declinaison = declinaison.id_declinaison 
-    LEFT JOIN equipement ON declinaison.id_equipement = equipement.id_equipement
-    WHERE id_utilisateur = %s
+        LEFT JOIN declinaison ON ligne_panier.id_declinaison = declinaison.id_declinaison
+        LEFT JOIN couleur ON declinaison.couleur_declinaison = couleur.id_couleur
+        LEFT JOIN taille ON declinaison.taille_declinaison = taille.id_taille
+        LEFT JOIN equipement ON declinaison.id_equipement = equipement.id_equipement 
+        WHERE id_utilisateur = %s
     '''
     articles_panier = []
     mycursor.execute(sql, (id_client))
@@ -91,8 +93,9 @@ def client_commande_add():
         get_db().commit()
 
     for item in items_ligne_panier:
-        sql = ''' INSERT INTO ligne_commande (commande_id, equipement_id, prix, quantite) VALUES (%s, %s, %s, %s)'''
-        mycursor.execute(sql, (last_insert_id, item['id_equipement'], item['prix'], item['quantite']))
+        print(item)
+        sql = ''' INSERT INTO ligne_commande (commande_id, id_declinaison, prix, quantite) VALUES (%s, %s, %s, %s)'''
+        mycursor.execute(sql, (last_insert_id, item['declinaison_id'], item['prix'], item['quantite']))
 
     get_db().commit()
     flash(u'Commande ajoutée','alert-success')
@@ -108,7 +111,9 @@ def client_commande_show():
     LEFT JOIN etat ON commande.etat_id = etat.id_etat 
     LEFT JOIN (SELECT commande_id, SUM(quantite) as nb_articles FROM ligne_commande GROUP BY commande_id) as nb_articles ON commande.id_commande = nb_articles.commande_id
     LEFT JOIN (SELECT commande_id, SUM(prix_equipement * quantite) as total_commande 
-    FROM ligne_commande LEFT JOIN equipement ON ligne_commande.equipement_id = equipement.id_equipement GROUP BY commande_id) as total_commande 
+    FROM ligne_commande LEFT JOIN declinaison ON ligne_commande.declinaison_id = declinaison.id_declinaison
+    LEFT JOIN equipement ON declinaison.id_equipement = equipement.id_equipement
+    GROUP BY commande_id) as total_commande
     ON commande.id_commande = total_commande.commande_id
     WHERE id_utilisateur = %s 
     '''
@@ -120,10 +125,30 @@ def client_commande_show():
     commande_adresses = None
     id_commande = request.args.get('id_commande', None)
     if id_commande != None:
-        sql = ''' SELECT * FROM ligne_commande
-        LEFT JOIN equipement ON ligne_commande.equipement_id = equipement.id_equipement
-        WHERE commande_id = %s
-        '''
+        sql = '''
+        SELECT 
+            ligne_commande.commande_id,
+            ligne_commande.declinaison_id,
+            equipement.libelle_equipement,
+            couleur.libelle_couleur,
+            taille.libelle_taille,
+            ligne_commande.prix,
+            ligne_commande.quantite,
+        COUNT(*) as nb_declinaisons 
+        FROM ligne_commande
+            LEFT JOIN declinaison ON ligne_commande.declinaison_id = declinaison.id_declinaison
+            LEFT JOIN equipement ON declinaison.id_equipement = equipement.id_equipement
+            LEFT JOIN couleur ON declinaison.couleur_declinaison = couleur.id_couleur
+            LEFT JOIN taille ON declinaison.taille_declinaison = taille.id_taille
+        WHERE ligne_commande.commande_id = %s
+        GROUP BY 
+            ligne_commande.commande_id,
+            ligne_commande.declinaison_id,
+            equipement.libelle_equipement,
+            couleur.libelle_couleur,
+            taille.libelle_taille,
+            ligne_commande.prix,
+            ligne_commande.quantite'''
         mycursor.execute(sql, (id_commande))
         articles_commande = mycursor.fetchall()
 
