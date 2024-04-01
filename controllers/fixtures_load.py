@@ -10,7 +10,7 @@ fixtures_load = Blueprint('fixtures_load', __name__,
 @fixtures_load.route('/base/init')
 def fct_fixtures_load():
     mycursor = get_db().cursor()
-    sql=''' DROP TABLE IF EXISTS adresse, declinaison, liste_envie, historique, ligne_commande, commande, etat, ligne_panier, note, commentaire, equipement, categorie_sport, couleur, morphologie, marque, taille, utilisateur;  '''
+    sql=''' DROP TABLE IF EXISTS historique, liste_envie, commentaire, ligne_panier, declinaison, commande, ligne_commande, adresse, etat, note, equipement, marque, taille, morphologie, couleur, categorie_sport, utilisateur;'''
     mycursor.execute(sql)
 
     sql='''
@@ -317,23 +317,51 @@ CREATE TABLE note(
     mycursor.execute(sql)
 
     sql = '''
+    CREATE TABLE adresse(
+    id_adresse INT AUTO_INCREMENT,
+    adresse VARCHAR(255),
+    code_postal VARCHAR(255),
+    ville VARCHAR(255),
+    valide tinyint(1),
+    nom VARCHAR(255),
+    id_utilisateur INT,
+    PRIMARY KEY(id_adresse),
+    CONSTRAINT fk_adresse_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur)
+    );'''
+    mycursor.execute(sql)
+
+    sql = '''
+    INSERT INTO adresse (adresse, code_postal, ville, valide,nom, id_utilisateur) VALUES
+    ('1 rue du groudron par terre', '75000', 'Paris',1,'Jean', 2),
+    ('2 rue des petits canards', '69000', 'Lyon',0,'Jeanne', 2),
+    ('3 rue du chocolat en poudre', '13000', 'Marseille',0,'Jean', 2),
+    ('4 chemin du pont', '31000', 'Toulouse',1,'Jeanne', 2),
+    ('5 rue du grand mechant loup', '33000', 'Bordeaux',1,'Jean', 2);
+    '''
+    mycursor.execute(sql)
+
+    sql = '''
     CREATE TABLE commande(
     id_commande INT AUTO_INCREMENT,
     date_achat DATE,
     etat_id INT NOT NULL,
     id_utilisateur INT,
+    adresse_id INT,
+    billing_address_id INT,
     PRIMARY KEY(id_commande),
     CONSTRAINT fk_commande_etat FOREIGN KEY (etat_id) REFERENCES etat(id_etat),
-    CONSTRAINT fk_commande_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur)
+    CONSTRAINT fk_commande_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur),
+    CONSTRAINT fk_commande_adresse FOREIGN KEY (adresse_id) REFERENCES adresse(id_adresse),
+    CONSTRAINT fk_commande_billing_address FOREIGN KEY (billing_address_id) REFERENCES adresse(id_adresse)
 );
             '''
     mycursor.execute(sql)
 
     sql = '''
-    INSERT INTO commande (date_achat, etat_id, id_utilisateur) VALUES
-    ('2022-01-01', 1, 2),
-    ('2022-01-01', 2, 2),
-    ('2022-01-01', 3, 2);
+    INSERT INTO commande (date_achat, etat_id, id_utilisateur, adresse_id, billing_address_id) VALUES
+    ('2022-11-10', 1, 2, 1, 1),
+    ('2022-11-11', 2, 2, 2, 2),
+    ('2022-11-13', 3, 2, 3, 2);
     '''
     mycursor.execute(sql)
 
@@ -499,31 +527,6 @@ CREATE TABLE note(
 ('Je suis satisfait', 1, '2022-11-11', 19, 2),
 ('Je recommande', 1, '2022-11-11', 20, 2);
 '''
-    mycursor.execute(sql)
-
-    sql = '''
-    CREATE TABLE adresse(
-    id_adresse INT AUTO_INCREMENT,
-    adresse VARCHAR(255),
-    code_postal VARCHAR(255),
-    ville VARCHAR(255),
-    valide tinyint(1),
-    nom VARCHAR(255),
-    id_utilisateur INT,
-    PRIMARY KEY(id_adresse),
-    CONSTRAINT fk_adresse_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur)
-);
-            '''
-    mycursor.execute(sql)
-
-    sql = '''
-    INSERT INTO adresse (adresse, code_postal, ville, valide,nom, id_utilisateur) VALUES
-    ('1 rue du groudron par terre', '75000', 'Paris',1,'Jean', 2),
-    ('2 rue des petits canards', '69000', 'Lyon',0,'Jeanne', 2),
-    ('3 rue du chocolat en poudre', '13000', 'Marseille',0,'Jean', 2),
-    ('4 chemin du pont', '31000', 'Toulouse',1,'Jeanne', 2),
-    ('5 rue du grand mechant loup', '33000', 'Bordeaux',1,'Jean', 2);
-    '''
     mycursor.execute(sql)
 
     sql = '''

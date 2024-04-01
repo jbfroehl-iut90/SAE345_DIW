@@ -48,18 +48,24 @@ def admin_commande_show():
     mycursor.execute(sql)
     commandes = mycursor.fetchall()
 
-    commande_adresses = None
+    commande_adresses = []
     id_commande = request.args.get('id_commande', None)
     if id_commande != None:
         sql = ''' SELECT * FROM ligne_commande WHERE commande_id = %s '''
         mycursor.execute(sql, (id_commande))
 
         commande_adresses = []
-        # sql = ''' SELECT * FROM adresse WHERE id_adresse = %s '''
-        # for ligne_commande in articles_commande:
-        #     mycursor.execute(sql, (ligne_commande['adresse_id']))
-        #     commande_adresses.append(mycursor.fetchone())
-
+        sql = ''' SELECT * FROM commande WHERE id_commande = %s '''
+        mycursor.execute(sql, (id_commande))
+        commande = mycursor.fetchone()
+        sql = ''' SELECT * FROM adresse WHERE id_adresse = %s '''
+        mycursor.execute(sql, (commande['adresse_id']))
+        commande_adresse = mycursor.fetchone()
+        commande_adresses.append(commande_adresse)
+        sql = ''' SELECT * FROM adresse WHERE id_adresse = %s '''
+        mycursor.execute(sql, (commande['billing_address_id']))
+        commande_adresse = mycursor.fetchone()
+        commande_adresses.append(commande_adresse)
 
     return render_template('admin/commandes/show.html'
                            , commandes=commandes

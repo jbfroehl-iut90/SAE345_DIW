@@ -36,15 +36,17 @@
             </table>
                <br>
                 <div style="color: brown">
-                <strong>adresse livraison : </strong>{{ commande_adresses.nom_livraison }} {{ commande_adresses.rue_livraison }} {{ commande_adresses.code_postal_livraison }} {{ commande_adresses.ville_livraison }}
-                <br>
-                <strong>adresse facturation : </strong>
-                {% if commande_adresses.adresse_identique == 'adresse_identique' %}
-                    adresse identique
-                {% else %}
-                    {{ commande_adresses.nom_facturation }} {{ commande_adresses.rue_facturation }} {{ commande_adresses.code_postal_facturation }} {{ commande_adresses.ville_facturation }}
-                {% endif %}
-                </div>
+                    {% if commande_adresses != [] %}
+                        <strong>adresse livraison : </strong>{{ commande_adresses[0].nom }} {{ commande_adresses[0].adresse }} {{ commande_adresses[0].code_postal }} {{ commande_adresses[0].ville }}
+                        <br>
+                        <strong>adresse facturation : </strong>
+                            {% if commande_adresses[0].id_adresse == commande_adresses[1].id_adresse %}
+                                adresse identique
+                            {% else %}
+                                {{ commande_adresses[1].nom }} {{ commande_adresses[1].adresse }} {{ commande_adresses[1].code_postal }} {{ commande_adresses[1].ville }}
+                            {% endif %}
+                    {% endif %}
+                    </div>
 
             {% if articles_commande[0].etat_id == 1 %}
             <form action="/admin/commande/valider"  style="display: inline-block;"  method="post">

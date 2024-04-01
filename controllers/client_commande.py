@@ -38,6 +38,14 @@ def client_commande_valide():
     for adresse in adresses:
        if adresse['valide'] == 1:
            id_adresse_fav = adresse['id_adresse']
+           break
+       
+    sql = ''' SELECT * FROM adresse WHERE id_utilisateur = %s AND valide = 1'''
+    mycursor.execute(sql, (id_client))
+    adresse_fav = mycursor.fetchone()
+    if adresse_fav is None:
+        flash(u'Veuillez ajouter une adresse de livraison et de facturation', 'alert-warning')
+        return redirect('/client/adresse/add')
 
     return render_template('client/boutique/panier_validation_adresses.html'
                            , adresses=adresses
@@ -65,10 +73,13 @@ def client_commande_add():
         return redirect('/client/article/show')
     # Date en Year-Month-Day
     a = datetime.now().strftime('%Y-%m-%d')
+
+    id_adresse = request.form['id_adresse_livraison']
+    billing_address_id = request.form['id_adresse_facturation']
     
 
-    sql = ''' INSERT INTO commande (id_utilisateur, date_achat, etat_id) VALUES (%s, %s, %s)'''
-    mycursor.execute(sql, (id_client, a, 1))
+    sql = ''' INSERT INTO commande (id_utilisateur, date_achat, etat_id, adresse_id, billing_address_id) VALUES (%s, %s, %s, %s, %s)'''
+    mycursor.execute(sql, (id_client, a, 1, id_adresse, billing_address_id))
 
     sql  = ''' SELECT LAST_INSERT_ID() as last_insert_id'''
     mycursor.execute(sql)
@@ -89,7 +100,6 @@ def client_commande_add():
 
 
 
-
 @client_commande.route('/client/commande/show', methods=['get','post'])
 def client_commande_show():
     mycursor = get_db().cursor()
@@ -106,7 +116,6 @@ def client_commande_show():
     commandes = []
     commandes = mycursor.fetchall()
 
-
     articles_commande = []
     commande_adresses = None
     id_commande = request.args.get('id_commande', None)
@@ -118,10 +127,18 @@ def client_commande_show():
         mycursor.execute(sql, (id_commande))
         articles_commande = mycursor.fetchall()
 
-        # partie 2 : selection de l'adresse de livraison et de facturation de la commande selectionnée
-        sql = ''' SELECT * FROM adresse '''
-        mycursor.execute(sql)
-        commande_adresses = mycursor.fetchall()
+        commande_adresses = []
+        sql = ''' SELECT * FROM commande WHERE id_commande = %s '''
+        mycursor.execute(sql, (id_commande))
+        commande = mycursor.fetchone()
+        sql = ''' SELECT * FROM adresse WHERE id_adresse = %s '''
+        mycursor.execute(sql, (commande['adresse_id']))
+        commande_adresse = mycursor.fetchone()
+        commande_adresses.append(commande_adresse)
+        sql = ''' SELECT * FROM adresse WHERE id_adresse = %s '''
+        mycursor.execute(sql, (commande['billing_address_id']))
+        commande_adresse = mycursor.fetchone()
+        commande_adresses.append(commande_adresse)
 
     return render_template('client/commandes/show.html'
                            , commandes=commandes
