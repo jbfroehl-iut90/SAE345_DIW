@@ -72,9 +72,20 @@ def client_coordonnee_delete_adresse():
     id_client = session['id_user']
     id_adresse= request.form.get('id_adresse')
 
-    sql = ''' DELETE FROM adresse where id_adresse = %s '''
-    mycursor.execute(sql, (id_adresse,))
-    get_db().commit()
+    # Si l'adresse n'est pas utilisée dans une commande
+    sql = ''' SELECT * FROM commande WHERE adresse_id = %s OR billing_address_id = %s '''
+    mycursor.execute(sql, (id_adresse, id_adresse))
+    commande = mycursor.fetchone()
+
+    if commande is None:
+        sql = ''' DELETE FROM adresse where id_adresse = %s '''
+        mycursor.execute(sql, (id_adresse,))
+        get_db().commit()
+    else:
+        flash(u'Adresse utilisée dans une commande, passage en inactive', 'alert-warning')
+        sql = ''' UPDATE adresse SET valide = 0 WHERE id_adresse = %s '''
+        mycursor.execute(sql, (id_adresse,))
+        get_db().commit()
 
     return redirect('/client/coordonnee/show')
 
@@ -101,9 +112,10 @@ def client_coordonnee_add_adresse_valide():
     rue = request.form.get('rue')
     code_postal = request.form.get('code_postal')
     ville = request.form.get('ville')
+    dept = request.form.get('dept')
 
-    sql = ''' INSERT INTO adresse (adresse,code_postal,ville,valide, nom, id_utilisateur) VALUES (%s, %s, %s, %s, %s, %s) '''
-    mycursor.execute(sql, (rue, code_postal, ville, 0, nom, id_client))
+    sql = ''' INSERT INTO adresse (adresse,code_postal,ville,valide, departement, nom, id_utilisateur) VALUES (%s, %s, %s, %s, %s, %s, %s) '''
+    mycursor.execute(sql, (rue, code_postal, ville, 0, dept, nom, id_client))
     get_db().commit()
 
     return redirect('/client/coordonnee/show')
@@ -136,7 +148,10 @@ def client_coordonnee_edit_adresse_valide():
     code_postal = request.form.get('code_postal')
     ville = request.form.get('ville')
     id_adresse = request.form.get('id_adresse')
+    dept = request.form.get('dept')
 
-    sql = ''' UPDATE adresse SET  '''
+    sql = ''' UPDATE adresse SET adresse = %s, code_postal = %s, ville = %s, departement = %s, nom = %s WHERE id_adresse = %s '''
+    mycursor.execute(sql, (rue, code_postal, ville, dept, nom, id_adresse))
+    get_db().commit()
 
     return redirect('/client/coordonnee/show')

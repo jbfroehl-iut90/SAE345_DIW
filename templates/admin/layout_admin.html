@@ -17,11 +17,11 @@
 <div class="container  container-md">
 {% block body %}
     <h3 style="color: red">Bonjour {{ session['login'] }}, bienvenue sur la page administrateur de <span style="color: black;">Bröstvårta</span></h3>
-    <div style="position: relative; left: 25em;">
+    <div style="position: relative; margin-left: 20em;">
         <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="" style="max-width: 500px; border-radius: 300px; position: relative;">
         <br><br>
-        <h1 style="color: black;position: relative; left: 3.7em; text-decoration: underline;">Bröstvårta</h1>
-        <p style="position: relative; left: 5.5em;">Le site de sport pour l'exception (enfin presque)</p>
+        <h1 style="color: black;position: relative; margin-left: 3.7em; text-decoration: underline;">Bröstvårta</h1>
+        <p style="position: relative; margin-left: 4em;">Le site de sport pour l'exception (enfin presque)</p>
     </div>
     {% endblock %}
 </div>

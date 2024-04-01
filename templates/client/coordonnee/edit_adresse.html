@@ -12,19 +12,23 @@
             </tr>
             <tr>
                 <td>Nom Prénom (pour la livraison/facturation) :</td>
-                <td><input type="text" name="nom" required  maxlength="50" value="{{ adresse.nom }}"></td>
+                <td><input class="form-control" type="text" name="nom" required  maxlength="50" value="{{ adresse.nom }}"></td>
             </tr>
             <tr>
                 <td>numéro de rue et nom :</td>
-                <td><input type="text" name="rue" required  value="{{ adresse.adresse }}"></td>
+                <td><input class="form-control" type="text" name="rue" required  value="{{ adresse.adresse }}"></td>
             </tr>
             <tr>
                 <td>Code postal :</td>
-                <td><input type="number" name="code_postal" required  minlength="5" maxlength="5" value="{{ adresse.code_postal }}"></td>
+                <td><input class="form-control" type="number" name="code_postal" required  minlength="5" maxlength="5" value="{{ adresse.code_postal }}"></td>
+            </tr>
+            <tr>
+                <td>Département :</td>
+                <td><input type="number" name="dept" required minlength="2" maxlength="3" class="form-control" value="{{ adresse.departement }}"></td>
             </tr>
             <tr>
                 <td>Ville :</td>
-                <td><input type="text" name="ville" required  maxlength="50" value="{{ adresse.ville }}"></td>
+                <td><input class="form-control" type="text" name="ville" required  maxlength="50" value="{{ adresse.ville }}"></td>
             </tr>
         </table>
         <button class="btn btn-primary" type="submit">Valider</button>

@@ -324,6 +324,7 @@ CREATE TABLE note(
     code_postal VARCHAR(255),
     ville VARCHAR(255),
     valide tinyint(1),
+    departement INT,
     nom VARCHAR(255),
     id_utilisateur INT,
     PRIMARY KEY(id_adresse),
@@ -332,13 +333,12 @@ CREATE TABLE note(
     mycursor.execute(sql)
 
     sql = '''
-    INSERT INTO adresse (adresse, code_postal, ville, valide,nom, id_utilisateur) VALUES
-    ('1 rue du groudron par terre', '75000', 'Paris',1,'Jean', 2),
-    ('2 rue des petits canards', '69000', 'Lyon',0,'Jeanne', 2),
-    ('3 rue du chocolat en poudre', '13000', 'Marseille',0,'Jean', 2),
-    ('4 chemin du pont', '31000', 'Toulouse',1,'Jeanne', 2),
-    ('5 rue du grand mechant loup', '93', 'Bordeaux',1,'Jean', 2),
-    ('6 rue du petit chaperon rouge', '93', 'Bordeaux',1,'Jeanne', 2);
+    INSERT INTO adresse (adresse, code_postal, ville, valide, departement, nom, id_utilisateur) VALUES
+    ('1 rue du groudron par terre', '75000', 'Paris',1, 25, 'Jean', 2),
+    ('2 rue des petits canards', '69000', 'Lyon',0, 92, 'Jeanne', 2),
+    ('4 chemin du pont', '31000', 'Toulouse',1, 25, 'Jeanne', 2),
+    ('5 rue du grand mechant loup', '93000', 'Bordeaux',1, 92, 'Jean', 2),
+    ('6 rue du petit chaperon rouge', '93000', 'Bordeaux',1, 71, 'Jeanne', 2);
     '''
     mycursor.execute(sql)
 
