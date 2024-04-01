@@ -461,11 +461,10 @@ CREATE TABLE note(
 
     sql = '''
     INSERT INTO ligne_commande (commande_id, declinaison_id, prix, quantite) VALUES
-    (1, 1, 80, 2),
-    (2, 2, 90, 1),
-    (3, 3, 200, 1),
-    (3, 4, 40, 1),
-    (3, 5, 70, 1);
+    (1, 1, 80, 1),
+    (1, 2, 80, 1),
+    (2, 7, 200, 2),
+    (3, 11, 40, 4);
     '''
     mycursor.execute(sql)
 

@@ -8,14 +8,12 @@
                     <tr><th>Nom</th><th>Quantite</th><th>Prix</th><th>Prix total de la ligne</th></tr>
                 </thead>
                 <tbody>
-                    <p>{{ articles_commande }}</p>
                         {% for ligne in articles_commande %}
                             <tr>
-                                <p>{{ ligne }}</p>
                                 <td>{{ ligne.libelle_equipement }}
                                 {% if ligne.nb_declinaisons is defined and ligne.nb_declinaisons >= 1 %}
                                     <span style="color:rgba(255,197,197,0.6);"> ( {{ ligne.nb_declinaisons }} declinaisons )</span>
-                                    <span style="color:{{ ligne.couleur_anglais }}">
+                                    <span style="color: {{ligne.couleur_anglais}};">
                                     {% if ligne.couleur_id != 1 %}
                                         {{ ligne.libelle_couleur }} 
                                     {% endif %}
