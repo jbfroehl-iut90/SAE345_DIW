@@ -89,25 +89,24 @@ def show_type_article_stock():
 @admin_dataviz.route('/admin/dataviz/etat2')
 def show_dataviz_map():
     mycursor = get_db().cursor()
-    sql = ''' SELECT COUNT(id_adresse) as nombre, code_postal FROM adresse GROUP BY code_postal; '''
+    # Compte le nombre de d'adresses par département
+    sql = ''' SELECT COUNT(id_adresse) as nbr_dept, code_postal FROM adresse GROUP BY code_postal;'''
     mycursor.execute(sql)
     adresses = mycursor.fetchall()
-
+    print(adresses)
     #exemples de tableau "résultat" de la requête
-    adresses =  [{'dep': '25', 'nombre': 1}, {'dep': '83', 'nombre': 1}, {'dep': '71', 'nombre': 3}]
+    # adresses =  [{'dep': '25', 'nombre': 1}, {'dep': '83', 'nombre': 3}, {'dep': '71', 'nombre': 3}, {'dep': '69', 'nombre': 4}]
 
     # recherche de la valeur maxi "nombre" dans les départements
-    # maxAddress = 0
-    # for element in adresses:
-    #     if element['nbr_dept'] > maxAddress:
-    #         maxAddress = element['nbr_dept']
-    # # calcul d'un coefficient de 0 à 1 pour chaque département
-    # if maxAddress != 0:
-    #     for element in adresses:
-    #         indice = element['nbr_dept'] / maxAddress
-    #         element['indice'] = round(indice,2)
-
-    print(adresses)
+    maxAddress = 0
+    for element in adresses:
+        if element['nbr_dept'] > maxAddress:
+            maxAddress = element['nbr_dept']
+    # calcul d'un coefficient de 0 à 1 pour chaque département
+    if maxAddress != 0:
+        for element in adresses:
+            indice = element['nbr_dept'] / maxAddress
+            element['indice'] = round(indice,2)
 
     return render_template('admin/dataviz/dataviz_etat_map.html'
                            , adresses=adresses

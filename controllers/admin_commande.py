@@ -24,25 +24,42 @@ def admin_commande_show():
         id_commande = None
     if id_commande != None:
         sql = ''' SELECT * FROM ligne_commande 
-        LEFT JOIN equipement ON ligne_commande.equipement_id = equipement.id_equipement 
-        LEFT JOIN (SELECT id_equipement, COUNT(*) as nb_declinaisons FROM declinaison GROUP BY id_equipement) as nb_declinaisons ON equipement.id_equipement = nb_declinaisons.id_equipement
+        LEFT JOIN declinaison ON ligne_commande.declinaison_id = declinaison.id_declinaison
+        LEFT JOIN equipement ON declinaison.id_equipement = equipement.id_equipement
+        LEFT JOIN (SELECT id_equipement, COUNT(*) as nb_declinaisons FROM declinaison GROUP BY id_equipement) as nb_declinaisons 
+        ON equipement.id_equipement = nb_declinaisons.id_equipement
         WHERE commande_id = %s'''
         articles_commande = []
         mycursor.execute(sql, (id_commande))
         articles_commande = mycursor.fetchall()
     else:
-        sql = ''' SELECT * FROM ligne_commande LEFT JOIN equipement ON ligne_commande.equipement_id = equipement.id_equipement
-        LEFT JOIN (SELECT id_equipement, COUNT(*) as nb_declinaisons FROM declinaison GROUP BY id_equipement) as nb_declinaisons ON equipement.id_equipement = nb_declinaisons.id_equipement
-        '''
+        sql = ''' SELECT 
+            ligne_commande.*,
+            equipement.*,
+            nb_declinaisons.nb_declinaisons
+        FROM ligne_commande
+        LEFT JOIN declinaison ON ligne_commande.declinaison_id = declinaison.id_declinaison
+        LEFT JOIN equipement ON declinaison.id_equipement = equipement.id_equipement
+        LEFT JOIN (
+            SELECT id_equipement, COUNT(*) as nb_declinaisons 
+            FROM declinaison 
+            GROUP BY id_equipement
+        ) as nb_declinaisons ON equipement.id_equipement = nb_declinaisons.id_equipement;
+'''
         articles_commande = []
         mycursor.execute(sql)
         articles_commande = mycursor.fetchall()
 
     sql = ''' SELECT * FROM commande
+    LEFT JOIN etat ON commande.etat_id = etat.id_etat
     LEFT JOIN utilisateur ON commande.id_utilisateur = utilisateur.id_utilisateur
-    LEFT JOIN etat ON commande.etat_id = etat.id_etat 
-    LEFT JOIN (SELECT commande_id, SUM(quantite) as nb_articles FROM ligne_commande GROUP BY commande_id) as nb_articles ON commande.id_commande = nb_articles.commande_id
-    LEFT JOIN (SELECT commande_id, SUM(prix_equipement * quantite) as total_commande FROM ligne_commande LEFT JOIN equipement ON ligne_commande.equipement_id = equipement.id_equipement GROUP BY commande_id) as total_commande ON commande.id_commande = total_commande.commande_id
+    LEFT JOIN (SELECT commande_id, SUM(quantite) as nb_articles FROM ligne_commande GROUP BY commande_id) as nb_articles
+    ON commande.id_commande = nb_articles.commande_id
+    LEFT JOIN (SELECT commande_id, SUM(prix_equipement * quantite) as total_commande
+    FROM ligne_commande LEFT JOIN declinaison ON ligne_commande.declinaison_id = declinaison.id_declinaison
+    LEFT JOIN equipement ON declinaison.id_equipement = equipement.id_equipement
+    GROUP BY commande_id) as total_commande
+    ON commande.id_commande = total_commande.commande_id;
     '''
     commandes=[]
     mycursor.execute(sql)

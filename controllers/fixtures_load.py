@@ -11,7 +11,7 @@ fixtures_load = Blueprint('fixtures_load', __name__,
 def fct_fixtures_load():
     mycursor = get_db().cursor()
     # Drop les tazbles en commençant par la fin pour éviter les erreurs de contraintes
-    sql=''' DROP TABLE IF EXISTS historique, liste_envie, commentaires, ligne_panier, ligne_commande, declinaison, equipement, note, commande, adresse, etat, utilisateur, marque, taille, morphologie, couleur, categorie_sport;'''
+    sql=''' DROP TABLE IF EXISTS historique, liste_envie, commentaires, ligne_panier, ligne_commande, declinaison, note, commentaire, commande, adresse, etat, equipement, utilisateur, marque, taille, morphologie, couleur, categorie_sport;'''
     mycursor.execute(sql)
 
     sql='''
@@ -337,7 +337,8 @@ CREATE TABLE note(
     ('2 rue des petits canards', '69000', 'Lyon',0,'Jeanne', 2),
     ('3 rue du chocolat en poudre', '13000', 'Marseille',0,'Jean', 2),
     ('4 chemin du pont', '31000', 'Toulouse',1,'Jeanne', 2),
-    ('5 rue du grand mechant loup', '33000', 'Bordeaux',1,'Jean', 2);
+    ('5 rue du grand mechant loup', '93', 'Bordeaux',1,'Jean', 2),
+    ('6 rue du petit chaperon rouge', '93', 'Bordeaux',1,'Jeanne', 2);
     '''
     mycursor.execute(sql)
 

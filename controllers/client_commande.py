@@ -94,8 +94,8 @@ def client_commande_add():
 
     for item in items_ligne_panier:
         print(item)
-        sql = ''' INSERT INTO ligne_commande (commande_id, id_declinaison, prix, quantite) VALUES (%s, %s, %s, %s)'''
-        mycursor.execute(sql, (last_insert_id, item['declinaison_id'], item['prix'], item['quantite']))
+        sql = ''' INSERT INTO ligne_commande (commande_id, declinaison_id, prix, quantite) VALUES (%s, %s, %s, %s)'''
+        mycursor.execute(sql, (last_insert_id, item['id_declinaison'], item['prix'], item['quantite']))
 
     get_db().commit()
     flash(u'Commande ajoutée','alert-success')

@@ -18,6 +18,8 @@
 {% endblock %}
 
 {% block body %}
+    <p>{{ adresses }}</p>
+
     <a href="https://github.com/regisenguehard/carte-france-svg/blob/master/carte-france-svg.html" target="_blank">exemple github carte</a>
     <br>
     <a href="https://www.youtube.com/watch?v=UZs8l50gxjU" target="_blank"> video graficart</a>
@@ -30,12 +32,16 @@
         {% include 'admin/dataviz/franceMap.html' %}
     </div>
 
-    <script>
-    {% for element in adresses %}
-        document.getElementById({{ element['dep'] }}).style.fill= "#000000";
-        document.getElementById({{ element['dep'] }}).setAttribute("fill-opacity", {{ element['indice'] }});
-    {% endfor %}
-    </script>
+    
+
+        <script>
+        {% for element in adresses %}
+            console.log('test');
+            console.log('{{ element }}');
+            document.getElementById({{ element['code_postal'] }}).setAttribute("fill", "rgba(255,255,255,{{ element['indice'] }})");
+            document.getElementById({{ element['code_postal'] }}).setAttribute("fill-opacity", {{ element['indice'] }});
+        {% endfor %}
+        </script>
 
 {#    /* couleur avec transparence */#}
 {#background-color : rgba(255,255,255,0.5);#}
