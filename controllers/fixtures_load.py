@@ -334,10 +334,13 @@ CREATE TABLE note(
 
     sql = '''
     INSERT INTO adresse (adresse, code_postal, ville, valide, departement, nom, id_utilisateur) VALUES
-    ('1 rue du groudron par terre', '75000', 'Paris',1, 25, 'Jean', 2),
-    ('2 rue des petits canards', '69000', 'Lyon',0, 92, 'Jeanne', 2),
-    ('4 chemin du pont', '31000', 'Toulouse',1, 25, 'Jeanne', 2),
-    ('5 rue du grand mechant loup', '93000', 'Bordeaux',1, 92, 'Jean', 2);
+    ('1 rue du groudron par terre', '75000', 'Paris',1, 75, 'Jean', 2),
+    ('2 rue des petits canards', '69000', 'Lyon',0, 69, 'Jeanne', 2),
+    ('4 chemin du pont', '31500', 'Toulouse',1, 31, 'Jeanne', 2),
+    ('5 rue du grand mechant loup', '93000', 'Lyon',1, 69, 'Jean', 2),
+    ('6 rue des petits canards', '69000', 'Lyon',1, 69, 'Jeanne', 3),
+    ('7 chemin du pont', '31500', 'Toulouse',1, 31, 'Jeanne', 3),
+    ('8 rue de géplusdinspi', '93000', 'Lyon',1, 69, 'Jean', 3);
     '''
     mycursor.execute(sql)
 
