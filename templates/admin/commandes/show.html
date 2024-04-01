@@ -37,13 +37,13 @@
                <br>
                 <div style="color: brown">
                     {% if commande_adresses != [] %}
-                        <strong>adresse livraison : </strong>{{ commande_adresses[0].nom }} {{ commande_adresses[0].adresse }} {{ commande_adresses[0].code_postal }} {{ commande_adresses[0].ville }}
+                        <strong>adresse livraison : </strong>{{ commande_adresses[0].nom }} : {{ commande_adresses[0].adresse }} {{ commande_adresses[0].code_postal }} {{ commande_adresses[0].ville }}
                         <br>
                         <strong>adresse facturation : </strong>
                             {% if commande_adresses[0].id_adresse == commande_adresses[1].id_adresse %}
                                 adresse identique
                             {% else %}
-                                {{ commande_adresses[1].nom }} {{ commande_adresses[1].adresse }} {{ commande_adresses[1].code_postal }} {{ commande_adresses[1].ville }}
+                                {{ commande_adresses[1].nom }} : {{ commande_adresses[1].adresse }} {{ commande_adresses[1].code_postal }} {{ commande_adresses[1].ville }}
                             {% endif %}
                     {% endif %}
                     </div>

@@ -16,9 +16,14 @@
 {% include('admin/_nav_admin.html') %}
 <div class="container  container-md">
 {% block body %}
-    <h4 style="color:red">page Admin : templates/admin/layout_admin.html</h4>
-    <h3 style="color: red">Bonjour {{ session['login'] }} , votre Rôle : {{ session['role'] }}</h3>
-{% endblock %}
+    <h3 style="color: red">Bonjour {{ session['login'] }}, bienvenue sur la page administrateur de <span style="color: black;">Bröstvårta</span></h3>
+    <div style="position: relative; left: 25em;">
+        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="" style="max-width: 500px; border-radius: 300px; position: relative;">
+        <br><br>
+        <h1 style="color: black;position: relative; left: 3.7em; text-decoration: underline;">Bröstvårta</h1>
+        <p style="position: relative; left: 9em;">Le site de sport des GOATTS</p>
+    </div>
+    {% endblock %}
 </div>
 {% block javascripts %}
     <script src="{{ url_for('static', filename='assets/js/bootstrap.bundle.js') }}" ></script>
