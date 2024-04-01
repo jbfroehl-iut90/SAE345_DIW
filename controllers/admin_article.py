@@ -132,29 +132,42 @@ def delete_article():
         message= u'il y a des declinaisons dans cet article : vous ne pouvez pas le supprimer'
         flash(message, 'alert-warning')
     elif nb_declinaison['nb_declinaison'] == 1:
-        sql = ''' DELETE FROM declinaison WHERE id_equipement = %s'''
+        
+        sql = ''' SELECT * FROM ligne_commande WHERE declinaison_id = (SELECT id_declinaison FROM declinaison WHERE id_equipement = %s)'''
         mycursor.execute(sql, id_article)
-        get_db().commit()
-        sql = ''' SELECT * FROM equipement WHERE id_equipement = %s '''
-        mycursor.execute(sql, id_article)
-        article = mycursor.fetchone()
-        image = article['image_equipement']
+        ligne_commande = mycursor.fetchone()
 
-        # Delete de l'article en faisant attention aux contraintes de clés étrangères
-        sql  = ''' DELETE FROM commentaire WHERE equipement_id = %s'''
-        mycursor.execute(sql, id_article)
-        get_db().commit()
+        if ligne_commande:
+            message = u'Impossible de supprimer cet article, des commandes sont en cours avec cet article'
+            flash(message, 'alert-danger')
+            return redirect('/admin/article/show')
+        else :
+            sql = ''' DELETE FROM declinaison WHERE id_equipement = %s'''
+            mycursor.execute(sql, id_article)
+            get_db().commit()
+            sql = ''' SELECT * FROM equipement WHERE id_equipement = %s '''
+            mycursor.execute(sql, id_article)
+            article = mycursor.fetchone()
+            image = article['image_equipement']
 
-        sql = ''' DELETE FROM historique WHERE id_equipement = %s'''
-        mycursor.execute(sql, id_article)
-        get_db().commit()
+            # Delete de l'article en faisant attention aux contraintes de clés étrangères
+            sql  = ''' DELETE FROM commentaire WHERE equipement_id = %s'''
+            mycursor.execute(sql, id_article)
+            get_db().commit()
 
-        sql = ''' DELETE FROM note WHERE id_equipement = %s'''
-        mycursor.execute(sql, id_article)
-        get_db().commit()
+            sql = ''' DELETE FROM historique WHERE id_equipement = %s'''
+            mycursor.execute(sql, id_article)
+            get_db().commit()
+
+            sql = ''' DELETE FROM note WHERE id_equipement = %s'''
+            mycursor.execute(sql, id_article)
+            get_db().commit()
 
         # Si l'article est dans des commandes, on ne peut pas le supprimer
-        sql = ''' SELECT COUNT(*) as nb_commandes FROM ligne_commande WHERE equipement_id = %s'''
+        sql = ''' SELECT COUNT(*) as nb_commandes FROM ligne_commande
+        LEFT JOIN declinaison ON ligne_commande.declinaison_id = declinaison.id_declinaison
+        LEFT JOIN equipement ON declinaison.id_equipement = equipement.id_equipement
+        WHERE equipement.id_equipement = %s'''
         mycursor.execute(sql, id_article)
         nb_commandes = mycursor.fetchone()
         if nb_commandes['nb_commandes'] > 0:
@@ -193,7 +206,10 @@ def delete_article():
         get_db().commit()
 
         # Si l'article est dans des commandes, on ne peut pas le supprimer
-        sql = ''' SELECT COUNT(*) as nb_commandes FROM ligne_commande WHERE equipement_id = %s'''
+        sql = ''' SELECT COUNT(*) as nb_commandes FROM ligne_commande
+        LEFT JOIN declinaison ON ligne_commande.declinaison_id = declinaison.id_declinaison
+        LEFT JOIN equipement ON declinaison.id_equipement = equipement.id_equipement
+        WHERE equipement.id_equipement = %s'''
         mycursor.execute(sql, id_article)
         nb_commandes = mycursor.fetchone()
         if nb_commandes['nb_commandes'] > 0:

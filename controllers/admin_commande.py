@@ -26,6 +26,8 @@ def admin_commande_show():
         sql = ''' SELECT * FROM ligne_commande 
         LEFT JOIN declinaison ON ligne_commande.declinaison_id = declinaison.id_declinaison
         LEFT JOIN equipement ON declinaison.id_equipement = equipement.id_equipement
+        LEFT JOIN couleur ON declinaison.couleur_declinaison = couleur.id_couleur
+        LEFT JOIN taille ON declinaison.taille_declinaison = taille.id_taille
         LEFT JOIN (SELECT id_equipement, COUNT(*) as nb_declinaisons FROM declinaison GROUP BY id_equipement) as nb_declinaisons 
         ON equipement.id_equipement = nb_declinaisons.id_equipement
         WHERE commande_id = %s'''

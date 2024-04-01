@@ -126,11 +126,20 @@ def valid_edit_declinaison_article():
 def admin_delete_declinaison_article():
     id_declinaison_article = request.args.get('id_declinaison_article','')
     id_article = request.args.get('id_article','')
-
     mycursor = get_db().cursor()
-    sql = ''' DELETE FROM declinaison WHERE id_declinaison = %s '''
+
+    # Ne peux pas supprimer si il y a des commandes en cours avec cette declinaison
+    sql = ''' SELECT * FROM ligne_commande WHERE declinaison_id = %s '''
     mycursor.execute(sql, (id_declinaison_article,))
-    get_db().commit()
+    ligne_commande = mycursor.fetchone()
+
+    if ligne_commande:
+        flash(u'Impossible de supprimer cette declinaison, des commandes sont en cours avec cette declinaison', 'alert-danger')
+        return redirect('/admin/article/edit?id_article=' + str(id_article))
+    else: 
+        sql = ''' DELETE FROM declinaison WHERE id_declinaison = %s '''
+        mycursor.execute(sql, (id_declinaison_article,))
+        get_db().commit()
 
     flash(u'declinaison supprimée, id_declinaison_article : ' + str(id_declinaison_article),  'alert-success')
     return redirect('/admin/article/edit?id_article=' + str(id_article))
