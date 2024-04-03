@@ -1,7 +1,5 @@
-DROP TABLE IF EXISTS adresse, declinaison, liste_envie, historique, ligne_commande, commande, etat, ligne_panier, note, commentaire, equipement, categorie_sport, couleur, morphologie, marque, taille, utilisateur;
-    
+DROP TABLE IF EXISTS historique, liste_envie, commentaires, ligne_panier, ligne_commande, declinaison, note, commentaire, commande, adresse, etat, equipement, utilisateur, marque, taille, morphologie, couleur, categorie_sport;
 
-    
 CREATE TABLE utilisateur (
   id_utilisateur INT AUTO_INCREMENT,
   login varchar(255),
@@ -12,9 +10,7 @@ CREATE TABLE utilisateur (
   est_actif tinyint(1),
   PRIMARY KEY (id_utilisateur)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;  
-    
-    
-     
+
 INSERT INTO utilisateur(id_utilisateur,login,email,password,role,nom,est_actif) VALUES
 (NULL,'admin','admin@admin.fr',
     'sha256$dPL3oH9ug1wjJqva$2b341da75a4257607c841eb0dbbacb76e780f4015f0499bb1a164de2a893fdbf',
@@ -25,32 +21,23 @@ INSERT INTO utilisateur(id_utilisateur,login,email,password,role,nom,est_actif) 
 (3,'client2','client2@client2.fr',
     'sha256$MjhdGuDELhI82lKY$2161be4a68a9f236a27781a7f981a531d11fdc50e4112d912a7754de2dfa0422',
     'ROLE_client','client2','1');
-    
-    
 
-     
 CREATE TABLE categorie_sport(
     id_categorie_sport INT AUTO_INCREMENT,
     libelle_categorie_sport VARCHAR(255),
     PRIMARY KEY(id_categorie_sport)
-    );
+);
     
-    
-    
-     
 INSERT INTO categorie_sport (libelle_categorie_sport) VALUES
-        ('Sport de combat'),
-        ('Sport collectif'),
-        ('Sport de raquettes'),
-        ('Sport d endurance'),
-        ('Sport aquatique'),
-        ('Cyclisme'),
-        ('Renforcement Musculaire')
-    ;
-    
-    
-    
-
+    ('Sport de combat'),
+    ('Sport collectif'),
+    ('Sport de raquettes'),
+    ('Sport d endurance'),
+    ('Sport aquatique'),
+    ('Cyclisme'),
+    ('Renforcement Musculaire'),
+    ('Autre'),
+    ('Sans catégorie');
 
 CREATE TABLE couleur(
     id_couleur INT AUTO_INCREMENT,
@@ -58,8 +45,7 @@ CREATE TABLE couleur(
     couleur_anglais VARCHAR(255),
     PRIMARY KEY(id_couleur)
 );
-     
-    
+
 INSERT INTO couleur(libelle_couleur, couleur_anglais) VALUES
     ('Rouge', 'red'),
     ('Bleu', 'blue'),
@@ -72,36 +58,27 @@ INSERT INTO couleur(libelle_couleur, couleur_anglais) VALUES
     ('Gris', 'grey'),
     ('Marron', 'brown'),
     ('Orange', 'orange'),
-    ('Kaki', 'khaki');
-         
-    
+    ('Kaki', 'khaki'),
+    ('Aucune', 'grey');
 
-      
 CREATE TABLE morphologie(
     id_morphologie INT AUTO_INCREMENT,
     libelle_morphologie VARCHAR(255),
     PRIMARY KEY(id_morphologie)
 );
-     
-    
-      
+
 INSERT INTO morphologie (libelle_morphologie) VALUES
     ('Homme'),
     ('Femme'),
     ('Enfant'),
     ('Unisexe');
-                 
-    
 
-      
 CREATE TABLE marque(
     id_marque INT AUTO_INCREMENT,
     libelle_marque VARCHAR(255),
     PRIMARY KEY(id_marque)
 );
-         
-    
-      
+
 INSERT INTO marque (libelle_marque) VALUES
     ('Venum'),
     ('Adidas'),
@@ -125,19 +102,13 @@ INSERT INTO marque (libelle_marque) VALUES
     ('canyon'),
     ('Bmc'),
     ('electra');
-         
-    
 
-
-      
 CREATE TABLE taille(
     id_taille INT AUTO_INCREMENT,
     libelle_taille VARCHAR(255),
     PRIMARY KEY(id_taille)
 );
-         
-    
-     
+
 INSERT INTO taille (libelle_taille) VALUES
     ('XS'),
     ('S'),
@@ -146,6 +117,7 @@ INSERT INTO taille (libelle_taille) VALUES
     ('XL'),
     ('XXL'),
     ('XXXL'),
+    ('Article seul'),
     ('Lot 2'),
     ('Lot 4'),
     ('Lot 6'),
@@ -171,10 +143,7 @@ INSERT INTO taille (libelle_taille) VALUES
     ('10(m)'),
     ('55(kg)'),
     ('20(kg)');
-          
-    
-     
-     
+
 CREATE TABLE equipement(
     id_equipement INT AUTO_INCREMENT,
     libelle_equipement VARCHAR(10000),
@@ -189,11 +158,7 @@ CREATE TABLE equipement(
     CONSTRAINT fk_equipement_sport FOREIGN KEY (sport_equipement_id) REFERENCES categorie_sport(id_categorie_sport),
     CONSTRAINT fk_equipement_morphologie FOREIGN KEY (morphologie_equipement_id) REFERENCES morphologie(id_morphologie)
 );
-          
-    
 
-    
-     
 INSERT INTO equipement (libelle_equipement, prix_equipement, description_equipement, image_equipement, marque_equipement_id, sport_equipement_id, morphologie_equipement_id) VALUES
     ( 'Gants  de  MMA  Venum  Impact  2.0' , 80,  'Ces  gants  en  cuir  Skintex  sont  ergonomiques    confortables  et  de  haute  qualité.  La  mousse  triple  densite  permet  de  garder  votre  main  à  l  abris  des  chocs.  Forme  incurvée  permettant  au  gant  de  parfaitement  épouser  la  forme  de  votre  main.  Le  système  de  fermeture  fournit  un  meilleur  serrage  et  la  possibilité  de  fermer  avec  une  seule  main.' , 'gantsMMA.webp', 1, 1, 4),
     ( 'Gants  de  boxe  Venum  Elite' , 90,  'Gants  pour  Boxe  Anglaise    Kick  Boxing  et  Muay  Thai.  Doté  d  une  mousse  à  quadruple  densité    ces  gants  sont  designés  pour  absorber  au  mieux  les  impacts  lors  des  frappes.  Les  coutures  renforcées  et  les  panneaux  en  maille  combinés  à  leur  forme  ergonomique  vous  apporteront  un  ajustement  confortable  et  vous  aurez  l  impression  de  ne  faire  qu  un  avec  le  gant.' , 'gantsBoxe.webp', 1, 1, 4),
@@ -215,11 +180,8 @@ INSERT INTO equipement (libelle_equipement, prix_equipement, description_equipem
     ( 'Electra  Loft  7i  EQ  Step  Thru' , 440,  'La  technologie  Flat  Foot  d  Electra  signifie  un  confort  et  un  contrôle  brevetés  sur  un  vélo  Electra.' , 'veloVille.jpg', 22, 6, 4),
     ( 'X  Crazyfast  Elite  LL  FG' , 270,  'chaussure  de  foot  equipé  de  crampon  silouhette  aérodynamique' , 'chaussureFoot1.avif', 2, 2, 4),
     ( 'Protège-dents  Venum  Predator' , 22,  'Ce  protège-dents    est  le  parfait  mix  en  confort    souplesse  et  absorption  des  chocs    afin  de  prévenir  et  réduire  les  besssures  au  niveau  de  vos  dents    lèvres  et  gencives.  Cadre  extérieur  en  caoutchouc  asborbant  les  chocs    et  intérieur  en  gel  thermo-formable  afin  de  mouler  parfaitement  votre  dentition  et  permettre  une  meilleure  respiration', 'protegeDents.webp', 1, 1, 4);
-     
-    
-    
-    
-    
+
+
 CREATE TABLE note(
     id_note INT AUTO_INCREMENT,
     note DECIMAL(2,1),
@@ -227,10 +189,8 @@ CREATE TABLE note(
     utilisateur_id INT,
     PRIMARY KEY(id_note),
     CONSTRAINT fk_note_equipement FOREIGN KEY(id_equipement) REFERENCES equipement(id_equipement),
-    CONSTRAINT fk_note_utilisateur FOREIGN KEY(utilisateur_id) REFERENCES utilisateur(id_utilisateur));    
-    
-    
-    
+    CONSTRAINT fk_note_utilisateur FOREIGN KEY(utilisateur_id) REFERENCES utilisateur(id_utilisateur));
+
 INSERT INTO note (note, id_equipement, utilisateur_id) VALUES 
     (5.0, 1, 3),
     (4.5, 1, 2),
@@ -278,71 +238,59 @@ INSERT INTO note (note, id_equipement, utilisateur_id) VALUES
     (3.5, 19, 3),
     (3.5, 20, 3)
     ;
-    
-    
 
-     
 CREATE TABLE etat(
     id_etat INT AUTO_INCREMENT,
     libelle_etat VARCHAR(255),
     PRIMARY KEY(id_etat)
 );
-            
-    
 
-     
 INSERT INTO etat (libelle_etat) VALUES
     ('En cours de traitement'),
     ('Expédié'),
     ('Validé');
-    
-    
 
-     
+CREATE TABLE adresse(
+    id_adresse INT AUTO_INCREMENT,
+    adresse VARCHAR(255),
+    code_postal VARCHAR(255),
+    ville VARCHAR(255),
+    valide tinyint(1),
+    departement INT,
+    nom VARCHAR(255),
+    id_utilisateur INT,
+    PRIMARY KEY(id_adresse),
+    CONSTRAINT fk_adresse_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur)
+    );
+
+INSERT INTO adresse (adresse, code_postal, ville, valide, departement, nom, id_utilisateur) VALUES
+    ('1 rue du groudron par terre', '75000', 'Paris',1, 75, 'Jean', 2),
+    ('2 rue des petits canards', '69000', 'Lyon',0, 69, 'Jeanne', 2),
+    ('4 chemin du pont', '31500', 'Toulouse',1, 31, 'Jeanne', 2),
+    ('5 rue du grand mechant loup', '93000', 'Lyon',1, 69, 'Jean', 2),
+    ('6 rue des petits canards', '69000', 'Lyon',1, 69, 'Jeanne', 3),
+    ('7 chemin du pont', '31500', 'Toulouse',1, 31, 'Jeanne', 3),
+    ('8 rue de géplusdinspi', '93000', 'Lyon',1, 69, 'Jean', 3);
+
 CREATE TABLE commande(
     id_commande INT AUTO_INCREMENT,
     date_achat DATE,
     etat_id INT NOT NULL,
     id_utilisateur INT,
+    adresse_id INT,
+    billing_address_id INT,
     PRIMARY KEY(id_commande),
     CONSTRAINT fk_commande_etat FOREIGN KEY (etat_id) REFERENCES etat(id_etat),
-    CONSTRAINT fk_commande_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur)
+    CONSTRAINT fk_commande_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur),
+    CONSTRAINT fk_commande_adresse FOREIGN KEY (adresse_id) REFERENCES adresse(id_adresse),
+    CONSTRAINT fk_commande_billing_address FOREIGN KEY (billing_address_id) REFERENCES adresse(id_adresse)
 );
-            
-    
 
-     
-INSERT INTO commande (date_achat, etat_id, id_utilisateur) VALUES
-    ('2022-01-01', 1, 2),
-    ('2022-01-01', 2, 2),
-    ('2022-01-01', 3, 2);
-    
-    
+INSERT INTO commande (date_achat, etat_id, id_utilisateur, adresse_id, billing_address_id) VALUES
+    ('2022-11-10', 1, 2, 1, 1),
+    ('2022-11-11', 2, 2, 2, 2),
+    ('2022-11-13', 3, 2, 3, 2);
 
-     
-CREATE TABLE ligne_commande(
-    commande_id INT,
-    equipement_id INT,
-    prix INT,
-    quantite INT,
-    PRIMARY KEY(commande_id, equipement_id),
-    CONSTRAINT fk_ligne_commande_commande FOREIGN KEY (commande_id) REFERENCES commande(id_commande),
-    CONSTRAINT fk_ligne_commande_equipement FOREIGN KEY (equipement_id) REFERENCES equipement(id_equipement)
-);
-            
-    
-
-     
-INSERT INTO ligne_commande (commande_id, equipement_id, prix, quantite) VALUES
-    (1, 1, 80, 2),
-    (2, 2, 90, 1),
-    (3, 3, 200, 1),
-    (3, 4, 40, 1),
-    (3, 5, 70, 1);
-    
-    
-
-     
 CREATE TABLE declinaison(
     id_declinaison INT AUTO_INCREMENT,
     couleur_declinaison INT,
@@ -354,10 +302,7 @@ CREATE TABLE declinaison(
     CONSTRAINT fk_declinaison_taille FOREIGN KEY (taille_declinaison) REFERENCES taille(id_taille),
     CONSTRAINT fk_declinaison_couleur FOREIGN KEY (couleur_declinaison) REFERENCES couleur(id_couleur)
 );
-            
-    
 
-     
 INSERT INTO declinaison (couleur_declinaison, taille_declinaison, stock, id_equipement) VALUES
     (1, 1, 10, 1),
     (2, 2, 10, 1),
@@ -419,10 +364,23 @@ INSERT INTO declinaison (couleur_declinaison, taille_declinaison, stock, id_equi
     (3, 14, 10, 20),
     (2, 14, 10, 20),
     (1, 14, 10, 20);
-    
-    
 
-     
+CREATE TABLE ligne_commande(
+    commande_id INT,
+    declinaison_id INT,
+    prix INT,
+    quantite INT,
+    PRIMARY KEY(commande_id, declinaison_id),
+    CONSTRAINT fk_ligne_commande_commande FOREIGN KEY (commande_id) REFERENCES commande(id_commande),
+    CONSTRAINT fk_ligne_commande_declinaison FOREIGN KEY (declinaison_id) REFERENCES declinaison(id_declinaison)
+    );
+
+INSERT INTO ligne_commande (commande_id, declinaison_id, prix, quantite) VALUES
+    (1, 1, 80, 1),
+    (1, 2, 80, 1),
+    (2, 7, 200, 2),
+    (3, 11, 40, 4);
+
 CREATE TABLE ligne_panier(
     id_ligne_panier INT AUTO_INCREMENT,
     quantite INT,
@@ -433,8 +391,6 @@ CREATE TABLE ligne_panier(
     CONSTRAINT fk_ligne_panier_declinaison FOREIGN KEY (id_declinaison) REFERENCES declinaison(id_declinaison),
     CONSTRAINT fk_ligne_panier_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur)
 ); 
-            
-    
 
 CREATE TABLE commentaire(
     id_commentaire INT AUTO_INCREMENT,
@@ -447,65 +403,38 @@ CREATE TABLE commentaire(
     CONSTRAINT fk_commentaire_equipement FOREIGN KEY (equipement_id) REFERENCES equipement(id_equipement),
     CONSTRAINT fk_commentaire_utilisateur FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur)
     );
-    
-    
 
 INSERT INTO commentaire (commentaire, statut, date_publication, equipement_id, utilisateur_id) VALUES
-('Super produit (publié le 17/11)', 1, '2022-11-17', 1, 3),
-('Bonne qualité (publié le 15/11)', 1, '2022-11-15', 1, 2),
-('Je suis satisfait', 1, '2022-11-19', 2, 2),
-('A acheter', 0, '2022-11-12 10:15:15', 5, 2),
-('Super nickel', 1, '2022-10-11', 4, 2),
-('Mauvaise qualité', 0, '2022-11-11', 3, 3),
-('Déjà cassé', 0, '2022-11-11', 1, 2),
-('A éviter', 0, '2022-11-11', 1, 3),
-('Je suis déçu', 1, '2022-11-11', 1, 2),
-('Je recommande', 1, '2022-11-11', 1, 2),
-('Je suis satisfait', 1, '2022-11-11', 5, 2),
-('Abimé', 0, '2022-11-11', 5, 2),
-('Je suis satisfait', 0, '2022-11-11', 5, 2),
-('Acheter pour mon fils', 1, '2022-11-11', 6, 3),
-('Bonne qualité', 1, '2022-11-11', 7, 3),
-('Je suis satisfait', 1, '2022-11-11', 7, 3),
-('Je recommande', 1, '2022-11-11', 8, 2),
-('Je suis satisfait', 0, '2022-11-11', 9, 2),
-('Je recommande', 0, '2022-11-11', 10, 2),
-('Je suis satisfait', 1, '2022-11-11', 11, 2),
-('Je recommande', 1, '2022-11-11', 14, 2),
-('Je suis satisfait', 1, '2022-11-11', 15, 2),
-('Je recommande', 0, '2022-11-11', 16, 2),
-('Je suis satisfait', 1, '2022-11-11', 17, 2),
-('Je recommande', 0, '2022-11-11', 18, 2),
-('Je suis satisfait', 1, '2022-11-11', 19, 2),
-('Je recommande', 1, '2022-11-11', 20, 2),
-('Je suis satisfait', 1, '2022-11-11', 19, 2),
-('Je recommande', 1, '2022-11-11', 20, 2);
+    ('Super produit (publié le 17/11)', 1, '2022-11-17', 1, 3),
+    ('Bonne qualité (publié le 15/11)', 1, '2022-11-15', 1, 2),
+    ('Je suis satisfait', 1, '2022-11-19', 2, 2),
+    ('A acheter', 0, '2022-11-12 10:15:15', 5, 2),
+    ('Super nickel', 1, '2022-10-11', 4, 2),
+    ('Mauvaise qualité', 0, '2022-11-11', 3, 3),
+    ('Déjà cassé', 0, '2022-11-11', 1, 2),
+    ('A éviter', 0, '2022-11-11', 1, 3),
+    ('Je suis déçu', 1, '2022-11-11', 1, 2),
+    ('Je recommande', 1, '2022-11-11', 1, 2),
+    ('Je suis satisfait', 1, '2022-11-11', 5, 2),
+    ('Abimé', 0, '2022-11-11', 5, 2),
+    ('Je suis satisfait', 0, '2022-11-11', 5, 2),
+    ('Acheter pour mon fils', 1, '2022-11-11', 6, 3),
+    ('Bonne qualité', 1, '2022-11-11', 7, 3),
+    ('Je suis satisfait', 1, '2022-11-11', 7, 3),
+    ('Je recommande', 1, '2022-11-11', 8, 2),
+    ('Je suis satisfait', 0, '2022-11-11', 9, 2),
+    ('Je recommande', 0, '2022-11-11', 10, 2),
+    ('Je suis satisfait', 1, '2022-11-11', 11, 2),
+    ('Je recommande', 1, '2022-11-11', 14, 2),
+    ('Je suis satisfait', 1, '2022-11-11', 15, 2),
+    ('Je recommande', 0, '2022-11-11', 16, 2),
+    ('Je suis satisfait', 1, '2022-11-11', 17, 2),
+    ('Je recommande', 0, '2022-11-11', 18, 2),
+    ('Je suis satisfait', 1, '2022-11-11', 19, 2),
+    ('Je recommande', 1, '2022-11-11', 20, 2),
+    ('Je suis satisfait', 1, '2022-11-11', 19, 2),
+    ('Je recommande', 1, '2022-11-11', 20, 2);
 
-    
-
-     
-CREATE TABLE adresse(
-    id_adresse INT AUTO_INCREMENT,
-    adresse VARCHAR(255),
-    code_postal VARCHAR(255),
-    ville VARCHAR(255),
-    valide tinyint(1),
-    nom VARCHAR(255),
-    id_utilisateur INT,
-    PRIMARY KEY(id_adresse),
-    CONSTRAINT fk_adresse_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur)
-);
-            
-    
-
-     
-INSERT INTO adresse (adresse, code_postal, ville, valide,nom, id_utilisateur) VALUES
-    ('1 rue du groudron par terre', '75000', 'Paris',1,'Jean', 2),
-    ('2 rue des petits canards', '69000', 'Lyon',0,'Jeanne', 2),
-    ('3 rue du chocolat en poudre', '13000', 'Marseille',0,'Jean', 2),
-    ('4 chemin du pont', '31000', 'Toulouse',1,'Jeanne', 2),
-    ('5 rue du grand mechant loup', '33000', 'Bordeaux',1,'Jean', 2);
-    
 CREATE TABLE liste_envie(
     id_liste_envie INT AUTO_INCREMENT,
     id_utilisateur INT,
@@ -517,11 +446,11 @@ CREATE TABLE liste_envie(
     CONSTRAINT fk_liste_envie_equipement FOREIGN KEY (id_equipement) REFERENCES equipement(id_equipement)
     );
 
-    INSERT INTO liste_envie (id_utilisateur, id_equipement, date_ajout, ordre) VALUES
-    (2, 1, '2022-11-11',1),
-    (2, 2, '2022-11-11',2),
-    (2, 3, '2022-11-11',3),
-    (2, 4, '2022-11-11',4),
+INSERT INTO liste_envie (id_utilisateur, id_equipement, date_ajout, ordre) VALUES
+    (2, 1, '2022-11-10',1),
+    (2, 2, '2022-11-11',3),
+    (2, 3, '2022-11-13',3),
+    (2, 4, '2022-11-14',4),
     (2, 14, '2023-12-12', 5),
     (3, 15, '2021-12-10', 1),
     (3, 3, '2023-10-10', 2),
